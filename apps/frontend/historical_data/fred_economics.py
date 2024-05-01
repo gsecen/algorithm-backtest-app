@@ -10,15 +10,13 @@ load_dotenv()
 
 
 def get_series_data(series_id):
-    """Gets FRED economics data series
+    """Gets FRED series data.
 
     Args:
-        series_id (str): Data series code.
-        start_date (str): Date you want data to begin from. Format must be YYYY-DD-MM.
-        end_date (str): Date you want data to end to. Format must be YYYY-DD-MM.
+        series_id (str): The series you want the data for.
 
     Returns:
-        df: Pandas dataframe containing the series data.
+        df: Pandas dataframe with the series dates and values.
     """
     query_string = f"https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key={os.getenv('FRED_API_KEY')}&file_type=json"
 
