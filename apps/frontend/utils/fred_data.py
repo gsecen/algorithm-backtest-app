@@ -10,7 +10,7 @@ def filter_fred_series(series):
         series (df): Pandas dataframe to be cleaned.
 
     Returns:
-        df: Pandas dataframe with cleaned up data
+        df: Pandas dataframe with cleaned up data.
     """
     dates = []
     values = []
