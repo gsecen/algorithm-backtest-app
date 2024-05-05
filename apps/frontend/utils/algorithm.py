@@ -84,9 +84,15 @@ sample_algo_request = {
 
 
 # Rough function to get the actual weight of task
+# Must keep in mind there are weights of grandparent and parent tasks
+# which will effect the actual weight of task
 def get_task_weight(tasks, previous_weight, weight):
     current_weight = weight / len(tasks)
     return current_weight / previous_weight
+
+
+# Rough function to handle type buys
+# def handle_buy(task):
 
 
 def test():
