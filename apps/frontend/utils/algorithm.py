@@ -105,17 +105,20 @@ def calculate_weight(tasks_length, task_index, tasks_weights, actual_parent_weig
 
 
 # Rough function which will iterate through all tasks and keep track of weights
-def iterate_through_tasks(tasks):
-    print(len(tasks))
+def iterate_through_tasks(tasks, weight, actual_weight):
+
     for index, task in enumerate(tasks):
         if task["type"] == "buy":
-            print(index)
             print(task)
-        # if task["type"] == "expression":
-        #     iterate_through_tasks(task["true"])
-        #     iterate_through_tasks(task["false"])
-        # if task["type"] == "instructions":
-        #     iterate_through_tasks(task["tasks"])
+            print(calculate_weight(len(tasks), index, weight, actual_weight))
+        if task["type"] == "expression":
+            test1 = calculate_weight(len(tasks), index, weight, actual_weight)
+            iterate_through_tasks(task["true"], weight, test1)
+            iterate_through_tasks(task["false"], weight, test1)
+        if task["type"] == "instructions":
+            # print(task)
+            test = calculate_weight(len(tasks), index, weight, actual_weight)
+            iterate_through_tasks(task["tasks"], task["weight"], test)
 
 
 # Rough function to handle type buys
@@ -124,7 +127,7 @@ def iterate_through_tasks(tasks):
 
 def test():
     starting_weight = sample_algo_request["algorithm"]["weight"]
-    iterate_through_tasks(sample_algo_request["algorithm"]["tasks"])
+    iterate_through_tasks(sample_algo_request["algorithm"]["tasks"], starting_weight, 1)
 
 
-# test()
+test()
