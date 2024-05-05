@@ -83,11 +83,24 @@ sample_algo_request = {
 }
 
 
-def calculate_weight(tasks_length, task_index, tasks_weights, actual_parent_weight):
-    if tasks_weights == 1:  # Equal weight amongst tasks
-        return actual_parent_weight / tasks_length
-    else:  # Specified weights
-        return tasks_weights[task_index] * actual_parent_weight
+def calculate_task_weight(tasks_length, task_index, weight, relative_weight):
+    """Calculates the relative task weight.
+
+    Args:
+        tasks_length (int): Number of tasks.
+        task_index (int): Task index you want want relative weight for.
+        weight (list/int): Absolute weight for task/tasks.
+        relative_weight (float): Current relative weight for task/tasks.
+
+    Returns:
+        float: Relative weight for task.
+    """
+    # Equal weight amongst tasks
+    if weight == 1:
+        return relative_weight / tasks_length
+    # Specified weights
+    else:
+        return weight[task_index] * relative_weight
 
 
 # Rough function which will iterate through all tasks and keep track of weights
