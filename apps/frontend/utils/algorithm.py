@@ -83,20 +83,6 @@ sample_algo_request = {
 }
 
 
-# Rough function to get the actual weight of task
-# Must keep in mind there are weights of grandparent and parent tasks
-# which will effect the actual weight of task
-def get_task_weight(tasks, previous_weight, weight, task_index=0):
-    # If equal weight split weight amongst all tasks
-    if weight == 1:
-        current_weight = weight / len(tasks)
-        return current_weight / previous_weight
-    # If specified weight return weight for that task
-    else:
-        current_weight = weight[task_index]
-        return current_weight / previous_weight
-
-
 def calculate_weight(tasks_length, task_index, tasks_weights, actual_parent_weight):
     if tasks_weights == 1:  # Equal weight amongst tasks
         return actual_parent_weight / tasks_length
