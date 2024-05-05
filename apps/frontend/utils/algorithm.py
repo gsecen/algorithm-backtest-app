@@ -83,6 +83,13 @@ sample_algo_request = {
 }
 
 
+# The absolute weight is the weight of the following tasks.
+# Example is weight:1 or weight:[0.5, 0.25, 0.25]
+# Even though the weight is weight:1 or weight:[0.5, 0.25, 0.25], the actual weight
+# of the task may not be 0.5. This is because weights can be nested inside each other.
+# The actual value/weight of the task is its relative weight.
+
+
 def calculate_task_weight(tasks_length, task_index, weight, relative_weight):
     """Calculates the relative task weight.
 
