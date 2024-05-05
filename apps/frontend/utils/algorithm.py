@@ -81,3 +81,17 @@ sample_algo_request = {
         ],
     },
 }
+
+
+# Rough function to get the actual weight of task
+def get_task_weight(tasks, previous_weight, weight):
+    current_weight = weight / len(tasks)
+    return current_weight / previous_weight
+
+
+def test():
+    for i in sample_algo_request["algorithm"]:
+        print(i)
+
+
+test()
