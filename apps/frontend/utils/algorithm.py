@@ -15,7 +15,7 @@ sample_algo_request = {
         "type": "instructions",
         "weight": 1,
         "tasks": [
-            {"type": "buy", "assets": "MA"},
+            {"type": "buy", "assets": "MSFT"},
             {
                 "type": "instructions",
                 "weight": [0.75, 0.25],
@@ -86,9 +86,36 @@ sample_algo_request = {
 # Rough function to get the actual weight of task
 # Must keep in mind there are weights of grandparent and parent tasks
 # which will effect the actual weight of task
-def get_task_weight(tasks, previous_weight, weight):
-    current_weight = weight / len(tasks)
-    return current_weight / previous_weight
+def get_task_weight(tasks, previous_weight, weight, task_index=0):
+    # If equal weight split weight amongst all tasks
+    if weight == 1:
+        current_weight = weight / len(tasks)
+        return current_weight / previous_weight
+    # If specified weight return weight for that task
+    else:
+        current_weight = weight[task_index]
+        return current_weight / previous_weight
+
+
+def calculate_weight(tasks_length, task_index, tasks_weights, actual_parent_weight):
+    if tasks_weights == 1:  # Equal weight amongst tasks
+        return actual_parent_weight / tasks_length
+    else:  # Specified weights
+        return tasks_weights[task_index] * actual_parent_weight
+
+
+# Rough function which will iterate through all tasks and keep track of weights
+def iterate_through_tasks(tasks):
+    print(len(tasks))
+    for index, task in enumerate(tasks):
+        if task["type"] == "buy":
+            print(index)
+            print(task)
+        # if task["type"] == "expression":
+        #     iterate_through_tasks(task["true"])
+        #     iterate_through_tasks(task["false"])
+        # if task["type"] == "instructions":
+        #     iterate_through_tasks(task["tasks"])
 
 
 # Rough function to handle type buys
@@ -96,8 +123,8 @@ def get_task_weight(tasks, previous_weight, weight):
 
 
 def test():
-    for i in sample_algo_request["algorithm"]:
-        print(i)
+    starting_weight = sample_algo_request["algorithm"]["weight"]
+    iterate_through_tasks(sample_algo_request["algorithm"]["tasks"])
 
 
-test()
+# test()
