@@ -13,7 +13,7 @@ sample_algo_request = {
     "name": "test algo",
     "algorithm": {
         "type": "instructions",
-        "weight": "equal",
+        "weight": 1,
         "tasks": [
             {"type": "buy", "assets": "MA"},
             {
@@ -26,7 +26,7 @@ sample_algo_request = {
             },
             {
                 "type": "instructions",
-                "weight": "equal",
+                "weight": 1,
                 "tasks": [
                     {
                         "type": "expression",
@@ -45,7 +45,7 @@ sample_algo_request = {
                             {"type": "buy", "assets": "MA"},
                             {
                                 "type": "instructions",
-                                "weight": "equal",
+                                "weight": 1,
                                 "tasks": [
                                     {
                                         "type": "expression",
@@ -81,97 +81,3 @@ sample_algo_request = {
         ],
     },
 }
-
-
-# test_request = {
-#     "start_date": "2020-01-01",
-#     "end_date": "2021-01-01",
-#     "instructions": [
-#         {"type": "buy", "weight": "equal", "assets": "MSFT"},
-#         {
-#             "type": "expression",
-#             "weight": "equal",
-#             "conditions": {
-#                 "operator": ">",
-#                 "condition1": {"function": "ema", "period": 14, "asset": "MSFT"},
-#                 "condition2": {"function": "ema", "period": 14, "asset": "MSFT"},
-#             },
-#             "true": "fdi",
-#             "false": "dif",
-#         },
-#         {
-#             "type": "expression",
-#             "weight": "equal",
-#             "conditions": {
-#                 "operator": ">",
-#                 "condition1": {"function": "ema", "period": 14, "asset": "MSFT"},
-#                 "condition2": {"function": "ema", "period": 14, "asset": "MSFT"},
-#             },
-#             "true": "fdi",
-#             "false": "dif",
-#         },
-#     ],
-# }
-
-# test_request2 = {
-#     "start_date": "2020-01-01",
-#     "end_date": "2021-01-01",
-#     "instructions": [
-#         {
-#             "weight": "equal",
-#             "tasks": [
-#                 {"type": "buy", "assets": "MSFT"},
-#                 {
-#                     "weight": [0.75, 0.25],
-#                     "tasks": [
-#                         {"type": "buy", "assets": "AAPL"},
-#                         {"type": "buy", "assets": "TSLA"},
-#                     ],
-#                 },
-#                 {
-#                     "type": "expression",
-#                     "conditions": {
-#                         "operator": "<",
-#                         "condition1": {
-#                             "function": "price",
-#                             "asset": "AAPL",
-#                         },
-#                         "condition2": {
-#                             "function": "fixed_value",
-#                             "value": 10,
-#                         },
-#                     },
-#                     "true": {
-#                         "weight": "equal",
-#                         "tasks": [
-#                             {"type": "buy", "assets": "MA"},
-#                             {
-#                                 "type": "expression",
-#                                 "conditions": {
-#                                     "operator": "<",
-#                                     "condition1": {
-#                                         "function": "price",
-#                                         "asset": "AAPL",
-#                                     },
-#                                     "condition2": {
-#                                         "function": "fixed_value",
-#                                         "value": 10,
-#                                     },
-#                                 },
-#                                 "true": {
-#                                     "weight": "equal",
-#                                     "tasks": [
-#                                         {"type": "buy", "assets": "MA"},
-#                                         {"type": "buy", "assets": "TSLA"},
-#                                     ],
-#                                 },
-#                                 "false": "dif",
-#                             },
-#                         ],
-#                     },
-#                     "false": "dif",
-#                 },
-#             ],
-#         }
-#     ],
-# }
