@@ -110,6 +110,45 @@ def calculate_task_weight(tasks_length, task_index, weight, relative_weight):
         return weight[task_index] * relative_weight
 
 
+def get_buy_and_condition_data(algorithm):
+    """Gets all the type buy and condition objects in algorithm.
+
+    Args:
+        algorithm (dict): Entire algorithm.
+
+    Returns:
+        list: List of type buy and condition objects.
+    """
+
+    data = []
+
+    def get_tasks_buy_and_condition_data(tasks):
+        """Iterates through all tasks(and nested tasks) and adds the type buy and condition objects to data list.
+
+        Args:
+            tasks (list): List of task objects.
+        """
+        for task in tasks:
+            if task["type"] == "buy":
+                data.append(task)
+
+            if task["type"] == "expression":
+                data.append(task["conditions"]["condition1"])
+                data.append(task["conditions"]["condition2"])
+                get_tasks_buy_and_condition_data(task["true"])
+                get_tasks_buy_and_condition_data(task["false"])
+
+            if task["type"] == "instructions":
+                get_tasks_buy_and_condition_data(task["tasks"])
+
+    get_tasks_buy_and_condition_data(algorithm["algorithm"]["tasks"])
+
+    return data
+
+
+print(get_buy_and_condition_data(sample_algo_request))
+
+
 # Rough function which will iterate through all tasks in algorithm and keep track of weights
 def iterate_tasks(tasks, weight, relative_weight):
 
@@ -137,4 +176,4 @@ def test():
     iterate_tasks(sample_algo_request["algorithm"]["tasks"], starting_weight, 1)
 
 
-test()
+# test()
