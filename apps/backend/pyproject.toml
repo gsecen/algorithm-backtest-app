@@ -3,9 +3,9 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "utils"
+name = "algorithm-backtest-app"
 version = "1.0.0"
 
 [tool.setuptools.packages.find]
-include = ["utils"]
+include = ["utils", "indicators"]
 exclude = ["tests", "tests.*"]
