@@ -110,30 +110,31 @@ def calculate_task_weight(tasks_length, task_index, weight, relative_weight):
         return weight[task_index] * relative_weight
 
 
-# Rough function which will iterate through all tasks and keep track of weights
-def iterate_through_tasks(tasks, weight, actual_weight):
+# Rough function which will iterate through all tasks in algorithm and keep track of weights
+def iterate_tasks(tasks, weight, relative_weight):
 
     for index, task in enumerate(tasks):
+        # Getting the new current relative weight for task
+        current_relative_weight = calculate_task_weight(
+            len(tasks), index, weight, relative_weight
+        )
+
         if task["type"] == "buy":
             print(task)
-            print(calculate_weight(len(tasks), index, weight, actual_weight))
+            print(current_relative_weight)
+
         if task["type"] == "expression":
-            test1 = calculate_weight(len(tasks), index, weight, actual_weight)
-            iterate_through_tasks(task["true"], weight, test1)
-            iterate_through_tasks(task["false"], weight, test1)
+            iterate_tasks(task["true"], weight, current_relative_weight)
+            iterate_tasks(task["false"], weight, current_relative_weight)
+
         if task["type"] == "instructions":
-            # print(task)
-            test = calculate_weight(len(tasks), index, weight, actual_weight)
-            iterate_through_tasks(task["tasks"], task["weight"], test)
-
-
-# Rough function to handle type buys
-# def handle_buy(task):
+            iterate_tasks(task["tasks"], task["weight"], current_relative_weight)
 
 
 def test():
     starting_weight = sample_algo_request["algorithm"]["weight"]
-    iterate_through_tasks(sample_algo_request["algorithm"]["tasks"], starting_weight, 1)
+    # Relative weight argument will always be 1 at the start
+    iterate_tasks(sample_algo_request["algorithm"]["tasks"], starting_weight, 1)
 
 
 test()
