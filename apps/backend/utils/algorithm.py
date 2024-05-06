@@ -15,13 +15,13 @@ sample_algo_request = {
         "type": "instructions",
         "weight": 1,
         "tasks": [
-            {"type": "buy", "assets": "MSFT"},
+            {"type": "buy", "asset": "MSFT"},
             {
                 "type": "instructions",
                 "weight": [0.75, 0.25],
                 "tasks": [
-                    {"type": "buy", "assets": "AAPL"},
-                    {"type": "buy", "assets": "TSLA"},
+                    {"type": "buy", "asset": "AAPL"},
+                    {"type": "buy", "asset": "TSLA"},
                 ],
             },
             {
@@ -42,7 +42,7 @@ sample_algo_request = {
                             },
                         },
                         "true": [
-                            {"type": "buy", "assets": "MA"},
+                            {"type": "buy", "asset": "MA"},
                             {
                                 "type": "instructions",
                                 "weight": 1,
@@ -61,19 +61,19 @@ sample_algo_request = {
                                             },
                                         },
                                         "true": [
-                                            {"type": "buy", "assets": "COST"},
-                                            {"type": "buy", "assets": "NVDA"},
+                                            {"type": "buy", "asset": "COST"},
+                                            {"type": "buy", "asset": "NVDA"},
                                         ],
                                         "false": [
-                                            {"type": "buy", "assets": "ADBE"},
-                                            {"type": "buy", "assets": "AMZN"},
+                                            {"type": "buy", "asset": "ADBE"},
+                                            {"type": "buy", "asset": "AMZN"},
                                         ],
                                     }
                                 ],
                             },
                         ],
                         "false": [
-                            {"type": "buy", "assets": "V"},
+                            {"type": "buy", "asset": "V"},
                         ],
                     }
                 ],
@@ -146,7 +146,7 @@ def get_buy_and_condition_data(algorithm):
     return data
 
 
-print(get_buy_and_condition_data(sample_algo_request))
+# print(get_buy_and_condition_data(sample_algo_request))
 
 
 # Rough function which will iterate through all tasks in algorithm and keep track of weights
