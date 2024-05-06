@@ -96,8 +96,8 @@ def calculate_task_weight(tasks_length, task_index, weight, relative_weight):
     Args:
         tasks_length (int): Number of tasks.
         task_index (int): Task index you want want relative weight for.
-        weight (list/int): Absolute weight for task/tasks.
-        relative_weight (float): Current relative weight for task/tasks.
+        weight (list/int): Absolute weight for tasks.
+        relative_weight (float): Current relative weight for tasks.
 
     Returns:
         float: Relative weight for task.
