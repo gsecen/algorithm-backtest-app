@@ -33,12 +33,14 @@ sample_algo_request = {
                         "conditions": {
                             "operator": "<",
                             "condition1": {
-                                "function": "price",
+                                "function": "sma",
+                                "period": 2,
                                 "asset": "AAPL",
                             },
                             "condition2": {
-                                "function": "fixed_value",
-                                "value": 10,
+                                "function": "sma",
+                                "asset": "MSFT",
+                                "period": 2,
                             },
                         },
                         "true": [
@@ -52,12 +54,14 @@ sample_algo_request = {
                                         "conditions": {
                                             "operator": "<",
                                             "condition1": {
-                                                "function": "price",
+                                                "function": "sma",
                                                 "asset": "AAPL",
+                                                "period": 2,
                                             },
                                             "condition2": {
-                                                "function": "fixed_value",
-                                                "value": 10,
+                                                "function": "sma",
+                                                "asset": "MSFT",
+                                                "period": 2,
                                             },
                                         },
                                         "true": [
@@ -122,7 +126,7 @@ def get_buy_and_condition_data(algorithm):
 
     data = []
 
-    def get_tasks_buy_and_condition_data(tasks):
+    def iterate_tasks_collect_data(tasks):
         """Iterates through all tasks(and nested tasks) and adds the type buy and condition objects to data list.
 
         Args:
@@ -135,13 +139,13 @@ def get_buy_and_condition_data(algorithm):
             if task["type"] == "expression":
                 data.append(task["conditions"]["condition1"])
                 data.append(task["conditions"]["condition2"])
-                get_tasks_buy_and_condition_data(task["true"])
-                get_tasks_buy_and_condition_data(task["false"])
+                iterate_tasks_collect_data(task["true"])
+                iterate_tasks_collect_data(task["false"])
 
             if task["type"] == "instructions":
-                get_tasks_buy_and_condition_data(task["tasks"])
+                iterate_tasks_collect_data(task["tasks"])
 
-    get_tasks_buy_and_condition_data(algorithm["algorithm"]["tasks"])
+    iterate_tasks_collect_data(algorithm["algorithm"]["tasks"])
 
     return data
 
@@ -176,4 +180,4 @@ def test():
     iterate_tasks(sample_algo_request["algorithm"]["tasks"], starting_weight, 1)
 
 
-# test()
+test()
