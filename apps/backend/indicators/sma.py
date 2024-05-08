@@ -1,7 +1,5 @@
 """This module builds the simple moving average indicator"""
 
-import pandas as pd
-
 
 def sma(period, df, metric_type):
     """Calculates and adds simple moving average indicator to dataframe.
