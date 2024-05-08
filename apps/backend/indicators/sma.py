@@ -18,14 +18,13 @@ def sma(period, df, metric_type):
     # Make sure column does not exist
     if f"sma {period}" not in df.columns:
 
-        # # If yahoo finance df calculate based on Close column
-        # if metric_type == "asset":
-        #     column_name = "Close"
+        # If yahoo finance df calculate based on Close column
+        if metric_type == "asset":
+            column_name = "Close"
 
-        # # If fred df calculate based on value column
-        # if metric_type == "series":
-        #     column_name = "value"
-        column_name = "value"
+        # If fred df calculate based on value column
+        if metric_type == "series":
+            column_name = "value"
 
         # Adding new column
         df[f"sma {period}"] = df[column_name].rolling(period).mean()
