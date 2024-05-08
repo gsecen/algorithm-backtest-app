@@ -126,7 +126,7 @@ def get_buy_and_condition_data(algorithm):
 
     data = []
 
-    def iterate_tasks_collect_data(tasks):
+    def iterate_tasks_add_data(tasks):
         """Iterates through all tasks(and nested tasks) and adds the type buy and condition objects to data list.
 
         Args:
@@ -139,13 +139,13 @@ def get_buy_and_condition_data(algorithm):
             if task["type"] == "expression":
                 data.append(task["conditions"]["condition1"])
                 data.append(task["conditions"]["condition2"])
-                iterate_tasks_collect_data(task["true"])
-                iterate_tasks_collect_data(task["false"])
+                iterate_tasks_add_data(task["true"])
+                iterate_tasks_add_data(task["false"])
 
             if task["type"] == "instructions":
-                iterate_tasks_collect_data(task["tasks"])
+                iterate_tasks_add_data(task["tasks"])
 
-    iterate_tasks_collect_data(algorithm["algorithm"]["tasks"])
+    iterate_tasks_add_data(algorithm["algorithm"]["tasks"])
 
     return data
 
