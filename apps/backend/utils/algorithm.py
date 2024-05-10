@@ -180,4 +180,51 @@ def test():
     iterate_tasks(sample_algo_request["algorithm"]["tasks"], starting_weight, 1)
 
 
-test()
+# test()
+
+
+current_holdings = {"AAPL": 0.3, "MSFT": 0.25, "TSLA": 0.1, "NVDA": 0.2, "gg": 23}
+
+new_holdings2 = {
+    "AAPL": 0.5,
+    "AMZN": 0.10,
+    "TSLA": 0.10,
+    "NVDA": 0.10,
+    "FORD": 0.2,
+    "gg": 20,
+    "ff": 0.5,
+}
+
+
+def compare_holdings(old_holdings, new_holdings):
+    """Gets the difference of asset weights and new assets between old and new holdings.
+
+    Args:
+        old_holdings (dict): Old holdings.
+        new_holdings (dict): New holdings.
+
+    Returns:
+        dict: Dictionary of differences of asset weights and new assets.
+    """
+    differences = {}
+    for key in old_holdings.keys():
+        if key in new_holdings.keys():
+
+            # If the same asset is in old and new holdings calcualte difference in weights
+            difference = new_holdings[key] - old_holdings[key]
+            # If difference in weights in 0 the asset has the same weight in old and new holdings
+            if difference != 0:
+                differences[key] = new_holdings[key] - old_holdings[key]
+
+        else:
+
+            # If asset in old holdings is no longer in the new holdings make it negative because the entire holding was removed
+            differences[key] = -old_holdings[key]
+
+    for key in new_holdings.keys():
+        if key not in old_holdings.keys():
+
+            # If an asset is in new holdings which was not in old holdings
+            differences[key] = new_holdings[key]
+
+    return differences
