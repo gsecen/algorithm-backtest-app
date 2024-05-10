@@ -23,3 +23,24 @@ def get_value_by_date(dataframe, date, column_name):
         value = None
 
     return value
+
+
+def remove_non_numeric_rows(dataframe, column_name):
+    """Removes entire row in dataframe if value in column is not a number.
+
+    Args:
+        dataframe (df): Dataframe to remove rows from.
+        column_name (str): The name of column to check values from.
+
+    Returns:
+        df: Dataframe without rows that have non numeric values in column.
+    """
+    for i, value in enumerate(dataframe[column_name]):
+
+        # If string value is not a number remove row from dataframe
+        if not value.replace(".", "").isnumeric():
+            dataframe.drop(i, inplace=True)
+
+    dataframe.reset_index(drop=True, inplace=True)
+
+    return dataframe
