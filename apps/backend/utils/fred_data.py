@@ -1,6 +1,7 @@
 """This module helps with all fred series data related functions"""
 
 import pandas as pd
+from utils.dataframe import remove_non_numeric_rows
 
 
 def filter_fred_series(series):
@@ -24,5 +25,8 @@ def filter_fred_series(series):
 
     # Converting dictionary of lists to df
     df = pd.DataFrame(dictionary)
+
+    # Removing rows which have values that are not valid
+    df = remove_non_numeric_rows(df, "value")
 
     return df
