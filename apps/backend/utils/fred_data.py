@@ -20,7 +20,7 @@ def filter_fred_series(series):
         dates.append(i["date"])
         values.append(i["value"])
 
-    dictionary = {"date": dates, "value": values}
+    dictionary = {"Date": dates, "value": values}
 
     # Converting dictionary of lists to df
     df = pd.DataFrame(dictionary)
