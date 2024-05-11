@@ -228,3 +228,51 @@ def compare_holdings(old_holdings, new_holdings):
             differences[key] = new_holdings[key]
 
     return differences
+
+
+# old_holdings = {"AAPL": 500, "NVDA": 1000, "AMZN": 200, "TSLA": 25.34, "FORD": 300}
+# new_holdings = {
+#     "AAPL": 250,
+#     "NVDA": 1500,
+#     "AMZN": 200,
+#     "TSLA": 20.348,
+#     "1": 923,
+#     "2": 2384,
+#     "2343": 1,
+#     "1212": 120.129,
+# }
+
+
+def calculate_buy_sell_quantities(old_holdings, new_holdings):
+    """Compares old and new stock holdings. Calculates how much quantity of each asset was bought or sold.
+
+    Args:
+        old_holdings (dict): Old holdings.
+        new_holdings (dict): New holdings.
+
+    Returns:
+        dict: Dictionary of assets as keys and how much was bought or sold as values.
+    """
+    quantities = {}
+    for asset, quantity in old_holdings.items():
+        if asset in new_holdings:
+
+            # If the same asset is in old and new holdings calcualte difference in quantities
+            difference = new_holdings[asset] - quantity
+
+            # If difference in quantities is 0 the asset has the same quantity in old and new holdings
+            if difference != 0:
+                quantities[asset] = new_holdings[asset] - quantity
+
+        else:
+
+            # If asset in old holdings is no longer in the new holdings make it negative because the entire holding was sold
+            quantities[asset] = -quantity
+
+    for asset, quantity in new_holdings.items():
+
+        # If an asset is in new holdings which was not in old holdings
+        if asset not in old_holdings:
+            quantities[asset] = quantity
+
+    return quantities
