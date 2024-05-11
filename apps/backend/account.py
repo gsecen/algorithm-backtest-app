@@ -84,7 +84,27 @@ def calculate_portfolio_asset_weights():
     return gg
 
 
+def calculate_portfolio_value():
+    gg = {}
+
+    for date, value in stock_quantites.items():
+        # gg[date] = {}
+        portfolio_value = 0
+        for asset, quantity in value.items():
+            total_stock_value = quantity * prices[asset][date]
+            portfolio_value += total_stock_value
+            # stock_weight = total_stock_value / balance
+            # gg[date][asset] = stock_weight
+
+        # print(portfolio_value)
+        gg[date] = portfolio_value
+
+    return gg
+
+
 print(calculate_portfolio_asset_weights())
 
 
 print(calculate_stock_quantities())
+
+print(calculate_portfolio_value())
