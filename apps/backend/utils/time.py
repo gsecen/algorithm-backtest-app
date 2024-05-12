@@ -25,32 +25,6 @@ def date_to_epoch(date, date_format="%Y-%m-%d"):
     return int(diff.total_seconds())
 
 
-def get_trading_days(start_date, end_date):
-
-    # Gets all SPX data from 1928 until now
-    query_string = f"https://query1.finance.yahoo.com/v7/finance/download/^SPX?period1=-999999999999999&period2=9999999999999999&interval=1d&events=history&includeAdjustedClose=true"
-    df = pd.read_csv(query_string)
-    print(df["Date"])
-    for i in df["Date"]:
-        print(i)
-
-
-# get_trading_days("2020-01-01", "2021-01-01")
-
-
-dates = [
-    "2020-01-01",
-    "2020-01-02",
-    "2020-01-05",
-    "2020-01-06",
-    "2020-01-09",
-    "2020-01-12",
-]
-
-start = "2020-01-04"
-end = "2020-01-11"
-
-
 def is_date_earlier(date1, date2, date_format="%Y-%m-%d"):
     """Compares two dates to check if first date is before second date.
 
@@ -73,4 +47,55 @@ def is_date_earlier(date1, date2, date_format="%Y-%m-%d"):
         return False
 
 
-print(is_date_earlier(end, start))
+dates = [
+    "2020-01-01",
+    "2020-01-02",
+    "2020-01-05",
+    "2020-01-06",
+    "2020-01-09",
+    "2020-01-12",
+]
+
+start = "2020-01-04"
+end = "2020-01-11"
+
+
+# test = []
+# for i in dates:
+#     if i == start or is_date_earlier(start, i):
+#         test.append(i)
+
+
+# print(test)
+
+
+def get_trading_days(start_date, end_date):
+    """Gets all the trading days between two dates.
+
+    Args:
+        start_date (str): Date to start looking for trading days.
+        end_date (str): Date to stop looking for trading days.
+
+    Returns:
+        list: List of trading days.
+    """
+
+    trading_days = []
+
+    # Gets all SPX data from 1928 until now (Dates are trading days)
+    query_string = f"https://query1.finance.yahoo.com/v7/finance/download/^SPX?period1=-999999999999999&period2=9999999999999999&interval=1d&events=history&includeAdjustedClose=true"
+    df = pd.read_csv(query_string)
+
+    for date in df["Date"]:
+
+        # If date is after start date
+        if date == start_date or is_date_earlier(start_date, date):
+
+            # If date is before end date
+            if date == end_date or not is_date_earlier(end_date, date):
+                trading_days.append(date)
+
+    return trading_days
+
+
+print(get_trading_days("2019-01-01", "2023-06-12"))
