@@ -47,14 +47,14 @@ def is_date_earlier(date1, date2, date_format="%Y-%m-%d"):
         return False
 
 
-dates = [
-    "2020-01-01",
-    "2020-01-02",
-    "2020-01-05",
-    "2020-01-06",
-    "2020-01-09",
-    "2020-01-12",
-]
+# dates = [
+#     "2020-01-01",
+#     "2020-01-02",
+#     "2020-01-05",
+#     "2020-01-06",
+#     "2020-01-09",
+#     "2020-01-12",
+# ]
 
 start = "2020-01-04"
 end = "2020-01-11"
@@ -98,4 +98,62 @@ def get_trading_days(start_date, end_date):
     return trading_days
 
 
-print(get_trading_days("2019-01-01", "2023-06-12"))
+# print(get_trading_days("1919-01-01", "1930-01-01"))
+
+
+def is_date_between(check_date, start_date, end_date, date_format="%Y-%m-%d"):
+    """Checks if check date is in between start date and end date.
+
+    Args:
+        check_date (str): Date to check if in between.
+        start_date (_type_): Sart date.
+        end_date (_type_): End date.
+        date_format (str, optional): Format which the date string is in. Defaults to "%Y-%m-%d".
+
+    Returns:
+        bool: True if check date is in between start date and end date. If not it returns False.
+    """
+
+    # If date is after start date
+    if is_date_earlier(start_date, check_date, date_format):
+
+        # If date is before end date
+        if is_date_earlier(check_date, end_date, date_format):
+            return True
+
+    return False
+
+
+dates = [
+    "2019-12-31",
+    "2020-01-02",
+    "2020-03-05",
+    "2020-04-06",
+    "2020-05-09",
+    "2020-06-12",
+]
+
+gg = "1999-01-01"
+
+date = datetime.strptime(gg, "%Y-%m-%d")
+
+# print(is_date_earlier("01-05", "01-02", "%m-%d"))
+
+# print(date.strftime("%m-%d"))
+
+quarterly = ["01-01", "04-01", "07-01", "10-01"]
+
+
+for index, date in enumerate(dates):
+
+    # Turn date string into datetime object and remove year from date just look at month and day
+    date = datetime.strptime(date, "%Y-%m-%d")
+    print(date)
+    date = date.strftime("%m-%d")
+
+    # print(date)
+
+    # for month_day in quarterly:
+    #     month_day = datetime.strptime(month_day, "%m-%d")
+    #     if is_date_between(month_day, dates[index - 1], date, "%m-%d"):
+    #         print(date)
