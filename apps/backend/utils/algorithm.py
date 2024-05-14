@@ -11,7 +11,7 @@ sample_algo_request = {
     "start_date": "2020-01-01",
     "end_date": "2021-01-01",
     "name": "test algo",
-    "trading_freqency": "",  # Can be daily, weekly, monthly, quarterly, yearly.
+    "trading_frequency": "",  # Can be daily, weekly, monthly, quarterly, annually.
     "algorithm": {
         "type": "instructions",
         "weight": 1,
