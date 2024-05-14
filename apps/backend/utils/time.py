@@ -83,7 +83,7 @@ def get_trading_days(start_date, end_date):
     trading_days = []
 
     # Gets all SPX data from 1928 until now (Dates are trading days)
-    query_string = f"https://query1.finance.yahoo.com/v7/finance/download/^SPX?period1=-999999999999999&period2=9999999999999999&interval=1d&events=history&includeAdjustedClose=true"
+    query_string = f"https://query1.finance.yahoo.com/v7/finance/download/ED?period1=-999999999999999&period2=9999999999999999&interval=1d&events=history&includeAdjustedClose=true"
     df = pd.read_csv(query_string)
 
     for date in df["Date"]:
@@ -124,18 +124,48 @@ def is_date_between(check_date, start_date, end_date, date_format="%Y-%m-%d"):
     return False
 
 
-dates = [
-    "2019-12-31",
-    "2020-01-02",
-    "2020-03-05",
-    "2020-04-06",
-    "2020-05-09",
-    "2020-06-12",
-]
+# dates = [
+#     "2019-12-31",
+#     "2020-01-02",
+#     "2020-03-05",
+#     "2020-04-06",
+#     "2020-05-09",
+#     "2020-05-09",
+#     "2020-05-10",
+#     "2020-05-15",
+#     "2020-05-17",
+#     "2020-05-18",
+#     "2020-05-19",
+#     "2020-05-20",
+#     "2020-06-12",
+# ]
 
-gg = "1999-01-01"
+dates = get_trading_days("2019-12-01", "2022-07-13")
 
-date = datetime.strptime(gg, "%Y-%m-%d")
+# gg = "1999-01-01"
+
+# date = datetime.strptime(gg, "%Y-%m-%d")
+
+# print(date.weekday())
+
+
+def get_weekly_trading_dates():
+
+    trading_days = []
+
+    for index, date in enumerate(dates[1:], 1):
+
+        # Turning dates into datetime objects to be compared
+        current_date = datetime.strptime(date, "%Y-%m-%d")
+        previous_date = datetime.strptime(dates[index - 1], "%Y-%m-%d")
+
+        # If the current day is Monday or later and previous day was earlier than Monday
+        # Checks if trading day is the start of the week
+        if current_date.weekday() < previous_date.weekday():
+            trading_days.append(current_date)
+
+    return trading_days
+
 
 # print(is_date_earlier("01-05", "01-02", "%m-%d"))
 
@@ -143,17 +173,41 @@ date = datetime.strptime(gg, "%Y-%m-%d")
 
 quarterly = ["01-01", "04-01", "07-01", "10-01"]
 
+monthly = [
+    "01-01",
+    "02-01",
+    "03-01",
+    "04-01",
+    "05-01",
+    "06-01",
+    "07-01",
+    "08-01",
+    "09-01",
+    "10-01",
+    "11-01",
+    "12-01",
+]
 
-for index, date in enumerate(dates):
+annually = ["01-01"]
 
-    # Turn date string into datetime object and remove year from date just look at month and day
-    date = datetime.strptime(date, "%Y-%m-%d")
-    print(date)
-    date = date.strftime("%m-%d")
 
-    # print(date)
+def test():
+    trading_days = []
+    for index, date in enumerate(dates[:-1]):
+        # print(date)
+        current_date = datetime.strptime(date, "%Y-%m-%d")
+        next_date = datetime.strptime(dates[index + 1], "%Y-%m-%d")
 
-    # for month_day in quarterly:
-    #     month_day = datetime.strptime(month_day, "%m-%d")
-    #     if is_date_between(month_day, dates[index - 1], date, "%m-%d"):
-    #         print(date)
+        for x in annually:
+            ff = datetime.strptime(x, "%m-%d").replace(next_date.year)
+
+            # if current_date == ff:
+            #     print(current_date)
+            #     break
+
+            if current_date == ff or current_date < ff and next_date > ff:
+                print(next_date)
+                trading_days.append(next_date)
+                break
+
+    return trading_days
