@@ -140,7 +140,7 @@ def is_date_between(check_date, start_date, end_date, date_format="%Y-%m-%d"):
 #     "2020-06-12",
 # ]
 
-dates = get_trading_days("2019-12-01", "2022-07-13")
+# dates = get_trading_days("2019-12-01", "2022-07-13")
 
 # gg = "1999-01-01"
 
@@ -149,8 +149,15 @@ dates = get_trading_days("2019-12-01", "2022-07-13")
 # print(date.weekday())
 
 
-def get_weekly_trading_dates():
+def get_weekly_trading_dates(dates):
+    """Gets all the trading days which are the start of each trading week.
 
+    Args:
+        dates (list): List of trading days to filter.
+
+    Returns:
+        list: List of trading days which are the start of each trading week.
+    """
     trading_days = []
 
     for index, date in enumerate(dates[1:], 1):
@@ -160,7 +167,7 @@ def get_weekly_trading_dates():
         previous_date = datetime.strptime(dates[index - 1], "%Y-%m-%d")
 
         # If the current day is Monday or later and previous day was earlier than Monday
-        # Checks if trading day is the start of the week
+        # In other words checks if trading day is the start of the week
         if current_date.weekday() < previous_date.weekday():
             trading_days.append(current_date)
 
