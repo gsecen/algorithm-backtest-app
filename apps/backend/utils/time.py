@@ -239,10 +239,10 @@ def get_time_based_trading_dates(dates, frequency):
     Args:
         dates (list): List of trading days to filter.
         frequency (str): Time based trading frequency which you want to filter data for. Can be
-        annully, qaurterly, monthly, or daily.
+        annully, qaurterly, monthly, weekly, or daily.
 
     Returns:
-        list: List of trading days which are the start of each year(annual), quarter, month, or day.
+        list: List of trading days which are the start of each year(annual), quarter, month, weekly, or day.
     """
     match frequency:
         case "annually":
