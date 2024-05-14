@@ -231,3 +231,27 @@ def get_annual_quarterly_or_monthly_trading_dates(dates, frequency):
                 break
 
     return trading_days
+
+
+def get_time_based_trading_dates(dates, frequency):
+    """Gets the time based trading dates based on the frequency specified.
+
+    Args:
+        dates (list): List of trading days to filter.
+        frequency (str): Time based trading frequency which you want to filter data for. Can be
+        annully, qaurterly, monthly, or daily.
+
+    Returns:
+        list: List of trading days which are the start of each year(annual), quarter, month, or day.
+    """
+    match frequency:
+        case "annually":
+            return get_annual_quarterly_or_monthly_trading_dates(dates, frequency)
+        case "quarterly":
+            return get_annual_quarterly_or_monthly_trading_dates(dates, frequency)
+        case "monthly":
+            return get_annual_quarterly_or_monthly_trading_dates(dates, frequency)
+        case "weekly":
+            return get_weekly_trading_dates(dates)
+        case "daily":
+            return dates
