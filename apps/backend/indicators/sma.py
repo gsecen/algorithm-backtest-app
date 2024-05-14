@@ -18,7 +18,7 @@ def sma(period, df, metric_type):
 
         # If yahoo finance df calculate based on Close column
         if metric_type == "asset":
-            column_name = "Close"
+            column_name = "Open"
 
         # If fred df calculate based on value column
         if metric_type == "series":
