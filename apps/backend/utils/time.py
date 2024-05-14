@@ -242,7 +242,7 @@ def get_time_based_trading_dates(dates, frequency):
         annully, qaurterly, monthly, weekly, or daily.
 
     Returns:
-        list: List of trading days which are the start of each year(annual), quarter, month, weekly, or day.
+        list: List of trading days which you want to trade on based on frequency.
     """
     match frequency:
         case "annually":
