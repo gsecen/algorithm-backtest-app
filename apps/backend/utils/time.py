@@ -150,7 +150,7 @@ def is_date_between(check_date, start_date, end_date, date_format="%Y-%m-%d"):
 
 
 def get_weekly_trading_dates(dates):
-    """Gets all the trading days which are the start of each trading week.
+    """Gets all the trading days for weekly time based frequency.
 
     Args:
         dates (list): List of trading days to filter.
@@ -178,42 +178,55 @@ def get_weekly_trading_dates(dates):
 
 # print(date.strftime("%m-%d"))
 
-quarterly = ["01-01", "04-01", "07-01", "10-01"]
 
-monthly = [
-    "01-01",
-    "02-01",
-    "03-01",
-    "04-01",
-    "05-01",
-    "06-01",
-    "07-01",
-    "08-01",
-    "09-01",
-    "10-01",
-    "11-01",
-    "12-01",
-]
+def get_annual_quarterly_or_monthly_trading_dates(dates, frequency):
+    """Gets all the trading days for quarterly, monthly, or annuall time based frequencies.
 
-annually = ["01-01"]
+    Args:
+        dates (list): List of trading days to filter.
+        frequency (str): Time based trading frequency which you want to filter data for. Can be
+        annully, qaurterly, or monthly.
 
+    Returns:
+        list: List of trading days which are the start of each year(annual), qaurter, or month.
+    """
 
-def test():
+    # Dictionary of time based trading frequencies
+    # The values are the target month-day which the algorithm should run on
+    frequencies = {
+        "annually": ["01-01"],
+        "quarterly": ["01-01", "04-01", "07-01", "10-01"],
+        "monthly": [
+            "01-01",
+            "02-01",
+            "03-01",
+            "04-01",
+            "05-01",
+            "06-01",
+            "07-01",
+            "08-01",
+            "09-01",
+            "10-01",
+            "11-01",
+            "12-01",
+        ],
+    }
+
     trading_days = []
+
     for index, date in enumerate(dates[:-1]):
-        # print(date)
+
+        # Turning dates into datetime objects to be compared
         current_date = datetime.strptime(date, "%Y-%m-%d")
         next_date = datetime.strptime(dates[index + 1], "%Y-%m-%d")
 
-        for x in annually:
-            ff = datetime.strptime(x, "%m-%d").replace(next_date.year)
+        for month_day in frequencies[frequency]:
 
-            # if current_date == ff:
-            #     print(current_date)
-            #     break
+            # The target trading day which the algorithm is supposed to run on
+            target = datetime.strptime(month_day, "%m-%d").replace(next_date.year)
 
-            if current_date == ff or current_date < ff and next_date > ff:
-                print(next_date)
+            # If the exact target trading date is not available it is in between two dates
+            if current_date == target or current_date < target and next_date > target:
                 trading_days.append(next_date)
                 break
 
