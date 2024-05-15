@@ -1,6 +1,11 @@
 from utils.algorithm import sample_algo_request
 from utils.time import get_trading_days, get_time_based_trading_dates
-from utils.algorithm import calculate_task_weight, get_indicator_names
+from utils.algorithm import (
+    calculate_task_weight,
+    get_indicator_names,
+    get_asset_names,
+    get_asset_datasets,
+)
 from utils.dataframe import get_value_by_date
 
 from algorithm.dataset_builder import build_dataset
@@ -67,15 +72,12 @@ class Backtest:
 
     def handle_expression(self, date, task, weight, relative_weight, holdings):
         indicator1, indicator2 = get_indicator_names(task["conditions"])
-        asset1 = task["conditions"]["condition1"]["asset"]
-        asset2 = task["conditions"]["condition2"]["asset"]
+        asset1_data, asset2_data = get_asset_datasets(self.dataset, task["conditions"])
         operator = task["conditions"]["operator"]
-        asset1_dataset = self.dataset[asset1]
-        asset2_dataset = self.dataset[asset2]
 
         if self.operators[operator](
-            get_value_by_date(asset1_dataset, date, indicator1),
-            get_value_by_date(asset2_dataset, date, indicator2),
+            get_value_by_date(asset1_data, date, indicator1),
+            get_value_by_date(asset2_data, date, indicator2),
         ):
             self.calculate_holdings(
                 date, task["true"], weight, relative_weight, holdings
