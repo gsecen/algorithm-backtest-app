@@ -316,4 +316,30 @@ def get_indicator_names(conditions):
     return indicator1_name, indicator2_name
 
 
-print(type(get_indicator_names(example_condtions["conditions"])))
+def get_asset_names(conditions):
+    """Gets the names of assets in algorithm condition.
+
+    Args:
+        conditions (dict): Condition object in algoirthm.
+
+    Returns:
+        tuple: Name of first condition asset, name of second condition asset.
+    """
+    asset1 = conditions["condition1"]["asset"]
+    asset2 = conditions["condition2"]["asset"]
+
+    return asset1, asset2
+
+
+def get_asset_datasets(dataset, conditions):
+    """Gets the data for each of the assets in condition from dataset.
+
+    Args:
+        dataset (dict): Dataset containing all assets, series', and indicator data to run algorithm.
+        conditions (dict): Condition object in algoirthm.
+
+    Returns:
+        tuple: Pandas dataframe for first asset, pandas dataframe for second asset
+    """
+    asset1, asset2 = get_asset_names(conditions)
+    return dataset[asset1], dataset[asset2]
