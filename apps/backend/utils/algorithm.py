@@ -277,3 +277,43 @@ def calculate_buy_sell_quantities(old_holdings, new_holdings):
             quantities[asset] = quantity
 
     return quantities
+
+
+example_condtions = {
+    "conditions": {
+        "operator": "<",
+        "condition1": {
+            "function": "sma",
+            "period": 8,
+            "asset": "AAPL",
+        },
+        "condition2": {
+            "function": "sma",
+            "asset": "MSFT",
+            "period": 2,
+        },
+    },
+}
+
+
+def get_indicator_names(conditions):
+    """Gets the names of indicators in algorithm condition.
+
+    Args:
+        conditions (dict): Condition object in algoirthm.
+
+    Returns:
+        tuple: Name of first condition indicator, name of second condition indicator.
+    """
+    indicator1_function = conditions["condition1"]["function"]
+    indicator1_period = conditions["condition1"]["period"]
+    indicator2_function = conditions["condition2"]["function"]
+    indicator2_period = conditions["condition2"]["period"]
+
+    indicator1_name = f"{indicator1_function} {indicator1_period}"
+    indicator2_name = f"{indicator2_function} {indicator2_period}"
+
+    return indicator1_name, indicator2_name
+
+
+print(type(get_indicator_names(example_condtions["conditions"])))
