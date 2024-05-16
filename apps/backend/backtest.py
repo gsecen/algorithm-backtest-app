@@ -3,7 +3,6 @@ from utils.time import get_trading_days, get_time_based_trading_dates
 from utils.algorithm import (
     calculate_task_weight,
     get_indicator_names,
-    get_asset_names,
     get_asset_datasets,
 )
 from utils.dataframe import get_value_by_date
@@ -12,6 +11,7 @@ from algorithm.dataset_builder import build_dataset
 
 import pandas as pd
 import operator
+from math import isnan
 
 
 class Backtest:
@@ -41,6 +41,11 @@ class Backtest:
         self, date, tasks, weight, task_relative_weight, holdings=None
     ):
 
+        # Recursion base case
+        # If holding is False there was an error so stop recursion
+        if holdings is False:
+            return
+
         # If first time recursive function has been called
         if holdings is None:
             holdings = {}
@@ -53,27 +58,43 @@ class Backtest:
             )
 
             if task["type"] == "buy":
-                asset = task["asset"]
-
-                # Add the asset to holdings, if asset already exists add to existing asset weight
-                if asset not in holdings:
-                    holdings[asset] = relative_weight
-                else:
-                    holdings[asset] += relative_weight
+                self.handle_buy(task, holdings, relative_weight)
 
             if task["type"] == "expression":
+
                 self.handle_expression(date, task, weight, relative_weight, holdings)
 
             if task["type"] == "instructions":
+
                 self.calculate_holdings(
-                    date, task["tasks"], task["weight"], relative_weight, holdings
+                    date,
+                    task["tasks"],
+                    task["weight"],
+                    relative_weight,
+                    holdings,
                 )
+
         return holdings
+
+    def handle_buy(self, task, holdings, relative_weight):
+        asset = task["asset"]
+
+        # Add the asset to holdings, if asset already exists add to existing asset weight
+        if asset not in holdings:
+            holdings[asset] = relative_weight
+        else:
+            holdings[asset] += relative_weight
 
     def handle_expression(self, date, task, weight, relative_weight, holdings):
         indicator1, indicator2 = get_indicator_names(task["conditions"])
         asset1_data, asset2_data = get_asset_datasets(self.dataset, task["conditions"])
         operator = task["conditions"]["operator"]
+        value1 = get_value_by_date(asset1_data, date, indicator1)
+        value2 = get_value_by_date(asset2_data, date, indicator2)
+
+        if isnan(value1) or isnan(value2):
+            holdings.clear()
+            holdings = False
 
         if self.operators[operator](
             get_value_by_date(asset1_data, date, indicator1),
@@ -88,6 +109,7 @@ class Backtest:
             )
 
     def ttt(self, date):
+
         print(
             self.calculate_holdings(
                 date, gg.algorithm["algorithm"]["tasks"], gg.starting_weight, 1
@@ -95,18 +117,7 @@ class Backtest:
         )
 
 
-dates = ["2020-01-01", "2020-01-02", "2020-01-03", "2020-01-04"]
-values = ["12", "14", "20", "50"]
-
-dictionary = {"Date": dates, "value": values}
-
-# Converting dictionary of lists to df
-df = pd.DataFrame(dictionary)
-
-# print(df)
-
 data = build_dataset(sample_algo_request)
 
 gg = Backtest(sample_algo_request, data)
-
-print(gg.ttt("2020-01-02"))
+gg.ttt("2020-01-02")
