@@ -49,37 +49,23 @@ def remove_non_numeric_rows(dataframe, column_name):
     return dataframe
 
 
-# get_date_of_first_non_nan_value()
+def get_date_of_first_non_nan_value(dataframe, column_name):
+    """Gets the date of the first non nan value from dataframe.
 
+    Args:
+        dataframe (df): Pandas dataframe.
+        column_name (str): Column name to check values from.
 
-# get_date_of_first_valid_value()
+    Returns:
+        str/None: Returns first date which column name value is not nan. If there is no
+        value which is not nan returns None.
+    """
 
+    # Pandas boolean indexing
+    value = dataframe[dataframe[column_name].notna()]["Date"]
 
-import pandas as pd
-
-dates = ["2020-01", "2020-02", "2020-03", "2020-04"]
-values = [float("nan"), float("nan"), 0.34, 0.34]
-
-dictionary = {"Date": dates, "value": values}
-
-# Converting dictionary of lists to df
-df = pd.DataFrame(dictionary)
-
-
-def test(dataframe, column_name):
-
-    # Iterate through column name
-    # for index, value in enumerate(dataframe[column_name]):
-
-    # Get date for first value which is not float nan
-    # if not isnan(value):
-    #     return dataframe["Date"].iloc[index]
-
-    value = dataframe[dataframe["value"] == 0.34]["Date"].items()
-
-    return value
-
-
-# value = dataframe[dataframe["Date"] == date][column_name].item()
-
-print(test(df, "value"))
+    if value.empty:
+        return None
+    else:
+        # Return first value
+        return value.iloc[0]
