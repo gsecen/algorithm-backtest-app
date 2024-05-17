@@ -1,5 +1,7 @@
 """This module helps with all pandas df related functions"""
 
+from math import isnan
+
 
 def get_value_by_date(dataframe, date, column_name):
     """Gets value from the specified column corresponding to the given date.
@@ -14,6 +16,7 @@ def get_value_by_date(dataframe, date, column_name):
     """
 
     try:
+        # Pandas boolean indexing
         value = dataframe[dataframe["Date"] == date][column_name].item()
     except ValueError as ve:
         print(f"Key error in function get_value_by_date: {ve}")
@@ -44,3 +47,39 @@ def remove_non_numeric_rows(dataframe, column_name):
     dataframe.reset_index(drop=True, inplace=True)
 
     return dataframe
+
+
+# get_date_of_first_non_nan_value()
+
+
+# get_date_of_first_valid_value()
+
+
+import pandas as pd
+
+dates = ["2020-01", "2020-02", "2020-03", "2020-04"]
+values = [float("nan"), float("nan"), 0.34, 0.34]
+
+dictionary = {"Date": dates, "value": values}
+
+# Converting dictionary of lists to df
+df = pd.DataFrame(dictionary)
+
+
+def test(dataframe, column_name):
+
+    # Iterate through column name
+    # for index, value in enumerate(dataframe[column_name]):
+
+    # Get date for first value which is not float nan
+    # if not isnan(value):
+    #     return dataframe["Date"].iloc[index]
+
+    value = dataframe[dataframe["value"] == 0.34]["Date"].items()
+
+    return value
+
+
+# value = dataframe[dataframe["Date"] == date][column_name].item()
+
+print(test(df, "value"))
