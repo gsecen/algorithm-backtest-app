@@ -13,8 +13,22 @@ class BacktestErrorTracker:
 
     def add_asset_error(self, asset, date=None):
         if date is None:
-            pass
+            error = f"{asset} not available."
         else:
-            error = f"{asset} close price data not available until {date}"
+            error = f"{asset} not available until {date}."
 
-            self.asset_errors.append(error)
+        if error in self.asset_errors:
+            return
+
+        self.asset_errors.append(error)
+
+    def add_indicator_error(self, asset, indicator, date=None):
+        if date is None:
+            error = f"{asset} {indicator} not available."
+        else:
+            error = f"{asset} {indicator} not available until {date}."
+
+        if error in self.indicator_errors:
+            return
+
+        self.indicator_errors.append(error)
