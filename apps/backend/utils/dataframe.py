@@ -16,11 +16,17 @@ def get_value_by_date(dataframe, date, column_name):
     try:
         # Pandas boolean indexing
         value = dataframe[dataframe["Date"] == date][column_name].item()
-    except ValueError as ve:
-        print(f"Key error in function get_value_by_date: {ve}")
+
+    except ValueError as e:
+        print(f"Key error in function get_value_by_date: {e}")
         value = None
-    except KeyError as ke:
-        print(f"Index error in function get_value_by_date: {ke}")
+
+    except KeyError as e:
+        print(f"Index error in function get_value_by_date: {e}")
+        value = None
+
+    except Exception as e:
+        print(f"Error in function get_value_by_date: {e}")
         value = None
 
     return value
