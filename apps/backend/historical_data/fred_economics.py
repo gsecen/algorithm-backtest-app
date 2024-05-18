@@ -1,7 +1,8 @@
 """This module fetches historical data from fred economics"""
 
-from dotenv import load_dotenv
 from utils.fred_data import filter_fred_series
+from urllib.error import HTTPError
+from dotenv import load_dotenv
 import pandas as pd
 import os
 
@@ -18,8 +19,17 @@ def get_series_data(series_id):
     Returns:
         df: Pandas dataframe with the series dates and values.
     """
-    query_string = f"https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key={os.getenv('FRED_API_KEY')}&file_type=json"
+    try:
+        query_string = f"https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key={os.getenv('FRED_API_KEY')}&file_type=json"
+        df = filter_fred_series(pd.read_json(query_string))
+        return df
 
-    df = filter_fred_series(pd.read_json(query_string))
+    except HTTPError as e:
+        print(
+            f"HTTP error in function get_series_data, likely series does not exist: {e}"
+        )
+        return None
 
-    return df
+    except Exception as e:
+        print(f"Error in function get_series_data: {e}")
+        return None
