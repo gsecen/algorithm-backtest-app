@@ -12,6 +12,8 @@ def sma(period, df, metric_type):
     Returns:
         df: Pandas dataframe with new sma data.
     """
+    if df is None:
+        return
 
     # Make sure column does not exist
     if f"sma {period}" not in df.columns:
