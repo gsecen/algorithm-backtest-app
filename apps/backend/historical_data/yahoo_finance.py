@@ -28,11 +28,13 @@ def get_ohlcv_data(
         query_string = f"https://query1.finance.yahoo.com/v7/finance/download/{symbol}?period1={start}&period2={end}&interval={interval}&events=history&includeAdjustedClose=true"
         df = pd.read_csv(query_string)
         return df
+
     except HTTPError as e:
         print(
             f"HTTP error in function get_ohlcv_data, likely asset does not exist: {e}"
         )
         return None
+
     except Exception as e:
         print(f"Error in function get_ohlcv_data: {e}")
         return None
