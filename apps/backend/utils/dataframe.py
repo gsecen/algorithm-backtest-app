@@ -105,3 +105,16 @@ def does_value_exist(dataframe, value, column_name="Date"):
     if value in dataframe[column_name]:
         return True
     return False
+
+
+def get_first_value(dataframe, column_name="Date"):
+    """Gets the first value from column name.
+
+    Args:
+        dataframe (_type_): Pandas dataframe.
+        column_name (str, optional): Column name to get first value from. Defaults to "Date".
+
+    Returns:
+        str/int/float: First value in column name.
+    """
+    return dataframe[column_name].iloc[0]
