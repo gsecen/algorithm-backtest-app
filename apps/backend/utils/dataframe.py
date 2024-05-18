@@ -1,7 +1,5 @@
 """This module helps with all pandas df related functions"""
 
-from math import isnan
-
 
 def get_value_by_date(dataframe, date, column_name):
     """Gets value from the specified column corresponding to the given date.
@@ -69,3 +67,35 @@ def get_date_of_first_non_nan_value(dataframe, column_name):
     else:
         # Return first value
         return value.iloc[0]
+
+
+import pandas as pd
+
+dates = ["1", "2", "3"]
+values = [1, 2, 3]
+
+dictionary = {"Date": dates, "value": values}
+
+# Converting dictionary of lists to df
+df = pd.DataFrame(dictionary)
+
+if 3 in df["Date"].values:
+    print("sdfio")
+
+
+def does_value_exist(dataframe, value, column_name="Date"):
+    """Checks if value exists in dataframe column.
+
+    Args:
+        dataframe (df): Pandas dataframe.
+        value (int/str): Value to search for.
+        column_name (str, optional): Column name to check if value exists. Defaults to "Date".
+
+    Returns:
+        bool: True if value exists in dataframe column. False if it does not exist.
+    """
+
+    # Check if value is in dataframe column
+    if value in dataframe[column_name]:
+        return True
+    return False
