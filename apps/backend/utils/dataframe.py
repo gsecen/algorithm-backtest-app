@@ -85,8 +85,8 @@ dictionary = {"Date": dates, "value": values}
 # Converting dictionary of lists to df
 df = pd.DataFrame(dictionary)
 
-if 3 in df["Date"].values:
-    print("sdfio")
+# if "1" in df["Date"].values:
+#     print("sdfio")
 
 
 def does_value_exist(dataframe, value, column_name="Date"):
@@ -102,7 +102,7 @@ def does_value_exist(dataframe, value, column_name="Date"):
     """
 
     # Check if value is in dataframe column
-    if value in dataframe[column_name]:
+    if value in dataframe[column_name].values:
         return True
     return False
 
