@@ -29,7 +29,12 @@ def get_ohlcv_data(
         df = pd.read_csv(query_string)
         return df
     except HTTPError as e:
-        print(f"HTTP error in function get_ohlcv_data: {e}")
+        print(
+            f"HTTP error in function get_ohlcv_data, likely asset does not exist: {e}"
+        )
+        return None
+    except Exception as e:
+        print(f"Error in function get_ohlcv_data: {e}")
         return None
 
 
