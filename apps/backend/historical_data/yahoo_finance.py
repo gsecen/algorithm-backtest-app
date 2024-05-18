@@ -36,6 +36,3 @@ def get_ohlcv_data(
     except Exception as e:
         print(f"Error in function get_ohlcv_data: {e}")
         return None
-
-
-print(get_ohlcv_data("sikdfj"))
