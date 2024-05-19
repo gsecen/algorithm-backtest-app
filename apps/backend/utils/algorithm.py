@@ -152,7 +152,23 @@ def get_buy_and_condition_data(algorithm):
     return data
 
 
-# print(get_buy_and_condition_data(sample_algo_request))
+def get_benchmark_data(algorithm):
+    """Gets the benchmarks in algorithm.
+
+    Args:
+        algorithm (dict): Entire algorithm.
+
+    Returns:
+        list: List of benchmark objects.
+    """
+    data = []
+
+    benchmarks = algorithm["benchmarks"]
+
+    for asset in benchmarks:
+        data.append({"asset": asset})
+
+    return data
 
 
 # Rough function which will iterate through all tasks in algorithm and keep track of weights
