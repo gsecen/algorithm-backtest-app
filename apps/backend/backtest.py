@@ -77,7 +77,7 @@ class Backtest:
             )
 
             if task["type"] == "buy":
-                if self.handle_buy(task, holdings, relative_weight):
+                if self.handle_buy(task, date, holdings, relative_weight):
                     holdings = False
 
             if task["type"] == "expression":
@@ -95,14 +95,19 @@ class Backtest:
 
         return holdings
 
-    def handle_buy(self, task, holdings, relative_weight):
+    def handle_buy(self, date, task, holdings, relative_weight):
         asset = task["asset"]
 
         if holdings is False:
             return
 
-        if asset == "COST":
-            print("msft ya")
+        # If asset data is not available at date
+        if not does_value_exist(self.dataset[asset], date):
+            holdings.clear()
+            return True
+
+        # If there is no asset dataa
+        if self.dataset[asset] is None:
             holdings.clear()
             return True
 
