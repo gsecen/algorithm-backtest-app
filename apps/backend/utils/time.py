@@ -229,7 +229,9 @@ def get_annual_quarterly_or_monthly_trading_dates(dates, frequency):
 
             # If the exact target trading date is not available it is in between two dates
             if current_date == target or current_date < target and next_date > target:
-                trading_days.append(next_date)
+
+                # Append date as string not datetime object
+                trading_days.append(datetime.strftime(next_date, "%Y-%m-%d"))
                 break
 
     return trading_days
