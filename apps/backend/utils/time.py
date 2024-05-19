@@ -169,7 +169,9 @@ def get_weekly_trading_dates(dates):
         # If the current day is Monday or later and previous day was earlier than Monday
         # In other words checks if trading day is the start of the week
         if current_date.weekday() < previous_date.weekday():
-            trading_days.append(current_date)
+
+            # Append date as string not datetime object
+            trading_days.append(datetime.strftime(current_date, "%Y-%m-%d"))
 
     return trading_days
 
