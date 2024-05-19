@@ -214,6 +214,13 @@ class Backtest:
             self.error_tracker.add_asset_error(asset, asset_available)
 
     def handle_indicator_errors(self, asset, indicator, date):
+        """Handle the errors for indicators. (Condition objects)
+
+        Args:
+            asset (str): Asset in condition object. (Asset the indicator is for)
+            indicator (str): Indicator name.
+            date (str): Date to check for issues with indicator data.
+        """
         # If assets data does not exist neither does indicators
         if self.dataset[asset] is None:
             self.error_tracker.add_asset_error(asset)
