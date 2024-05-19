@@ -196,6 +196,12 @@ class Backtest:
                 self.handle_indicator_errors(asset, indicator, date)
 
     def handle_buy_errors(self, asset, date):
+        """Handle the errors for type buy objects.
+
+        Args:
+            asset (str): Asset in type buy object.
+            date (str): Date to check for issues with asset.
+        """
         # If assets data does not exist
         if self.dataset[asset] is None:
             self.error_tracker.add_asset_error(asset)
