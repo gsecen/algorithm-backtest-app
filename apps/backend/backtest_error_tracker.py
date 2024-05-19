@@ -22,6 +22,17 @@ class BacktestErrorTracker:
 
         self.asset_errors.append(error)
 
+    def add_series_error(self, series, date=None):
+        if date is None:
+            error = f"{series} not available."
+        else:
+            error = f"{series} not available until {date}."
+
+        if error in self.series_errors:
+            return
+
+        self.series_errors.append(error)
+
     def add_indicator_error(self, asset, indicator, date=None):
         if date is None:
             error = f"{asset} {indicator} not available."
