@@ -19,9 +19,9 @@ def build_dataset(algorithm):
         dict: Dictionary containing all assets, series', and indicator data to run algorithm.
     """
     dataset = {}
-    required_data = get_buy_and_condition_data(algorithm)
+    buy_and_condition_data = get_buy_and_condition_data(algorithm)
 
-    for i in required_data:
+    for i in buy_and_condition_data:
 
         # Getting the ohlcv, or fred data
         if "asset" in i and i["asset"] not in dataset:

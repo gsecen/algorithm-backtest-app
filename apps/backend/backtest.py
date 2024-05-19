@@ -210,12 +210,12 @@ class Backtest:
 
     def get_backtest_errors(self):
         """Runs the algorithm and checks for issues"""
-        buy_condition_data = get_buy_and_condition_data(self.algorithm)
+        buy_and_condition_data = get_buy_and_condition_data(self.algorithm)
 
         # Date which the algorithm will try to run on first
         starting_date = self.backtest_trading_dates[0]
 
-        for data in buy_condition_data:
+        for data in buy_and_condition_data:
 
             # Type buys
             if "type" in data:
