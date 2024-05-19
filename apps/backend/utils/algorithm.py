@@ -153,7 +153,8 @@ def get_buy_and_condition_data(algorithm):
 
 
 def get_benchmark_data(algorithm):
-    """Gets the benchmarks in algorithm.
+    """Gets the benchmarks in algorithm and puts them into {asset:benchmark} objects
+    to be used in building dataset.
 
     Args:
         algorithm (dict): Entire algorithm.
