@@ -147,17 +147,22 @@ class Backtest:
             holdings.clear()
             holdings = False
 
-        if self.operators[operator](
-            get_value_by_date(asset1_data, date, indicator1),
-            get_value_by_date(asset2_data, date, indicator2),
-        ):
-            self.calculate_holdings(
-                date, task["true"], weight, relative_weight, holdings
-            )
-        else:
-            self.calculate_holdings(
-                date, task["false"], weight, relative_weight, holdings
-            )
+        # If indicator values for assets exist and are not nan
+        if does_value_exist(asset1_data, date) and does_value_exist(asset2_data, date):
+            if not isnan(value1) and not isnan(value2):
+
+                # Actually calculate the type expression (if/else)
+                if self.operators[operator](
+                    get_value_by_date(asset1_data, date, indicator1),
+                    get_value_by_date(asset2_data, date, indicator2),
+                ):
+                    self.calculate_holdings(
+                        date, task["true"], weight, relative_weight, holdings
+                    )
+                else:
+                    self.calculate_holdings(
+                        date, task["false"], weight, relative_weight, holdings
+                    )
 
     def get_holdings(self, date):
 
