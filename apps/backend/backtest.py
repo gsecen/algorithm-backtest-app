@@ -209,6 +209,7 @@ class Backtest:
         return historical_holdings
 
     def get_backtest_errors(self):
+        """Runs the algorithm and checks for issues"""
         buy_condition_data = get_buy_and_condition_data(self.algorithm)
 
         # Date which the algorithm will try to run on first
