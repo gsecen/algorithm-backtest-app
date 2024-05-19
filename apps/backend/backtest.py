@@ -135,6 +135,14 @@ class Backtest:
         value1 = get_value_by_date(asset1_data, date, indicator1)
         value2 = get_value_by_date(asset2_data, date, indicator2)
 
+        # If the assets indicators data does not exist
+        if not does_value_exist(asset1_data, date) or not does_value_exist(
+            asset2_data, date
+        ):
+            holdings.clear()
+            holdings = False
+
+        # If the assets indicators data exists but value is nan
         if isnan(value1) or isnan(value2):
             holdings.clear()
             holdings = False
