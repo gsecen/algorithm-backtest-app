@@ -1,6 +1,6 @@
 """This module builds the dataset required to run algorithm"""
 
-from utils.algorithm import get_buy_and_condition_data
+from utils.algorithm import get_buy_and_condition_data, get_benchmark_data
 from historical_data import *
 from indicators.sma import sma
 
@@ -16,12 +16,16 @@ def build_dataset(algorithm):
         algorithm (dict): Full algorithm request.
 
     Returns:
-        dict: Dictionary containing all assets, series', and indicator data to run algorithm.
+        dict: Dictionary containing all assets, series', benchmarks, and indicator data to run algorithm.
     """
     dataset = {}
     buy_and_condition_data = get_buy_and_condition_data(algorithm)
+    benchmark_data = get_benchmark_data(algorithm)
 
-    for i in buy_and_condition_data:
+    # All asset, series, indicator, benchmarks used in algorithm
+    all_data = buy_and_condition_data + benchmark_data
+
+    for i in all_data:
 
         # Getting the ohlcv, or fred data
         if "asset" in i and i["asset"] not in dataset:
