@@ -48,7 +48,18 @@ class Backtest:
     def calculate_holdings(
         self, date, tasks, weight, task_relative_weight, holdings=None
     ):
+        """Calculates the portfolio holdings for given date.
 
+        Args:
+            date (str): Date to get holdings for.
+            tasks (dict): Tasks to iterate through.
+            weight (int): Absolute weight of task
+            task_relative_weight (float): Relative weight of task.
+            holdings (dict, optional): Current holdings. Defaults to None.
+
+        Returns:
+            dict: Dictionary of assets as keys, and holdings for assets as values.
+        """
         # Recursion base case
         # If holding is False there was an error so stop recursion
         if holdings is False:
@@ -124,7 +135,7 @@ class Backtest:
                 date, task["false"], weight, relative_weight, holdings
             )
 
-    def ttt(self, date):
+    def get_holdings(self, date):
 
         print(
             self.calculate_holdings(
@@ -205,7 +216,7 @@ gg = Backtest(sample_algo_request, data)
 # gg.ttt("2020-01-02")
 
 
-gg.get_algorithm_errors("1992-01-02")
+gg.get_backtest_errors("1992-01-02")
 # print(gg.error_tracker.asset_errors)
 
 print(gg.error_tracker.indicator_errors)
