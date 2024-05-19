@@ -77,7 +77,7 @@ class Backtest:
             )
 
             if task["type"] == "buy":
-                if self.handle_buy(task, date, holdings, relative_weight):
+                if self.handle_buy(date, task, holdings, relative_weight):
                     holdings = False
 
             if task["type"] == "expression":
@@ -96,6 +96,17 @@ class Backtest:
         return holdings
 
     def handle_buy(self, date, task, holdings, relative_weight):
+        """Handle type buys in calculate holdings.
+
+        Args:
+            date (str): Date to calculate holdings for.
+            task (dict): Type buy task.
+            holdings (dict): Current holdings.
+            relative_weight (float): Relative weight of task.
+
+        Returns:
+            dict/bool: Dictionary of holdings. True if error and algorithm cannot continue.
+        """
         asset = task["asset"]
 
         if holdings is False:
