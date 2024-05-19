@@ -29,9 +29,20 @@ class Backtest:
         self.error_tracker = BacktestErrorTracker()
 
         self.trading_frequency = algorithm["trading_frequency"]
-        # self.trading_days = get_trading_days(
-        #     algorithm["start_date"], algorithm["end_date"]
-        # )
+        self.trading_days = get_trading_days(
+            algorithm["start_date"], algorithm["end_date"]
+        )
+        self.backtest_trading_dates = get_time_based_trading_dates(
+            self.trading_days, self.trading_frequency
+        )
+
+        # self.trading_days = [
+        #     "1995-01-03",
+        #     "1998-01-02",
+        #     "2008-01-03",
+        #     "2018-01-02",
+        #     "2021-01-04",
+        # ]
         self.starting_weight = algorithm["algorithm"]["weight"]
 
         self.balance = 100000
@@ -81,7 +92,10 @@ class Backtest:
                     holdings = False
 
             if task["type"] == "expression":
-                self.handle_expression(date, task, weight, relative_weight, holdings)
+                if self.handle_expression(
+                    date, task, weight, relative_weight, holdings
+                ):
+                    holdings = False
 
             if task["type"] == "instructions":
 
@@ -129,53 +143,69 @@ class Backtest:
             holdings[asset] += relative_weight
 
     def handle_expression(self, date, task, weight, relative_weight, holdings):
+
+        if holdings is False:
+            return
+
         indicator1, indicator2 = get_indicator_names(task["conditions"])
         asset1_data, asset2_data = get_asset_datasets(self.dataset, task["conditions"])
         operator = task["conditions"]["operator"]
         value1 = get_value_by_date(asset1_data, date, indicator1)
         value2 = get_value_by_date(asset2_data, date, indicator2)
 
-        # If the assets indicators data does not exist
+        # If the assets indicators data does not exist at all
+        if asset1_data is None or asset2_data is None:
+            holdings.clear()
+            return True
+
+        # If the assets indicators data does not exist on date
         if not does_value_exist(asset1_data, date) or not does_value_exist(
             asset2_data, date
         ):
             holdings.clear()
-            holdings = False
+            return True
 
         # If the assets indicators data exists but value is nan
         if isnan(value1) or isnan(value2):
             holdings.clear()
-            holdings = False
+            return True
 
         # If indicator values for assets exist and are not nan
-        if does_value_exist(asset1_data, date) and does_value_exist(asset2_data, date):
-            if not isnan(value1) and not isnan(value2):
-
-                # Actually calculate the type expression (if/else)
-                if self.operators[operator](
-                    get_value_by_date(asset1_data, date, indicator1),
-                    get_value_by_date(asset2_data, date, indicator2),
-                ):
-                    self.calculate_holdings(
-                        date, task["true"], weight, relative_weight, holdings
-                    )
-                else:
-                    self.calculate_holdings(
-                        date, task["false"], weight, relative_weight, holdings
-                    )
-
-    def get_holdings(self, date):
-
-        print(
+        # Actually calculate the type expression (if/else)
+        if self.operators[operator](
+            get_value_by_date(asset1_data, date, indicator1),
+            get_value_by_date(asset2_data, date, indicator2),
+        ):
             self.calculate_holdings(
-                date, gg.algorithm["algorithm"]["tasks"], gg.starting_weight, 1
+                date, task["true"], weight, relative_weight, holdings
             )
-        )
+        else:
+            self.calculate_holdings(
+                date, task["false"], weight, relative_weight, holdings
+            )
 
-    def get_backtest_errors(self, date):
+    def get_historical_holdings(self):
+        historical_holdings = {}
+        for date in self.backtest_trading_dates:
+
+            # First relative weight will always be 1 because it is not nested in anything else
+            holdings = self.calculate_holdings(
+                date, self.algorithm["algorithm"]["tasks"], self.starting_weight, 1
+            )
+
+            # If holdings is none or false or blank there was an error in the algorithm
+            if holdings is None or holdings is False or holdings == {}:
+                historical_holdings.clear()
+            else:
+                historical_holdings[date] = holdings
+
+        return historical_holdings
+
+    def get_backtest_errors(self):
         buy_condition_data = get_buy_and_condition_data(self.algorithm)
 
-        # Dont forget to remove duplicates in buy condition data
+        # Date which the algorithm will try to run on first
+        starting_date = self.backtest_trading_dates[0]
 
         for data in buy_condition_data:
 
@@ -184,16 +214,25 @@ class Backtest:
                 if data["type"] == "buy":
                     asset = data["asset"]
 
-                    self.handle_buy_errors(asset, date)
+                    self.handle_buy_errors(asset, starting_date)
 
-            # Indicators
+            # Indicators for assets and series
             if "function" in data:
-                asset = data["asset"]
+                if "asset" in data:
+                    asset = data["asset"]
 
-                # Getting indicator name
-                indicator = f"{data['function']} {data['period']}"
+                    # Getting indicator name
+                    indicator = f"{data['function']} {data['period']}"
 
-                self.handle_indicator_errors(asset, indicator, date)
+                    self.handle_indicator_errors(asset, indicator, starting_date)
+
+                if "series" in data:
+                    series = data["series"]
+
+                    # Getting indicator name
+                    indicator = f"{data['function']} {data['period']}"
+
+                    self.handle_indicator_errors(series, indicator, starting_date)
 
     def handle_buy_errors(self, asset, date):
         """Handle the errors for type buy objects.
@@ -213,17 +252,21 @@ class Backtest:
             asset_available = get_first_value(self.dataset[asset])
             self.error_tracker.add_asset_error(asset, asset_available)
 
-    def handle_indicator_errors(self, asset, indicator, date):
+    def handle_indicator_errors(self, asset, indicator, date, type):
         """Handle the errors for indicators. (Condition objects)
 
         Args:
-            asset (str): Asset in condition object. (Asset the indicator is for)
+            asset (str): Asset or series in condition object. (Asset or series the indicator is for)
             indicator (str): Indicator name.
             date (str): Date to check for issues with indicator data.
+            type (str): Indicator is for asset or series. ("asset" or "series")
         """
         # If assets data does not exist neither does indicators
         if self.dataset[asset] is None:
-            self.error_tracker.add_asset_error(asset)
+            if type == "asset":
+                self.error_tracker.add_asset_error(asset)
+            if type == "series":
+                self.error_tracker.add_series_error(asset)
             self.error_tracker.add_indicator_error(asset, indicator)
             return
 
@@ -258,8 +301,11 @@ gg = Backtest(sample_algo_request, data)
 # gg.ttt("2020-01-02")
 
 
-gg.get_backtest_errors("1992-01-02")
+# gg.get_backtest_errors("2010-06-29")
 # print(gg.error_tracker.asset_errors)
+# print(gg.error_tracker.indicator_errors)
 
-print(gg.error_tracker.indicator_errors)
+gg.get_backtest_errors()
 print(gg.error_tracker.asset_errors)
+print(gg.error_tracker.indicator_errors)
+print(gg.get_historical_holdings())
