@@ -8,10 +8,11 @@
 # Type expression is an if else statement
 # Type instructions is anytime you want a new weight or want to branch off (will make more sense soon)
 sample_algo_request = {
-    "start_date": "2020-01-01",
+    "start_date": "2003-01-01",
     "end_date": "2021-01-01",
     "name": "test algo",
-    "trading_frequency": "",  # Can be daily, weekly, monthly, quarterly, annually.
+    "benchmarks": ["NVDA", "SPY"],
+    "trading_frequency": "monthly",  # Can be daily, weekly, monthly, quarterly, annually.
     "algorithm": {
         "type": "instructions",
         "weight": 1,
@@ -61,7 +62,7 @@ sample_algo_request = {
                                             },
                                             "condition2": {
                                                 "function": "sma",
-                                                "asset": "MSFT",
+                                                "asset": "NVDA",
                                                 "period": 2,
                                             },
                                         },
@@ -178,7 +179,7 @@ def iterate_tasks(tasks, weight, relative_weight):
 def test():
     starting_weight = sample_algo_request["algorithm"]["weight"]
     # Relative weight argument will always be 1 at the start
-    iterate_tasks(sample_algo_request["algorithm"]["tasks"], starting_weight, 1)
+    iterate_tasks(sample_algo_request["algorithm"], starting_weight, 1)
 
 
 # test()
