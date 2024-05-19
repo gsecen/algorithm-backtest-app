@@ -185,7 +185,14 @@ class Backtest:
             )
 
     def get_historical_holdings(self):
+        """Runs the algorithm through backtesting trading dates and keeps track of the holdings
+        for each backtesting day.
+
+        Returns:
+            dict: Dictionary with dates as keys and holdings for that date as values.
+        """
         historical_holdings = {}
+
         for date in self.backtest_trading_dates:
 
             # First relative weight will always be 1 because it is not nested in anything else
@@ -224,7 +231,9 @@ class Backtest:
                     # Getting indicator name
                     indicator = f"{data['function']} {data['period']}"
 
-                    self.handle_indicator_errors(asset, indicator, starting_date)
+                    self.handle_indicator_errors(
+                        asset, indicator, starting_date, "asset"
+                    )
 
                 if "series" in data:
                     series = data["series"]
@@ -232,7 +241,9 @@ class Backtest:
                     # Getting indicator name
                     indicator = f"{data['function']} {data['period']}"
 
-                    self.handle_indicator_errors(series, indicator, starting_date)
+                    self.handle_indicator_errors(
+                        series, indicator, starting_date, "series"
+                    )
 
     def handle_buy_errors(self, asset, date):
         """Handle the errors for type buy objects.
