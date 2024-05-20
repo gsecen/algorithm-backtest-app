@@ -309,3 +309,37 @@ def get_date_range_bounds(df, start_date, end_date):
         valid_end_date = end_date
 
     return valid_start_date, valid_end_date
+
+
+def get_rows_between_dates(asset_df, start_date, end_date):
+    """Gets the rows of dataframe which are between two dates. (Within date range)
+
+    Args:
+        asset_df (df): Pandas dataframe you want rows for.
+        start_date (str): Start date of range.
+        end_date (str): End date of range.
+
+    Returns:
+        df: Pandas dataframe with rows that are in between start and end date.
+    """
+    if asset_df is None:
+        return
+
+    date_range = get_date_range_bounds(asset_df, start_date, end_date)
+
+    # If asset does not have data within start and end date
+    if date_range is None:
+        return
+    else:
+
+        # Gettting the asset dates available within the range
+        valid_start_date, valid_end_date = date_range
+
+        # Getting the indexes of the start and end dates in dataframe
+        start_index = asset_df.loc[asset_df["Date"] == valid_start_date].index[0]
+        end_index = asset_df.loc[asset_df["Date"] == valid_end_date].index[0]
+
+        # Getting the dataframe rows which are between the start and end indexes
+        rows_between = asset_df.iloc[start_index:end_index]
+
+        return rows_between
