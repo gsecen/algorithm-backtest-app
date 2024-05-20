@@ -259,3 +259,53 @@ def get_time_based_trading_dates(dates, frequency):
             return get_weekly_trading_dates(dates)
         case "daily":
             return dates
+
+
+def get_date_range_bounds(df, start_date, end_date):
+    """Gets the start and end dates of the dataframe where the date column is between the start and end date.
+
+    Args:
+        df (df): Pandas dataframe to get range bounds for.
+        start_date (str): Starting date for the date range.
+        end_date (str): Ending date for the date range.
+
+    Returns:
+        tuple/None: Start date in dataframe which is between start and end date range, end date in dataframe
+        which is between start and end date range. None for no valid start or end date in dataframe which is
+        between date range.
+    """
+
+    if df is None:
+        return None
+
+    # Getting the assets start and end dates
+    asset_start_date = df["Date"].iloc[0]
+    asset_end_date = df["Date"].iloc[-1]
+
+    # If the end date to make calculations is before the asset start date the asset does not exist in timeframe
+    if is_date_earlier(end_date, asset_start_date):
+        return None
+
+    # If the assets end date is before the start date to make calculations the asset does not exist in timeframe
+    if is_date_earlier(asset_end_date, start_date):
+        return None
+
+    # If start date is before the assets starting date
+    if is_date_earlier(start_date, asset_start_date):
+        valid_start_date = asset_start_date
+    else:
+        valid_start_date = start_date
+
+    # If end date is before assets ending date
+    if is_date_earlier(end_date, asset_end_date):
+        valid_end_date = end_date
+    else:
+        valid_end_date = asset_end_date
+
+    # The very rare occasion when the start date or end date are the same as when the asset starts or ends
+    if asset_start_date == start_date:
+        valid_start_date = start_date
+    if asset_end_date == end_date:
+        valid_end_date = end_date
+
+    return valid_start_date, valid_end_date
