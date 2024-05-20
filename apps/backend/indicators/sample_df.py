@@ -10,9 +10,14 @@ dates = [
     "2020-01-03",
     "2020-01-04",
     "2020-01-05",
+    "2020-02-01",
+    "2020-02-02",
+    "2020-02-03",
+    "2020-02-04",
+    "2020-02-05",
 ]
 
-values = [float("nan"), float("nan"), float("nan"), 1, 2, 3, 4, 5]
+values = [float("nan"), float("nan"), float("nan"), 1, 2, 3, 4, 5, 1, 2, 3, 4, 5]
 
 dictionary = {"Date": dates, "value": values}
 
