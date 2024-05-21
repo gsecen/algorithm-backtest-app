@@ -17,18 +17,18 @@ def get_maximum_drawdown(asset_df, start_date, end_date):
     if asset_df is None:
         return
 
-    date_range = get_rows_between_dates(asset_df, start_date, end_date)
+    rows = get_rows_between_dates(asset_df, start_date, end_date)
 
     # If asset does not have data within start and end date
-    if date_range is None:
+    if rows is None:
         return
     else:
 
         # Keep track of the highest value in dataframe
-        max_value = asset_df["value"].rolling(len(asset_df), min_periods=1).max()
+        max_value = rows["value"].rolling(len(rows), min_periods=1).max()
 
         # Calculate drawdowns
-        drawdowns = asset_df["value"] / max_value - 1
+        drawdowns = rows["value"] / max_value - 1
 
         # Getting the worst drawdown
         return abs(drawdowns.min()) * 100
