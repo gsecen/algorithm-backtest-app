@@ -4,7 +4,7 @@ from utils.time import get_date_range_bounds
 from utils.dataframe import get_value_by_date
 
 
-def get_total_cumulative_return(asset_df, start_date, end_date):
+def get_total_cumulative_return(asset_df, start_date, end_date, column_name="Open"):
     """Gets the total cumulative return as a percentage of an asset within date range.
 
     Args:
@@ -30,6 +30,6 @@ def get_total_cumulative_return(asset_df, start_date, end_date):
         valid_start_date, valid_end_date = date_range
 
         # Calculating total cumulative return as a percentage
-        start_price = get_value_by_date(asset_df, valid_start_date, "Close")
-        end_price = get_value_by_date(asset_df, valid_end_date, "Close")
+        start_price = get_value_by_date(asset_df, valid_start_date, column_name)
+        end_price = get_value_by_date(asset_df, valid_end_date, column_name)
         return (((end_price - start_price) / end_price)) * 100

@@ -3,7 +3,7 @@
 from utils.time import get_rows_between_dates
 
 
-def get_maximum_drawdown(asset_df, start_date, end_date):
+def get_maximum_drawdown(asset_df, start_date, end_date, column_name="Open"):
     """Gets the maximum drawdown as a percentage of an asset within date range.
 
     Args:
@@ -25,10 +25,10 @@ def get_maximum_drawdown(asset_df, start_date, end_date):
     else:
 
         # Keep track of the highest value in dataframe
-        max_value = rows["value"].rolling(len(rows), min_periods=1).max()
+        max_value = rows[column_name].rolling(len(rows), min_periods=1).max()
 
         # Calculate drawdowns
-        drawdowns = rows["value"] / max_value - 1
+        drawdowns = rows[column_name] / max_value - 1
 
         # Getting the worst drawdown
         return abs(drawdowns.min()) * 100
