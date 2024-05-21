@@ -1,6 +1,6 @@
 """This module helps with all time related functions"""
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import pandas as pd
 
 
@@ -382,4 +382,24 @@ def calculate_days_passed(start_date, end_date):
     return (end - start).days
 
 
-print(calculate_days_passed("2020-01-01", "2021-01-01"))
+def subtract_days_from_date(start_date, days):
+    """Subtracts however many days from the start date.
+
+    Args:
+        start_date (str): Date to subtract days from.
+        days (int): Number of days to subtract from start date.
+
+    Returns:
+        str: String date which is however many days prior from the start date.
+    """
+
+    # Turning date into datetime object
+    date = datetime.strptime(start_date, "%Y-%m-%d")
+
+    # Subtracting days from date
+    new_date = date - timedelta(days=days)
+
+    # Convert new date to string
+    new_date = datetime.strftime(new_date, "%Y-%m-%d")
+
+    return new_date
