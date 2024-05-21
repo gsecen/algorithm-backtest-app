@@ -403,3 +403,48 @@ def subtract_days_from_date(start_date, days):
     new_date = datetime.strftime(new_date, "%Y-%m-%d")
 
     return new_date
+
+
+def get_next_available_date(dates, target_date):
+    """Gets the target date or next available date after target date from dates.
+
+    Args:
+        dates (list): List of dates.
+        target_date (str): Date to search for.
+
+    Returns:
+        str: String date of target date or next available date after target date.
+    """
+
+    # Turn date into datetime object
+    target_date = datetime.strptime(target_date, "%Y-%m-%d")
+
+    for date in dates:
+
+        # Turn date into datetime object
+        date = datetime.strptime(date, "%Y-%m-%d")
+
+        # If target date or next available date has been found
+        if target_date == date or target_date < date:
+
+            # Convert date to string
+            next_available_date = datetime.strftime(date, "%Y-%m-%d")
+
+            return next_available_date
+
+
+# dates = [
+#     "2019-12-31",
+#     "2020-01-02",
+#     "2020-03-05",
+#     "2020-04-06",
+#     "2020-05-09",
+#     "2020-05-09",
+#     "2020-05-10",
+#     "2020-05-15",
+#     "2020-05-17",
+#     "2020-05-18",
+#     "2020-05-19",
+#     "2020-05-20",
+#     "2020-06-12",
+# ]
