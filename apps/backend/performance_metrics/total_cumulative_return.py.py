@@ -11,6 +11,7 @@ def get_total_cumulative_return(asset_df, start_date, end_date, column_name="Ope
         asset_df (df): Pandas dataframe containing assets data.
         start_date (str): Start date for calculation.
         end_date (str): End date for calculation.
+        column_name (str, optional): Column name to calculate value from. Defaults to "Open".
 
     Returns:
         float: Assets total cumulative return as a percentage within date range.
