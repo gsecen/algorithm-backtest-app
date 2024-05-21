@@ -1,13 +1,14 @@
 """This module builds the simple moving average indicator"""
 
 
-def sma(period, df, metric_type):
+def sma(period, df, column_name):
     """Calculates and adds simple moving average indicator to dataframe.
 
     Args:
         period (int): Length of sma.
         df (df): Dataframe which you want sma for.
         metric_type (str): Yahoo finance ("asset") or fred series ("series")
+        column_name (str): Column name to calculate values from.
 
     Returns:
         df: Pandas dataframe with new sma data.
@@ -17,14 +18,6 @@ def sma(period, df, metric_type):
 
     # Make sure column does not exist
     if f"sma {period}" not in df.columns:
-
-        # If yahoo finance df calculate based on Close column
-        if metric_type == "asset":
-            column_name = "Open"
-
-        # If fred df calculate based on value column
-        if metric_type == "series":
-            column_name = "value"
 
         # Adding new column
         df[f"sma {period}"] = df[column_name].rolling(period).mean()

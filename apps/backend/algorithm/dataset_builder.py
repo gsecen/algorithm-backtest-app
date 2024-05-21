@@ -41,7 +41,7 @@ def build_dataset(algorithm):
             indicator_input = i["period"]
 
             # Updating assets dataframe to include indicators data
-            asset_df = functions[indicator](indicator_input, asset_df, "asset")
+            asset_df = functions[indicator](indicator_input, asset_df, "Open")
 
         # If condition and series
         if "function" in i and "series" in i:
@@ -50,6 +50,6 @@ def build_dataset(algorithm):
             indicator_input = i["period"]
 
             # Updating series' dataframe to include indicators data
-            series_df = functions[indicator](indicator_input, series_df, "series")
+            series_df = functions[indicator](indicator_input, series_df, "value")
 
     return dataset
