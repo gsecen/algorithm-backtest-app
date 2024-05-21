@@ -343,3 +343,23 @@ def get_rows_between_dates(asset_df, start_date, end_date):
         rows_between = asset_df.iloc[start_index:end_index]
 
         return rows_between
+
+
+def calculate_years_passed(start_date, end_date):
+    """Calculates how many years have past between two dates.
+
+    Args:
+        start_date (str): Start date.
+        end_date (str): End date.
+
+    Returns:
+        float: Years passed.
+    """
+
+    # Turning dates into datetime objects
+    start = datetime.strptime(start_date, "%Y-%m-%d")
+    end = datetime.strptime(end_date, "%Y-%m-%d")
+
+    years_passed = (end - start).days / 365
+
+    return years_passed
