@@ -340,7 +340,7 @@ def get_rows_between_dates(asset_df, start_date, end_date):
         end_index = asset_df.loc[asset_df["Date"] == valid_end_date].index[0]
 
         # Getting the dataframe rows which are between the start and end indexes
-        rows_between = asset_df.iloc[start_index:end_index]
+        rows_between = asset_df.iloc[start_index : end_index + 1]
 
         return rows_between
 
