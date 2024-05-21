@@ -363,3 +363,23 @@ def calculate_years_passed(start_date, end_date):
     years_passed = (end - start).days / 365
 
     return years_passed
+
+
+def calculate_days_passed(start_date, end_date):
+    """Calculates how many days have past between two dates.
+
+    Args:
+        start_date (str): Start date.
+        end_date (str): End date.
+
+    Returns:
+        int: Days passed.
+    """
+    # Turning dates into datetime objects
+    start = datetime.strptime(start_date, "%Y-%m-%d")
+    end = datetime.strptime(end_date, "%Y-%m-%d")
+
+    return (end - start).days
+
+
+print(calculate_days_passed("2020-01-01", "2021-01-01"))
