@@ -1,8 +1,7 @@
 """This module calculates the standard deviation of return of an asset"""
 
-from indicators.sample_df import sample_df_v4, sample_df_v5
 from utils.time import get_rows_between_dates
-from math import sqrt
+from statistics import stdev
 
 
 # Pandas .rolling.appy function
@@ -16,25 +15,6 @@ def calculate_return(values):
         float: Return as a percentage of the two values.
     """
     return ((values[1] / values[0]) * 100) - 100
-
-
-# Pandas .rolling.apply function
-def calculate_sqrt_deviation(values, mean):
-    """Calculates the square root of deviation as a percentage from mean return.
-
-    Args:
-        values (list): Two values to calculate square root of deviation as a percentage from.
-        mean (_type_): Dataframes mean return as a percentage.
-
-    Returns:
-        float: Square rooted deviation.
-    """
-
-    # Calculating sqaure root of deviation from mean return
-    deviation = calculate_return(values) - mean
-    squared_deviation = abs(deviation) ** 2
-
-    return squared_deviation
 
 
 def get_standard_deviation(asset_df, start_date, end_date, column_name="Open"):
@@ -59,27 +39,13 @@ def get_standard_deviation(asset_df, start_date, end_date, column_name="Open"):
         return
     else:
 
-        # Getting the mean return of the values
+        # Getting the returns of the values
         returns = (
             asset_df[column_name]
             .rolling(2)
             .apply(lambda x: calculate_return(x), raw=True)
         )
-        mean_returns = returns.mean()
 
-        # Getting the squared deviations from mean price
-        squared_deviations = (
-            asset_df["value"]
-            .rolling(2)
-            .apply(lambda x: calculate_sqrt_deviation(x, mean_returns), raw=True)
-        )
-
-        # Calculating standard deviation
-        # -1 because if there x values there are x-1 return values
-        # Another -1 because standard deviation forumula for sample size has -1
-        mean_of_devaition_squared = squared_deviations.sum() / (
-            len(asset_df[column_name]) - 2
-        )
-        standard_deviation = sqrt(mean_of_devaition_squared)
-
-        return standard_deviation
+        # Getting standard deviation
+        # Doing returns[1:] becuase first value in returns always nan
+        return stdev(returns[1:])
