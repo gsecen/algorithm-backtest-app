@@ -345,12 +345,14 @@ def get_rows_between_dates(asset_df, start_date, end_date):
         return rows_between
 
 
-def calculate_years_passed(start_date, end_date):
+def calculate_years_passed(start_date, end_date, include_start=True):
     """Calculates how many years have past between two dates.
 
     Args:
         start_date (str): Start date.
         end_date (str): End date.
+        include_start (bool, optional): If you want to include the start date as a
+        passed date in calculation. Defaults to True.
 
     Returns:
         float: Years passed.
@@ -360,9 +362,15 @@ def calculate_years_passed(start_date, end_date):
     start = datetime.strptime(start_date, "%Y-%m-%d")
     end = datetime.strptime(end_date, "%Y-%m-%d")
 
-    years_passed = (end - start).days / 365
+    if include_start:
+        years_passed = ((end - start).days + 1) / 365.25
+    else:
+        years_passed = (end - start).days / 365.25
 
     return years_passed
+
+
+print(calculate_years_passed("2020-01-01", "2021-01-01"))
 
 
 def calculate_days_passed(start_date, end_date):
