@@ -20,9 +20,8 @@ def get_annualized_standard_deviation(
     """
 
     # Calculate annualized standard deviation
-    # 252 because NASDAQ has 252 trading days per year
     annualized_standard_deviation = get_standard_deviation(
         asset_df, start_date, end_date, column_name
-    ) * sqrt(252)
+    ) * sqrt(365.25)
 
     return annualized_standard_deviation
