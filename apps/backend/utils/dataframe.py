@@ -118,3 +118,28 @@ def get_first_value(dataframe, column_name="Date"):
         str/int/float: First value in column name.
     """
     return dataframe[column_name].iloc[0]
+
+
+def get_shared_rows(dataframe1, dataframe2, column_name):
+    """Gets the rows of both dataframes which share the same values in column name.
+
+    Args:
+        dataframe1 (df): First pandas dataframe.
+        dataframe2 (df): Second pandas dataframe.
+        column_name (str): Column name.
+
+    Returns:
+        tuple/None: Pandas dataframe of shared rows of first dataframe, pandas dataframe of
+        shared rows of second dataframe. Returns None if no shared rows.
+    """
+    # Pandas boolean indexing
+    df1_shared_rows = dataframe1[dataframe1[column_name].isin(dataframe2[column_name])]
+
+    # If there are no shared rows
+    if len(df1_shared_rows.values) == 0:
+        return None
+
+    # Pandas boolean indexing
+    df2_shared_rows = dataframe2[dataframe2[column_name].isin(dataframe1[column_name])]
+
+    return df1_shared_rows, df2_shared_rows
