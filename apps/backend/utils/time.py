@@ -370,9 +370,6 @@ def calculate_years_passed(start_date, end_date, include_start=True):
     return years_passed
 
 
-print(calculate_years_passed("2020-01-01", "2021-01-01"))
-
-
 def calculate_days_passed(start_date, end_date):
     """Calculates how many days have past between two dates.
 
