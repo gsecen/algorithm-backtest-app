@@ -1,3 +1,5 @@
+"""This module calculates the calmar ratio of an asset"""
+
 from maximum_drawdown import get_maximum_drawdown
 from annualized_return import get_annualized_return
 
