@@ -142,4 +142,8 @@ def get_shared_rows(dataframe1, dataframe2, column_name):
     # Pandas boolean indexing
     df2_shared_rows = dataframe2[dataframe2[column_name].isin(dataframe1[column_name])]
 
+    # Resetting the indexes, inplace true modifies the dataframe rather than creating a new one.
+    df1_shared_rows.reset_index(inplace=True)
+    df2_shared_rows.reset_index(inplace=True)
+
     return df1_shared_rows, df2_shared_rows
