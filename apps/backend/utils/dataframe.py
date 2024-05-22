@@ -111,7 +111,7 @@ def get_first_value(dataframe, column_name="Date"):
     """Gets the first value from column name.
 
     Args:
-        dataframe (_type_): Pandas dataframe.
+        dataframe (df): Pandas dataframe.
         column_name (str, optional): Column name to get first value from. Defaults to "Date".
 
     Returns:
