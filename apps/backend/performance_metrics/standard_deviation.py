@@ -75,8 +75,10 @@ def get_standard_deviation(asset_df, start_date, end_date, column_name="Open"):
         )
 
         # Calculating standard deviation
-        mean_of_devaition_squared = squared_deviations.sum() / len(
-            asset_df[column_name]
+        # -1 because if there x values there are x-1 return values
+        # Another -1 because standard deviation forumula for sample size has -1
+        mean_of_devaition_squared = squared_deviations.sum() / (
+            len(asset_df[column_name]) - 2
         )
         standard_deviation = sqrt(mean_of_devaition_squared)
 
