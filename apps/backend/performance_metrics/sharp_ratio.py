@@ -1,7 +1,7 @@
 """This module calculates the sharp ratio of an asset"""
 
 from annualized_return import get_annualized_return
-from annualized_standard_deviation import get_annualized_standard_deviation
+from standard_deviation import get_annualized_standard_deviation
 
 
 def get_sharp_ratio(asset_df, start_date, end_date, column_name="Open"):
