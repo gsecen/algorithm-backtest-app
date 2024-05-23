@@ -6,7 +6,7 @@ from utils.custom_apply import calculate_return
 import numpy as np
 
 
-def get_beta(asset1_df, asset2_df, start_date, end_date, column_name):
+def get_beta(asset1_df, asset2_df, start_date, end_date, column_name="Open"):
     """Gets the beta of two assets within date range.
 
     Args:

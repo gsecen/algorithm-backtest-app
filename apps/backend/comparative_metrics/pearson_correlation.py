@@ -4,7 +4,9 @@ from utils.time import get_rows_between_dates
 from utils.dataframe import get_shared_rows
 
 
-def get_pearson_correlation(asset1_df, asset2_df, start_date, end_date, column_name):
+def get_pearson_correlation(
+    asset1_df, asset2_df, start_date, end_date, column_name="Open"
+):
     """Gets the pearsons correlation between two assets within date range.
 
     Args:
