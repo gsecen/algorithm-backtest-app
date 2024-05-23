@@ -1,13 +1,14 @@
-"""This module calculates the pearson correlation between two assets"""
+"""This module calculates the pearson correlation between the returns of two assets"""
 
 from utils.time import get_rows_between_dates
 from utils.dataframe import get_shared_rows
+from utils.custom_apply import calculate_return
 
 
 def get_pearson_correlation(
     asset1_df, asset2_df, start_date, end_date, column_name="Open"
 ):
-    """Gets the pearsons correlation between two assets within date range.
+    """Gets the pearsons correlation between the returns of two assets within date range.
 
     Args:
         asset1_df (df): Pandas dataframe containing first assets data.
@@ -17,7 +18,7 @@ def get_pearson_correlation(
         column_name (str): Column name to calculate value from.
 
     Returns:
-        float: Correlation between assets within date range.
+        float: Correlation between the returns of assets within date range.
     """
     if asset1_df is None or asset2_df is None:
         return
@@ -39,9 +40,19 @@ def get_pearson_correlation(
 
         asset1_shared_rows, asset2_shared_rows = shared_rows
 
-        # Calculating pearsons correlation
-        pearsons_correlation = asset1_shared_rows[column_name].corr(
-            asset2_shared_rows[column_name]
+        # Getting the returns of the values of asset 1 and asset 2
+        asset1_returns = (
+            asset1_shared_rows[column_name]
+            .rolling(2)
+            .apply(lambda x: calculate_return(x), raw=True)
         )
+        asset2_returns = (
+            asset2_shared_rows[column_name]
+            .rolling(2)
+            .apply(lambda x: calculate_return(x), raw=True)
+        )
+
+        # Calculating pearsons correlation
+        pearsons_correlation = asset1_returns.corr(asset2_returns)
 
         return pearsons_correlation
