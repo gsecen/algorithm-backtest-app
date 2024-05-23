@@ -56,9 +56,7 @@ class Backtest:
             "!=": operator.ne,
         }
 
-    def calculate_holdings(
-        self, date, tasks, weight, task_relative_weight, holdings=None
-    ):
+    def calculate_holdings(self, date, tasks, weight, task_relative_weight, holdings):
         """Calculates the portfolio holdings for given date.
 
         Args:
@@ -73,12 +71,14 @@ class Backtest:
         """
         # Recursion base case
         # If holding is False there was an error so stop recursion
-        if holdings is False:
-            return
+        # if holdings is False:
+        #     return
+        # if error is True:
+        #     return
 
-        # If first time recursive function has been called
-        if holdings is None:
-            holdings = {}
+        # # If first time recursive function has been called
+        # if holdings is None:
+        #     holdings = {}
 
         for index, task in enumerate(tasks):
 
@@ -88,28 +88,45 @@ class Backtest:
             )
 
             if task["type"] == "buy":
-                if self.handle_buy(date, task, holdings, relative_weight):
-                    holdings = False
+                # if self.handle_buy(date, task, holdings, relative_weight):
+                #     holdings = False
+                # if self.handle_buy(date, task, holdings, relative_weight, error):
+                #     holdings.clear()
+                #     error = True
+                if self.handle_buy(date, task, relative_weight, holdings):
+                    return None
 
             if task["type"] == "expression":
-                if self.handle_expression(
-                    date, task, weight, relative_weight, holdings
+                # if self.handle_expression(
+                #     date, task, weight, relative_weight, holdings, error
+                # ):
+                #     holdings = False
+                if (
+                    self.handle_expression(
+                        date, task, weight, relative_weight, holdings
+                    )
+                    is None
                 ):
-                    holdings = False
+                    return None
 
             if task["type"] == "instructions":
 
-                self.calculate_holdings(
-                    date,
-                    task["tasks"],
-                    task["weight"],
-                    relative_weight,
-                    holdings,
-                )
-
+                if (
+                    self.calculate_holdings(
+                        date,
+                        task["tasks"],
+                        task["weight"],
+                        relative_weight,
+                        holdings,
+                    )
+                    is None
+                ):
+                    return None
+        # if error is True:
+        #     return False
         return holdings
 
-    def handle_buy(self, date, task, holdings, relative_weight):
+    def handle_buy(self, date, task, relative_weight, holdings):
         """Handle type buys in calculate holdings.
 
         Args:
@@ -122,18 +139,19 @@ class Backtest:
             dict/bool: Dictionary of holdings. True if error and algorithm cannot continue.
         """
         asset = task["asset"]
-
-        if holdings is False:
-            return
+        print(f"asset in handle buy: {asset}")
+        print(f"current holdings: {holdings}")
 
         # If asset data is not available at date
         if not does_value_exist(self.dataset[asset], date):
             holdings.clear()
+            print(f"{asset} data not available at date {date}")
             return True
 
-        # If there is no asset dataa
+        # If there is no asset data
         if self.dataset[asset] is None:
             holdings.clear()
+            print(f"{asset} has no data")
             return True
 
         # Add the asset to holdings, if asset already exists add to existing asset weight
@@ -142,10 +160,9 @@ class Backtest:
         else:
             holdings[asset] += relative_weight
 
-    def handle_expression(self, date, task, weight, relative_weight, holdings):
+        return False
 
-        if holdings is False:
-            return
+    def handle_expression(self, date, task, weight, relative_weight, holdings):
 
         indicator1, indicator2 = get_indicator_names(task["conditions"])
         asset1_data, asset2_data = get_asset_datasets(self.dataset, task["conditions"])
@@ -156,19 +173,19 @@ class Backtest:
         # If the assets indicators data does not exist at all
         if asset1_data is None or asset2_data is None:
             holdings.clear()
-            return True
+            return None
 
         # If the assets indicators data does not exist on date
         if not does_value_exist(asset1_data, date) or not does_value_exist(
             asset2_data, date
         ):
             holdings.clear()
-            return True
+            return None
 
         # If the assets indicators data exists but value is nan
         if isnan(value1) or isnan(value2):
             holdings.clear()
-            return True
+            return None
 
         # If indicator values for assets exist and are not nan
         # Actually calculate the type expression (if/else)
@@ -176,11 +193,11 @@ class Backtest:
             get_value_by_date(asset1_data, date, indicator1),
             get_value_by_date(asset2_data, date, indicator2),
         ):
-            self.calculate_holdings(
+            return self.calculate_holdings(
                 date, task["true"], weight, relative_weight, holdings
             )
         else:
-            self.calculate_holdings(
+            return self.calculate_holdings(
                 date, task["false"], weight, relative_weight, holdings
             )
 
@@ -320,4 +337,13 @@ gg = Backtest(sample_algo_request, data)
 gg.get_backtest_errors()
 print(gg.error_tracker.asset_errors)
 print(gg.error_tracker.indicator_errors)
-print(gg.get_historical_holdings())
+# print(gg.get_historical_holdings())
+print(
+    gg.calculate_holdings(
+        "2007-01-03",
+        gg.algorithm["algorithm"]["tasks"],
+        gg.algorithm["algorithm"]["weight"],
+        1,
+        {},
+    )
+)
