@@ -7,5 +7,5 @@ name = "algorithm-backtest-app"
 version = "1.0.0"
 
 [tool.setuptools.packages.find]
-include = ["utils", "indicators", "historical_data"]
+include = ["utils", "indicators", "historical_data", "performance_metrics"]
 exclude = ["tests", "tests.*"]
