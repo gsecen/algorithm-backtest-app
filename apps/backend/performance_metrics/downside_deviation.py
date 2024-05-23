@@ -1,27 +1,9 @@
 """This module calculates the downside deviation of return of an asset"""
 
 from utils.time import get_rows_between_dates
+from utils.custom_apply import calculate_negative_return
 from statistics import stdev
 from math import sqrt
-
-
-# Pandas .rolling.appy function
-def get_negative_return(values):
-    """Gets the negative return as percentage from two values. Will ignore positive returns.
-
-    Args:
-        values (list): Two values to calculate percentage from.
-
-    Returns:
-        float: Return as a percentage of the two values. Will only return negative values or nan.
-    """
-    return_percentage = ((values[1] / values[0]) * 100) - 100
-
-    # If it is a positive return
-    if return_percentage >= 0:
-        return float("nan")
-    else:
-        return return_percentage
 
 
 def get_downside_deviation(asset_df, start_date, end_date, column_name="Open"):
@@ -50,7 +32,7 @@ def get_downside_deviation(asset_df, start_date, end_date, column_name="Open"):
         negative_returns = (
             asset_df[column_name]
             .rolling(2)
-            .apply(lambda x: get_negative_return(x), raw=True)
+            .apply(lambda x: calculate_negative_return(x), raw=True)
         )
 
         # Getting rid of all the nan in returns

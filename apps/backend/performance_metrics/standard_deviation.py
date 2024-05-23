@@ -1,21 +1,9 @@
 """This module calculates the standard deviation of return of an asset"""
 
 from utils.time import get_rows_between_dates
+from utils.custom_apply import calculate_return
 from statistics import stdev
 from math import sqrt
-
-
-# Pandas .rolling.appy function
-def calculate_return(values):
-    """Calculates the return as percentage from two values.
-
-    Args:
-        values (list): Two values to calculate percentage from.
-
-    Returns:
-        float: Return as a percentage of the two values.
-    """
-    return ((values[1] / values[0]) * 100) - 100
 
 
 def get_standard_deviation(asset_df, start_date, end_date, column_name="Open"):
