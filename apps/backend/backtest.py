@@ -64,21 +64,11 @@ class Backtest:
             tasks (dict): Tasks to iterate through.
             weight (int): Absolute weight of task
             task_relative_weight (float): Relative weight of task.
-            holdings (dict, optional): Current holdings. Defaults to None.
+            holdings (dict): Current holdings.
 
         Returns:
             dict: Dictionary of assets as keys, and holdings for assets as values.
         """
-        # Recursion base case
-        # If holding is False there was an error so stop recursion
-        # if holdings is False:
-        #     return
-        # if error is True:
-        #     return
-
-        # # If first time recursive function has been called
-        # if holdings is None:
-        #     holdings = {}
 
         for index, task in enumerate(tasks):
 
@@ -88,19 +78,11 @@ class Backtest:
             )
 
             if task["type"] == "buy":
-                # if self.handle_buy(date, task, holdings, relative_weight):
-                #     holdings = False
-                # if self.handle_buy(date, task, holdings, relative_weight, error):
-                #     holdings.clear()
-                #     error = True
                 if self.handle_buy(date, task, relative_weight, holdings):
                     return None
 
             if task["type"] == "expression":
-                # if self.handle_expression(
-                #     date, task, weight, relative_weight, holdings, error
-                # ):
-                #     holdings = False
+
                 if (
                     self.handle_expression(
                         date, task, weight, relative_weight, holdings
@@ -122,12 +104,11 @@ class Backtest:
                     is None
                 ):
                     return None
-        # if error is True:
-        #     return False
+
         return holdings
 
     def handle_buy(self, date, task, relative_weight, holdings):
-        """Handle type buys in calculate holdings.
+        """Handle type buys in calculate holdings. Will add assets to holdings dictionary.
 
         Args:
             date (str): Date to calculate holdings for.
@@ -136,22 +117,18 @@ class Backtest:
             relative_weight (float): Relative weight of task.
 
         Returns:
-            dict/bool: Dictionary of holdings. True if error and algorithm cannot continue.
+            bool: True if error and algorithm cannot continue. False if no error.
         """
         asset = task["asset"]
-        print(f"asset in handle buy: {asset}")
-        print(f"current holdings: {holdings}")
 
         # If asset data is not available at date
         if not does_value_exist(self.dataset[asset], date):
             holdings.clear()
-            print(f"{asset} data not available at date {date}")
             return True
 
         # If there is no asset data
         if self.dataset[asset] is None:
             holdings.clear()
-            print(f"{asset} has no data")
             return True
 
         # Add the asset to holdings, if asset already exists add to existing asset weight
@@ -214,11 +191,11 @@ class Backtest:
 
             # First relative weight will always be 1 because it is not nested in anything else
             holdings = self.calculate_holdings(
-                date, self.algorithm["algorithm"]["tasks"], self.starting_weight, 1
+                date, self.algorithm["algorithm"]["tasks"], self.starting_weight, 1, {}
             )
 
-            # If holdings is none or false or blank there was an error in the algorithm
-            if holdings is None or holdings is False or holdings == {}:
+            # If holdings is none there was an error in the algorithm
+            if holdings is None:
                 historical_holdings.clear()
             else:
                 historical_holdings[date] = holdings
@@ -337,13 +314,13 @@ gg = Backtest(sample_algo_request, data)
 gg.get_backtest_errors()
 print(gg.error_tracker.asset_errors)
 print(gg.error_tracker.indicator_errors)
-# print(gg.get_historical_holdings())
-print(
-    gg.calculate_holdings(
-        "2007-01-03",
-        gg.algorithm["algorithm"]["tasks"],
-        gg.algorithm["algorithm"]["weight"],
-        1,
-        {},
-    )
-)
+print(gg.get_historical_holdings())
+# print(
+#     gg.calculate_holdings(
+#         "2005-01-03",
+#         gg.algorithm["algorithm"]["tasks"],
+#         gg.algorithm["algorithm"]["weight"],
+#         1,
+#         {},
+#     )
+# )
