@@ -62,7 +62,7 @@ class Backtest:
         Args:
             date (str): Date to get holdings for.
             tasks (dict): Tasks to iterate through.
-            weight (int): Absolute weight of task
+            weight (int/float): Absolute weight of task
             task_relative_weight (float): Relative weight of task.
             holdings (dict): Current holdings.
 
@@ -115,6 +115,7 @@ class Backtest:
             task (dict): Type buy task.
             holdings (dict): Current holdings.
             relative_weight (float): Relative weight of task.
+            holdings (dict): Current holdings.
 
         Returns:
             bool: True if error and algorithm cannot continue. False if no error.
@@ -140,6 +141,18 @@ class Backtest:
         return False
 
     def handle_expression(self, date, task, weight, relative_weight, holdings):
+        """Handle type expression in calculate holdings.
+
+        Args:
+            date (str): Date to calculate holdings for.
+            task (dict): Type expression task.
+            weight (int/float): Absolute weight of task
+            relative_weight (float): Relative weight of task.
+            holdings (dict): Current holdings.
+
+        Returns:
+            None: None if error and algorithm cannot continue.
+        """
 
         indicator1, indicator2 = get_indicator_names(task["conditions"])
         asset1_data, asset2_data = get_asset_datasets(self.dataset, task["conditions"])
