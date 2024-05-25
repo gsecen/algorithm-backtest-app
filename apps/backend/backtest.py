@@ -215,6 +215,31 @@ class Backtest:
 
         return historical_holdings
 
+    def calculate_asset_quantities(self, date, holdings):
+        """Calculates the assets quantities on specified date based off balance and what the
+        holdings (asset weights) are.
+
+        Args:
+            date (str): Date to calculate assets quantities for.
+            holdings (dict): Holdings (asset weights).
+
+        Returns:
+            dict: Dictionary with assets as keys and stock quantities as values.
+        """
+        quantities = {}
+        for asset, weight in holdings[date].items():
+
+            # Calculating shares based on balance and weight
+            asset_price = get_value_by_date(self.dataset[asset], date, "Open")
+            shares = (self.balance * weight) / asset_price
+
+            if asset in quantities:
+                quantities[asset] += shares
+            else:
+                quantities[asset] = shares
+
+        return quantities
+
     def get_backtest_errors(self):
         """Runs the algorithm and checks for issues"""
         buy_and_condition_data = get_buy_and_condition_data(self.algorithm)
