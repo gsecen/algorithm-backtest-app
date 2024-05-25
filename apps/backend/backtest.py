@@ -45,7 +45,7 @@ class Backtest:
         # ]
         self.starting_weight = algorithm["algorithm"]["weight"]
 
-        self.balance = 100000
+        self.portfolio_value = 100000
 
         self.operators = {
             ">": operator.gt,
@@ -231,7 +231,7 @@ class Backtest:
 
             # Calculating shares based on balance and weight
             asset_price = get_value_by_date(self.dataset[asset], date, "Open")
-            shares = (self.balance * weight) / asset_price
+            shares = (self.portfolio_value * weight) / asset_price
 
             if asset in quantities:
                 quantities[asset] += shares
@@ -239,6 +239,29 @@ class Backtest:
                 quantities[asset] = shares
 
         return quantities
+
+    def calculate_portfolio_value(self, date, asset_quantities):
+        """Calculates the portfolio value on specified date based off of asset quantities.
+
+        Args:
+            date (str): Date to calculate portfolio for.
+            asset_quantities (dict): Assets and their quantities.
+
+        Returns:
+            float/int: Portfolio value.
+        """
+        portfolio_value = 0
+        for asset, quantity in asset_quantities.items():
+
+            # Calculating the total asset value and adding it to portfolio value
+            asset_price = get_value_by_date(self.dataset[asset], date, "Open")
+            total_asset_value = quantity * asset_price
+            portfolio_value += total_asset_value
+
+        return portfolio_value
+
+    def update_portfolio_value(self, new_value):
+        self.portfolio_value = new_value
 
     def get_backtest_errors(self):
         """Runs the algorithm and checks for issues"""
