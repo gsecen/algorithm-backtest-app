@@ -227,7 +227,7 @@ class Backtest:
             dict: Dictionary with assets as keys and stock quantities as values.
         """
         quantities = {}
-        for asset, weight in holdings[date].items():
+        for asset, weight in holdings.items():
 
             # Calculating shares based on balance and weight
             asset_price = get_value_by_date(self.dataset[asset], date, "Open")
@@ -259,6 +259,43 @@ class Backtest:
             portfolio_value += total_asset_value
 
         return portfolio_value
+
+    def get_historical_asset_quantities(self, historical_holdings):
+        """Gets the historical asset quantities for each backtesting trading day.
+        (same days as historical holdings)
+
+        Args:
+            historical_holdings (dict): Historical holdings.
+
+        Returns:
+            dict: Dicionary with dates as keys and asset quantities for that date as values.
+        """
+        asset_quantities = {}
+
+        for index, date in enumerate(historical_holdings):
+            holdings = historical_holdings[date]
+
+            # If very first trading day
+            if index == 0:
+                asset_quantities[date] = self.calculate_asset_quantities(date, holdings)
+            else:
+
+                # Getting date of previous asset quantities
+                stock_quantities_list = list(asset_quantities)
+                last_date = stock_quantities_list[index - 1]
+
+                # Getting the previous asset quantities
+                previous_quantities = asset_quantities[last_date]
+
+                # Calculating and updating the new portfolio value
+                new_portfolio_value = self.calculate_portfolio_value(
+                    date, previous_quantities
+                )
+                self.update_portfolio_value(new_portfolio_value)
+
+                asset_quantities[date] = self.calculate_asset_quantities(date, holdings)
+
+        return asset_quantities
 
     def update_portfolio_value(self, new_value):
         self.portfolio_value = new_value
@@ -373,9 +410,12 @@ gg = Backtest(sample_algo_request, data)
 # print(gg.error_tracker.indicator_errors)
 
 gg.get_backtest_errors()
-print(gg.error_tracker.asset_errors)
-print(gg.error_tracker.indicator_errors)
-print(gg.get_historical_holdings())
+# print(gg.error_tracker.asset_errors)
+# print(gg.error_tracker.indicator_errors)
+ss = gg.get_historical_holdings()
+
+
+print(gg.get_historical_asset_quantities(ss))
 # print(
 #     gg.calculate_holdings(
 #         "2005-01-03",
