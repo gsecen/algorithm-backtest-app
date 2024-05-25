@@ -47,6 +47,28 @@ def is_date_earlier(date1, date2, date_format="%Y-%m-%d"):
         return False
 
 
+def is_date_later_or_equal(date1, date2, date_format="%Y-%m-%d"):
+    """Compares two dates to check if first date is after or equal to second date.
+
+    Args:
+        date1 (str): Date to check if later than second date.
+        date2 (str): Date to check if earlier than first date.
+        date_format (str, optional): Format which the date string is in. Defaults to "%Y-%m-%d".
+
+    Returns:
+        bool: True if date1 is later or equal than date2. If not it returns False.
+    """
+    # Converting dates to datetime objects
+    date1 = datetime.strptime(date1, date_format)
+    date2 = datetime.strptime(date2, date_format)
+
+    # Check if date1 is earlier than date2
+    if date1 >= date2:
+        return True
+    else:
+        return False
+
+
 # dates = [
 #     "2020-01-01",
 #     "2020-01-02",
