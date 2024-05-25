@@ -298,6 +298,11 @@ class Backtest:
         return asset_quantities
 
     def update_portfolio_value(self, new_value):
+        """Update class portfolio value.
+
+        Args:
+            new_value (int/float): Value you want class portfolio value to be
+        """
         self.portfolio_value = new_value
 
     def get_backtest_errors(self):
