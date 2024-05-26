@@ -460,18 +460,101 @@ def get_next_available_date(dates, target_date):
             return next_available_date
 
 
-# dates = [
-#     "2019-12-31",
-#     "2020-01-02",
-#     "2020-03-05",
-#     "2020-04-06",
-#     "2020-05-09",
-#     "2020-05-09",
-#     "2020-05-10",
-#     "2020-05-15",
-#     "2020-05-17",
-#     "2020-05-18",
-#     "2020-05-19",
-#     "2020-05-20",
-#     "2020-06-12",
-# ]
+dates = [
+    "2019-12-31",
+    "2020-01-02",
+    "2020-02-01",
+    "2020-02-02",
+    "2020-02-03",
+    "2020-02-05",
+    "2020-02-10",
+    "2020-02-15",
+    "2020-03-05",
+    "2020-03-07",
+    "2020-03-09",
+    "2020-04-06",
+    "2020-05-09",
+    "2020-05-09",
+    "2020-05-10",
+    "2020-05-15",
+    "2020-05-17",
+    "2020-05-18",
+    "2020-05-19",
+    "2020-05-20",
+    "2020-06-12",
+]
+
+dictv2 = {
+    "2019-12-31": {"est": 3},
+    "2020-01-02": {"est": 4},
+    "2020-02-01": {"est": 36},
+    "2020-02-02": {"est": 357},
+    "2020-02-03": {"est": 334},
+    "2020-02-05": {"est": 323},
+    "2020-02-10": {"est": 234},
+    "2020-02-15": {"est": 53253},
+    "2020-03-05": {"est": 46343},
+    "2020-03-07": {"est": 546573},
+    "2020-03-09": {"est": 3353},
+    "2020-04-06": {"est": 3333},
+    "2020-05-09": {"est": 324},
+    "2020-05-10": {"est": 2343},
+    "2020-05-15": {"est": 243},
+    "2020-05-17": {"est": 2343},
+    "2020-05-19": {"est": 323},
+    "2020-05-20": {"est": 42343},
+    "2020-06-12": {"est": 233},
+}
+
+dates_tset = {
+    "2020-02-01": {"tset": 3},
+    "2020-03-01": {"tset": 5},
+    "2020-04-01": {"tset": 7},
+    "2020-05-01": {"tset": 10},
+}
+
+
+dates2 = ["2020-02-01", "2020-03-01", "2020-04-01", "2020-05-01", "2020-06-01"]
+
+
+def copy_date_data_to_new_dates(dictionary, new_dates):
+    """Copies dictionary date data to corresponding dates. Each new date will take the value of the
+    dicionaries date data whose date is most previous to new date. Any date in new dates before first date
+    in dictionary will not be copied. Any date in new dates after last date in dictionary
+    will take the value of last date in dictionary.
+
+    Args:
+        dictionary (dict): Dictionary with dates as keys.
+        new_dates (list):  List of dates to copy the data to.
+
+    Returns:
+        dict: Dicionary with new dates as keys and corresponding dictionary date data as values.
+    """
+
+    new_data = {}
+
+    # Turning dictionary into list and getting the last traded date
+    list_dict = list(dictionary)
+    last_date = list_dict[-1]
+
+    for index, date in enumerate(list_dict[1:], 1):
+
+        # Turning dates into datetime objects
+        next_date = datetime.strptime(date, "%Y-%m-%d")
+        previous_date = datetime.strptime(list_dict[index - 1], "%Y-%m-%d")
+        last_date = datetime.strptime(list_dict[-1], "%Y-%m-%d")
+
+        for new_date in new_dates:
+
+            # Turning date into datetime object
+            current_trading_day = datetime.strptime(new_date, "%Y-%m-%d")
+
+            if current_trading_day >= previous_date and current_trading_day < next_date:
+                new_data[new_date] = dictionary[list_dict[index - 1]]
+
+            # If its the last date in dictionary copy last dates data to all dates after the last date
+            if index == len(list_dict) - 1:
+                if current_trading_day >= last_date:
+                    new_data[new_date] = dictionary[list_dict[-1]]
+
+    return new_data
