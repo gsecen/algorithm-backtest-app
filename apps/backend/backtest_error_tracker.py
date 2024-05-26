@@ -12,6 +12,12 @@ class BacktestErrorTracker:
         self.series_errors = []
 
     def add_asset_error(self, asset, date=None):
+        """Adds asset issues from algorithm to asset errors list.
+
+        Args:
+            asset (str): Name of asset.
+            date (str, optional): Date of when issue will be resolved. Defaults to None.
+        """
         if date is None:
             error = f"{asset} not available."
         else:
@@ -23,6 +29,12 @@ class BacktestErrorTracker:
         self.asset_errors.append(error)
 
     def add_series_error(self, series, date=None):
+        """Adds series issues from algorithm to series errors list.
+
+        Args:
+            series (str): Name of series.
+            date (str, optional): Date of when issue will be resolved. Defaults to None.
+        """
         if date is None:
             error = f"{series} not available."
         else:
@@ -34,6 +46,13 @@ class BacktestErrorTracker:
         self.series_errors.append(error)
 
     def add_indicator_error(self, asset, indicator, date=None):
+        """Adds indicator issues from algorithm to indicator errors list.
+
+        Args:
+            asset (str): Name of asset or series.
+            indicator (str): Name of indicator.
+            date (str, optional): Date of when issue will be resolved. Defaults to None.
+        """
         if date is None:
             error = f"{asset} {indicator} not available."
         else:
