@@ -558,3 +558,25 @@ def copy_date_data_to_new_dates(dictionary, new_dates):
                     new_data[new_date] = dictionary[list_dict[-1]]
 
     return new_data
+
+
+def get_dates_after_date(dates, after_date):
+    """Gets all the dates in dates which are after the after date.
+
+    Args:
+        dates (list): List of dates.
+        after_date (str): Date which you want all dates after.
+
+    Returns:
+        list: List of all dates in dates after the after date.
+    """
+    # After date into datetime object
+    after_date = datetime.strptime(after_date, "%Y-%m-%d")
+    for index, date in enumerate(dates):
+
+        # Date into datetime object
+        date = datetime.strptime(date, "%Y-%m-%d")
+
+        # Returning all dates after the after date
+        if date >= after_date:
+            return dates[index:]
