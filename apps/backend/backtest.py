@@ -50,7 +50,7 @@ class Backtest:
         # ]
         self.starting_weight = algorithm["algorithm"]["weight"]
 
-        self.portfolio_value = 100000
+        self.initial_investment = 100000
 
         self.operators = {
             ">": operator.gt,
@@ -303,7 +303,7 @@ class Backtest:
         """
         asset_quantities = {}
 
-        portfolio_value = self.portfolio_value
+        portfolio_value = self.initial_investment
         for index, date in enumerate(historical_holdings):
             holdings = historical_holdings[date]
 
@@ -445,7 +445,7 @@ class Backtest:
         Args:
             new_value (int/float): Value you want class portfolio value to be
         """
-        self.portfolio_value = new_value
+        self.initial_investment = new_value
 
     def get_backtest_errors(self):
         """Runs the algorithm and checks for issues"""
