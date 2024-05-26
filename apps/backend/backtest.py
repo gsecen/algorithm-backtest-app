@@ -291,7 +291,7 @@ class Backtest:
 
         return asset_weights
 
-    def get_historical_asset_quantities(self, historical_holdings):
+    def get_historical_portfolio_asset_quantities(self, historical_holdings):
         """Gets the historical asset quantities for each backtesting trading day.
         (same days as historical holdings)
 
@@ -470,6 +470,7 @@ class Backtest:
                 self.error_tracker.add_indicator_error(asset, indicator, first_date)
 
 
+# osio
 data = build_dataset(sample_algo_request)
 
 gg = Backtest(sample_algo_request, data)
