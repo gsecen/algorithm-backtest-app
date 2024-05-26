@@ -220,7 +220,7 @@ class Backtest:
 
         return historical_holdings
 
-    def calculate_portfolio_asset_quantities(self, date, holdings):
+    def calculate_portfolio_asset_quantities(self, date, holdings, portfolio_value):
         """Calculates the portfolio asset quantities on specified date based off balance and what the
         holdings (asset weights) are.
 
@@ -236,7 +236,7 @@ class Backtest:
 
             # Calculating shares based on balance and weight
             asset_price = get_value_by_date(self.dataset[asset], date, "Open")
-            shares = (self.portfolio_value * weight) / asset_price
+            shares = (portfolio_value * weight) / asset_price
 
             if asset in quantities:
                 quantities[asset] += shares
@@ -303,13 +303,14 @@ class Backtest:
         """
         asset_quantities = {}
 
+        portfolio_value = self.portfolio_value
         for index, date in enumerate(historical_holdings):
             holdings = historical_holdings[date]
 
             # If very first trading day
             if index == 0:
                 asset_quantities[date] = self.calculate_portfolio_asset_quantities(
-                    date, holdings
+                    date, holdings, portfolio_value
                 )
             else:
 
@@ -324,10 +325,10 @@ class Backtest:
                 new_portfolio_value = self.calculate_portfolio_value(
                     date, previous_quantities
                 )
-                self.update_portfolio_value(new_portfolio_value)
+                previous_quantities = new_portfolio_value
 
                 asset_quantities[date] = self.calculate_portfolio_asset_quantities(
-                    date, holdings
+                    date, holdings, new_portfolio_value
                 )
 
         return asset_quantities
@@ -563,8 +564,9 @@ gg = Backtest(sample_algo_request, data)
 ss = gg.get_historical_holdings()
 zz = gg.get_historical_portfolio_asset_quantities(ss)
 
+print(zz)
 
-print(gg.get_hisorical_portfolio_values_weights(zz))
+# print(gg.get_hisorical_portfolio_values_weights(zz))
 
 # print(
 #     gg.calculate_holdings(
