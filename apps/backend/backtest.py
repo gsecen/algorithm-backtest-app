@@ -220,16 +220,16 @@ class Backtest:
 
         return historical_holdings
 
-    def calculate_asset_quantities(self, date, holdings):
-        """Calculates the assets quantities on specified date based off balance and what the
+    def calculate_portfolio_asset_quantities(self, date, holdings):
+        """Calculates the portfolio asset quantities on specified date based off balance and what the
         holdings (asset weights) are.
 
         Args:
-            date (str): Date to calculate assets quantities for.
+            date (str): Date to calculate portfolio assets quantities for.
             holdings (dict): Holdings (asset weights).
 
         Returns:
-            dict: Dictionary with assets as keys and stock quantities as values.
+            dict: Dictionary with assets as keys and asset quantities as values.
         """
         quantities = {}
         for asset, weight in holdings.items():
@@ -308,7 +308,9 @@ class Backtest:
 
             # If very first trading day
             if index == 0:
-                asset_quantities[date] = self.calculate_asset_quantities(date, holdings)
+                asset_quantities[date] = self.calculate_portfolio_asset_quantities(
+                    date, holdings
+                )
             else:
 
                 # Getting date of previous asset quantities
@@ -324,7 +326,9 @@ class Backtest:
                 )
                 self.update_portfolio_value(new_portfolio_value)
 
-                asset_quantities[date] = self.calculate_asset_quantities(date, holdings)
+                asset_quantities[date] = self.calculate_portfolio_asset_quantities(
+                    date, holdings
+                )
 
         return asset_quantities
 
