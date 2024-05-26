@@ -265,6 +265,32 @@ class Backtest:
 
         return portfolio_value
 
+    def calculate_portfolio_weights(self, date, asset_quantities, portfolio_value):
+        """Calculates the portfolio asset weights on a specified date based off of
+        asset quantities and portfolio value.
+
+        Args:
+            date (str): Date to calculate asset weights for.
+            asset_quantities (dict): Asset quantities.
+            portfolio_value (float): Portfolio value.
+
+        Returns:
+            dict: Dictionary with dates as keys and asset weights as values.
+        """
+        asset_weights = {}
+
+        for asset, quantity in asset_quantities.items():
+
+            # Calculating asset weight based on asset value and portfolio value
+            asset_price = get_value_by_date(self.dataset[asset], date, "Open")
+            total_asset_value = quantity * asset_price
+            asset_weight = total_asset_value / portfolio_value
+
+            # Adding asset weight as a percentage
+            asset_weights[asset] = asset_weight * 100
+
+        return asset_weights
+
     def get_historical_asset_quantities(self, historical_holdings):
         """Gets the historical asset quantities for each backtesting trading day.
         (same days as historical holdings)
@@ -450,17 +476,15 @@ gg = Backtest(sample_algo_request, data)
 # print(gg.error_tracker.asset_errors)
 # print(gg.error_tracker.indicator_errors)
 
-gg.get_backtest_errors()
+# gg.get_backtest_errors()
 # print(gg.error_tracker.asset_errors)
 # print(gg.error_tracker.indicator_errors)
-ss = gg.get_historical_holdings()
+
+# ss = gg.get_historical_holdings()
+# zz = gg.get_historical_asset_quantities(ss)
+# print(gg.get_historical_portfolio_values(zz))
 
 
-zz = gg.get_historical_asset_quantities(ss)
-
-# print(zz)
-
-print(gg.get_historical_portfolio_values(zz))
 # print(
 #     gg.calculate_holdings(
 #         "2005-01-03",
