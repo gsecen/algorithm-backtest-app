@@ -9,17 +9,13 @@ from utils.algorithm import (
     calculate_task_weight,
     get_indicator_names,
     get_asset_datasets,
-    get_buy_and_condition_data,
 )
 from utils.dataframe import (
     get_value_by_date,
-    get_date_of_first_non_nan_value,
     does_value_exist,
-    get_first_value,
 )
 
 from algorithm.dataset_builder import build_dataset
-from backtest_error_tracker import BacktestErrorTracker
 
 import pandas as pd
 import operator
@@ -31,7 +27,6 @@ class Backtest:
     def __init__(self, algorithm, dataset):
         self.algorithm = algorithm
         self.dataset = dataset
-        self.error_tracker = BacktestErrorTracker()
 
         self.trading_frequency = algorithm["trading_frequency"]
         self.trading_days = get_trading_days(
@@ -447,104 +442,6 @@ class Backtest:
         """
         self.initial_investment = new_value
 
-    def get_backtest_errors(self):
-        """Runs the algorithm and checks for issues"""
-        buy_and_condition_data = get_buy_and_condition_data(self.algorithm)
-
-        # Date which the algorithm will try to run on first
-        starting_date = self.backtest_trading_dates[0]
-
-        for data in buy_and_condition_data:
-
-            # Type buys
-            if "type" in data:
-                if data["type"] == "buy":
-                    asset = data["asset"]
-
-                    self.handle_buy_errors(asset, starting_date)
-
-            # Indicators for assets and series
-            if "function" in data:
-                if "asset" in data:
-                    asset = data["asset"]
-
-                    # Getting indicator name
-                    indicator = f"{data['function']} {data['period']}"
-
-                    self.handle_indicator_errors(
-                        asset, indicator, starting_date, "asset"
-                    )
-
-                if "series" in data:
-                    series = data["series"]
-
-                    # Getting indicator name
-                    indicator = f"{data['function']} {data['period']}"
-
-                    self.handle_indicator_errors(
-                        series, indicator, starting_date, "series"
-                    )
-
-    def handle_buy_errors(self, asset, date):
-        """Handle the errors for type buy objects.
-
-        Args:
-            asset (str): Asset in type buy object.
-            date (str): Date to check for issues with asset.
-        """
-        # If assets data does not exist
-        if self.dataset[asset] is None:
-            self.error_tracker.add_asset_error(asset)
-
-        # If assets data exists on current date
-        if does_value_exist(self.dataset[asset], date):
-            pass
-        else:
-            asset_available = get_first_value(self.dataset[asset])
-            self.error_tracker.add_asset_error(asset, asset_available)
-
-    def handle_indicator_errors(self, asset, indicator, date, type):
-        """Handle the errors for indicators. (Condition objects)
-
-        Args:
-            asset (str): Asset or series in condition object. (Asset or series the indicator is for)
-            indicator (str): Indicator name.
-            date (str): Date to check for issues with indicator data.
-            type (str): Indicator is for asset or series. ("asset" or "series")
-        """
-        # If assets data does not exist neither does indicators
-        if self.dataset[asset] is None:
-            if type == "asset":
-                self.error_tracker.add_asset_error(asset)
-            if type == "series":
-                self.error_tracker.add_series_error(asset)
-            self.error_tracker.add_indicator_error(asset, indicator)
-            return
-
-        # If assets data exists on current date indicators data exists aswell (could be nan)
-        if does_value_exist(self.dataset[asset], date):
-
-            # If indicator value is nan
-            if isnan(get_value_by_date(self.dataset[asset], date, indicator)):
-                first_date = get_date_of_first_non_nan_value(
-                    self.dataset[asset], indicator
-                )
-
-                # If there is no first date (all indicator values are nan)
-                if first_date is None:
-                    self.error_tracker.add_indicator_error(asset, indicator)
-                else:
-                    self.error_tracker.add_indicator_error(asset, indicator, first_date)
-
-        else:
-            first_date = get_date_of_first_non_nan_value(self.dataset[asset], indicator)
-
-            # If there is no first date (all indicator values are nan)
-            if first_date is None:
-                self.error_tracker.add_indicator_error(asset, indicator)
-            else:
-                self.error_tracker.add_indicator_error(asset, indicator, first_date)
-
 
 # osio
 data = build_dataset(sample_algo_request)
@@ -561,10 +458,16 @@ gg = Backtest(sample_algo_request, data)
 # print(gg.error_tracker.asset_errors)
 # print(gg.error_tracker.indicator_errors)
 
-ss = gg.get_historical_holdings()
-zz = gg.get_historical_portfolio_asset_quantities(ss)
+# ss = gg.get_historical_holdings()
+# zz = gg.get_historical_portfolio_asset_quantities(ss)
 
-print(zz)
+# print(zz)
+from backtest_error_tracker import BacktestErrorTracker
+
+fff = BacktestErrorTracker(sample_algo_request, data, gg.backtest_trading_dates[0])
+fff.get_backtest_errors()
+print(fff.indicator_errors)
+print(fff.asset_errors)
 
 # print(gg.get_hisorical_portfolio_values_weights(zz))
 
