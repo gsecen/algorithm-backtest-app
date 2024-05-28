@@ -39,6 +39,7 @@ class Backtest:
         self.backtest_trading_dates = get_time_based_trading_dates(
             self.trading_days, self.trading_frequency
         )
+        self.trading_threshold = algorithm["trading_threshold"]
 
         # self.trading_days = [
         #     "1995-01-03",
@@ -50,8 +51,6 @@ class Backtest:
         self.starting_weight = algorithm["algorithm"]["weight"]
 
         self.initial_investment = 100000
-
-        self.threshold = 0.03
 
         self.operators = {
             ">": operator.gt,
@@ -296,7 +295,7 @@ class Backtest:
                     historical_asset_weights[date] = asset_weights
 
         return {
-            "trading_dates": historical_trading_dates,
+            "traded_dates": historical_trading_dates,
             "portfolio_values": historical_portfolio_values,
             "asset_weights": historical_asset_weights,
         }
@@ -358,7 +357,7 @@ class Backtest:
                 if is_holdings_above_threshold(
                     latest_holdings,
                     portfolio_weights,
-                    self.threshold,
+                    self.trading_threshold,
                 ):
 
                     # Calculating and adding historical values
@@ -389,10 +388,25 @@ class Backtest:
                 historical_trading_dates.append(date)
 
         return {
-            "trading_dates": historical_trading_dates,
+            "traded_dates": historical_trading_dates,
             "portfolio_values": historical_portfolio_values,
             "asset_weights": historical_asset_weights,
         }
+
+    def get_historical_portfolio_data(self):
+        """Gets the historical traded dates, portfolio values, and asset weights for every trading day in
+        time based or threshold based algorithm.
+
+        Returns:
+            dict: Dictionary of list of traded dates, dictionary with dates as keys and portfolio values as values,
+            dictionary of dates as keys and asset weights as values.
+        """
+
+        # If threshold is 0 algorithm uses time based trading
+        if self.trading_threshold == 0:
+            return self.get_time_based_historical_portfolio_data()
+
+        return self.get_threshold_based_historical_portfolio_data()
 
     def get_threshold_based_holdings(self):
         historical_holdings = {}
@@ -704,6 +718,7 @@ data = build_dataset(sample_algo_requestv2)
 gg = Backtest(sample_algo_requestv2, data)
 # gg.ttt("2020-01-02")
 
+# print(gg.get_historical_portfolio_data()["traded_dates"])
 
 # gg.get_backtest_errors("2010-06-29")
 # print(gg.error_tracker.asset_errors)
