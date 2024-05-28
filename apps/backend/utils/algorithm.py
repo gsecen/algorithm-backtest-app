@@ -217,7 +217,7 @@ def test():
 # test()
 
 
-current_holdings = {"AAPL": 0.3, "MSFT": 0.25, "TSLA": 0.1, "NVDA": 0.2, "gg": 23}
+current_holdings = {"AAPL": 0.3, "MSFT": 0.25, "TSLA": 0.1, "NVDA": 0.2}
 
 new_holdings2 = {
     "AAPL": 0.5,
@@ -225,7 +225,6 @@ new_holdings2 = {
     "TSLA": 0.10,
     "NVDA": 0.10,
     "FORD": 0.2,
-    "gg": 20,
     "ff": 0.5,
 }
 
@@ -265,7 +264,7 @@ def compare_holdings(old_holdings, new_holdings):
 
 
 def is_holdings_above_threshold(old_holdings, new_holdings, threshold):
-    """Checks if the total differences in holdings differ by the threshold.
+    """Checks if the differences in any of the assets in holdings differ by the threshold.
 
     Args:
         old_holdings (dict): Old holdings.
@@ -273,20 +272,18 @@ def is_holdings_above_threshold(old_holdings, new_holdings, threshold):
         threshold (float/int): The value to check if any of the holdings differences are above.
 
     Returns:
-        bool: True if the total differences in holdings differ by the threshold. False if the total differencs
+        bool: True if the max difference in holdings differ by the threshold. False if the max differenc
         in holdings do not differ by the threshold.
     """
 
-    # Getting the total difference between assets in holdings
+    # Getting the max difference between assets in holdings
     holdings_differences = compare_holdings(old_holdings, new_holdings)
-    total_difference = sum((abs(value) for value in holdings_differences.values()))
+    max_difference = max((abs(value) for value in holdings_differences.values()))
 
-    if total_difference > threshold:
+    if max_difference > threshold:
         return True
     return False
 
-
-# print(is_holdings_above_threshold(new_holdings2, current_holdings, 0.1))
 
 old_holdings = {"AAPL": 500, "NVDA": 1000, "AMZN": 200, "TSLA": 25.34, "FORD": 300}
 new_holdings = {
