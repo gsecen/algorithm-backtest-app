@@ -1,4 +1,8 @@
-from utils.algorithm import sample_algo_request
+from utils.algorithm import (
+    sample_algo_request,
+    sample_algo_requestv2,
+    is_holdings_above_threshold,
+)
 from utils.time import (
     get_trading_days,
     get_time_based_trading_dates,
@@ -46,6 +50,8 @@ class Backtest:
         self.starting_weight = algorithm["algorithm"]["weight"]
 
         self.initial_investment = 100000
+
+        self.threshold = 0.03
 
         self.operators = {
             ">": operator.gt,
@@ -215,6 +221,82 @@ class Backtest:
 
         return historical_holdings
 
+    def get_threshold_based_holdings(self):
+        historical_holdings = {}
+
+        # Must keep track of latest asset quantities and portfolio value
+        lastest_quantities = {}
+        portfolio_value_tracker = self.initial_investment
+
+        for date in self.trading_days:
+
+            # If there are holdings
+            if historical_holdings:
+
+                # Updating the portfolios current value
+                portfolio_value = self.calculate_portfolio_value(
+                    date, lastest_quantities
+                )
+                portfolio_value_tracker = portfolio_value
+
+                # Get portfolio weights
+                portfolio_weights = self.calculate_portfolio_weights(
+                    date, lastest_quantities, portfolio_value_tracker
+                )
+
+                # If the current weights compared to latest holdings exceed the threshold
+                if is_holdings_above_threshold(
+                    historical_holdings[list(historical_holdings)[-1]],
+                    portfolio_weights,
+                    self.threshold,
+                ):
+
+                    # First relative weight will always be 1 because it is not nested in anything else
+                    holdings = self.calculate_holdings(
+                        date,
+                        self.algorithm["algorithm"]["tasks"],
+                        self.starting_weight,
+                        1,
+                        {},
+                    )
+
+                    # If holdings is none there was an error in the algorithm
+                    if holdings is None:
+                        historical_holdings.clear()
+                        lastest_quantities.clear()
+                        portfolio_value_tracker = self.initial_investment
+                    else:
+                        historical_holdings[date] = holdings
+                        asset_quantities = self.calculate_portfolio_asset_quantities(
+                            date, holdings, portfolio_value_tracker
+                        )
+                        lastest_quantities = asset_quantities
+
+            else:
+
+                # First relative weight will always be 1 because it is not nested in anything else
+                holdings = self.calculate_holdings(
+                    date,
+                    self.algorithm["algorithm"]["tasks"],
+                    self.starting_weight,
+                    1,
+                    {},
+                )
+
+                # If holdings is none there was an error in the algorithm
+                if holdings is None:
+                    historical_holdings.clear()
+                    lastest_quantities.clear()
+                    portfolio_value_tracker = self.initial_investment
+                else:
+                    historical_holdings[date] = holdings
+                    asset_quantities = self.calculate_portfolio_asset_quantities(
+                        date, holdings, portfolio_value_tracker
+                    )
+                    lastest_quantities = asset_quantities
+
+        return historical_holdings
+
     def calculate_portfolio_asset_quantities(self, date, holdings, portfolio_value):
         """Calculates the portfolio asset quantities on specified date based off balance and what the
         holdings (asset weights) are.
@@ -281,8 +363,8 @@ class Backtest:
             total_asset_value = quantity * asset_price
             asset_weight = total_asset_value / portfolio_value
 
-            # Adding asset weight as a percentage
-            asset_weights[asset] = asset_weight * 100
+            # Adding asset weight as a decimal
+            asset_weights[asset] = asset_weight
 
         return asset_weights
 
@@ -444,9 +526,9 @@ class Backtest:
 
 
 # osio
-data = build_dataset(sample_algo_request)
+data = build_dataset(sample_algo_requestv2)
 
-gg = Backtest(sample_algo_request, data)
+gg = Backtest(sample_algo_requestv2, data)
 # gg.ttt("2020-01-02")
 
 
@@ -461,13 +543,15 @@ gg = Backtest(sample_algo_request, data)
 # ss = gg.get_historical_holdings()
 # zz = gg.get_historical_portfolio_asset_quantities(ss)
 
-# print(zz)
-from backtest_error_tracker import BacktestErrorTracker
+print(gg.get_threshold_based_holdings())
 
-fff = BacktestErrorTracker(sample_algo_request, data, gg.backtest_trading_dates[0])
-fff.get_backtest_errors()
-print(fff.indicator_errors)
-print(fff.asset_errors)
+# print(zz)
+# from backtest_error_tracker import BacktestErrorTracker
+
+# fff = BacktestErrorTracker(sample_algo_request, data, gg.backtest_trading_dates[0])
+# fff.get_backtest_errors()
+# print(fff.indicator_errors)
+# print(fff.asset_errors)
 
 # print(gg.get_hisorical_portfolio_values_weights(zz))
 
