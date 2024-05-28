@@ -8,11 +8,11 @@
 # Type expression is an if else statement
 # Type instructions is anytime you want a new weight or want to branch off (will make more sense soon)
 sample_algo_request = {
-    "start_date": "2003-01-01",
+    "start_date": "2010-01-01",
     "end_date": "2021-01-01",
     "name": "test algo",
     "benchmarks": ["NVDA", "SPY"],
-    "trading_frequency": "monthly",  # Can be daily, weekly, monthly, quarterly, annually.
+    "trading_frequency": "annually",  # Can be daily, weekly, monthly, quarterly, annually.
     "algorithm": {
         "type": "instructions",
         "weight": 1,
@@ -23,7 +23,7 @@ sample_algo_request = {
                 "weight": [0.75, 0.25],
                 "tasks": [
                     {"type": "buy", "asset": "AAPL"},
-                    {"type": "buy", "asset": "TSLA"},
+                    {"type": "buy", "asset": "MMM"},
                 ],
             },
             {
@@ -94,6 +94,20 @@ sample_algo_request = {
 # Even though the weight is weight:1 or weight:[0.5, 0.25, 0.25], the actual weight
 # of the task may not be 0.5. This is because weights can be nested inside each other.
 # The actual value/weight of the task is its relative weight.
+sample_algo_requestv2 = {
+    "start_date": "2010-01-01",
+    "end_date": "2021-01-01",
+    "name": "test algo",
+    "benchmarks": ["NVDA", "SPY"],
+    "trading_frequency": "annually",  # Can be daily, weekly, monthly, quarterly, annually.
+    "algorithm": {
+        "type": "instructions",
+        "weight": 1,
+        "tasks": [
+            {"type": "buy", "asset": "AAPL"},
+        ],
+    },
+}
 
 
 def calculate_task_weight(tasks_length, task_index, weight, relative_weight):
@@ -249,17 +263,39 @@ def compare_holdings(old_holdings, new_holdings):
     return differences
 
 
-# old_holdings = {"AAPL": 500, "NVDA": 1000, "AMZN": 200, "TSLA": 25.34, "FORD": 300}
-# new_holdings = {
-#     "AAPL": 250,
-#     "NVDA": 1500,
-#     "AMZN": 200,
-#     "TSLA": 20.348,
-#     "1": 923,
-#     "2": 2384,
-#     "2343": 1,
-#     "1212": 120.129,
-# }
+def is_holdings_above_threshold(old_holdings, new_holdings, threshold):
+    """Checks if any of the differences in holdings are above the threshold.
+
+    Args:
+        old_holdings (dict): Old holdings.
+        new_holdings (dict): New holdings.
+        threshold (float/int): The value to check if any of the holdings differences are above.
+
+    Returns:
+        bool: True if any of the differences in holdings are above the threshold. False if none of the differencs
+        in holdings are above the threshold.
+    """
+
+    # Getting the max difference between assets in holdings
+    holdings_differences = compare_holdings(old_holdings, new_holdings)
+    max_difference = max(list(holdings_differences.values()))
+
+    if max_difference > threshold:
+        return True
+    return False
+
+
+old_holdings = {"AAPL": 500, "NVDA": 1000, "AMZN": 200, "TSLA": 25.34, "FORD": 300}
+new_holdings = {
+    "AAPL": 250,
+    "NVDA": 1500,
+    "AMZN": 200,
+    "TSLA": 20.348,
+    "1": 923,
+    "2": 2384,
+    "2343": 1,
+    "1212": 120.129,
+}
 
 
 def calculate_buy_sell_quantities(old_holdings, new_holdings):
@@ -295,6 +331,9 @@ def calculate_buy_sell_quantities(old_holdings, new_holdings):
             quantities[asset] = quantity
 
     return quantities
+
+
+# print(calculate_buy_sell_quantities(old_holdings, new_holdings))
 
 
 example_condtions = {
