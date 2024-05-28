@@ -105,6 +105,7 @@ sample_algo_requestv2 = {
         "weight": 1,
         "tasks": [
             {"type": "buy", "asset": "AAPL"},
+            {"type": "buy", "asset": "MSFT"},
         ],
     },
 }
@@ -264,7 +265,7 @@ def compare_holdings(old_holdings, new_holdings):
 
 
 def is_holdings_above_threshold(old_holdings, new_holdings, threshold):
-    """Checks if any of the differences in holdings are above the threshold.
+    """Checks if the total differences in holdings differ by the threshold.
 
     Args:
         old_holdings (dict): Old holdings.
@@ -272,18 +273,20 @@ def is_holdings_above_threshold(old_holdings, new_holdings, threshold):
         threshold (float/int): The value to check if any of the holdings differences are above.
 
     Returns:
-        bool: True if any of the differences in holdings are above the threshold. False if none of the differencs
-        in holdings are above the threshold.
+        bool: True if the total differences in holdings differ by the threshold. False if the total differencs
+        in holdings do not differ by the threshold.
     """
 
-    # Getting the max difference between assets in holdings
+    # Getting the total difference between assets in holdings
     holdings_differences = compare_holdings(old_holdings, new_holdings)
-    max_difference = max(list(holdings_differences.values()))
+    total_difference = sum((abs(value) for value in holdings_differences.values()))
 
-    if max_difference > threshold:
+    if total_difference > threshold:
         return True
     return False
 
+
+# print(is_holdings_above_threshold(new_holdings2, current_holdings, 0.1))
 
 old_holdings = {"AAPL": 500, "NVDA": 1000, "AMZN": 200, "TSLA": 25.34, "FORD": 300}
 new_holdings = {
