@@ -301,6 +301,99 @@ class Backtest:
             "asset_weights": historical_asset_weights,
         }
 
+    def get_threshold_based_historical_portfolio_data(self):
+        """Gets the historical traded dates, portfolio values, and asset weights for every trading day in
+        threshold based algorithm.
+
+        Returns:
+            dict: Dictionary of list of traded dates, dictionary with dates as keys and portfolio values as values,
+            dictionary of dates as keys and asset weights as values.
+        """
+        historical_trading_dates = []
+        historical_portfolio_values = {}
+        historical_asset_weights = {}
+        portfolio_value_tracker = self.initial_investment
+
+        # Tracks the very latest asset quantities and holdings used for calculations
+        lastest_asset_quantities = {}
+        latest_holdings = {}
+
+        for date in self.trading_days:
+
+            # For threshold based trading will have to calculate holdings for every trading day
+            holdings = self.calculate_holdings(
+                date,
+                self.algorithm["algorithm"]["tasks"],
+                self.starting_weight,
+                1,
+                {},
+            )
+
+            # If holdings returned none there was an error in algorithm so reset everything
+            # and skip the rest of the logic for the trading day
+            if holdings is None:
+                latest_holdings.clear()
+                lastest_asset_quantities.clear()
+                historical_portfolio_values.clear()
+                historical_asset_weights.clear()
+                historical_trading_dates.clear()
+                portfolio_value_tracker = self.initial_investment
+                continue
+
+            # If there are currently holdings
+            if latest_holdings:
+
+                # Calculate and adding the portfolio value and weights
+                portfolio_value = self.calculate_portfolio_value(
+                    date, lastest_asset_quantities
+                )
+                portfolio_value_tracker = portfolio_value
+                historical_portfolio_values[date] = portfolio_value
+                portfolio_weights = self.calculate_portfolio_weights(
+                    date, lastest_asset_quantities, portfolio_value
+                )
+                historical_asset_weights[date] = portfolio_weights
+
+                # If the latest holdings compared to the current weights exceed the threshold
+                if is_holdings_above_threshold(
+                    latest_holdings,
+                    portfolio_weights,
+                    self.threshold,
+                ):
+
+                    # Calculating and adding historical values
+                    latest_holdings = holdings
+                    asset_quantities = self.calculate_portfolio_asset_quantities(
+                        date, holdings, portfolio_value_tracker
+                    )
+                    lastest_asset_quantities = asset_quantities
+                    portfolio_weights = self.calculate_portfolio_weights(
+                        date, asset_quantities, portfolio_value_tracker
+                    )
+                    historical_asset_weights[date] = portfolio_weights
+                    historical_trading_dates.append(date)
+
+            # There are no holdings so this is first traded day
+            else:
+
+                # Calculating and adding historical values
+                latest_holdings = holdings
+                asset_quantities = self.calculate_portfolio_asset_quantities(
+                    date, holdings, portfolio_value_tracker
+                )
+                lastest_asset_quantities = asset_quantities
+                asset_weights = self.calculate_portfolio_weights(
+                    date, asset_quantities, portfolio_value_tracker
+                )
+                historical_asset_weights[date] = asset_weights
+                historical_trading_dates.append(date)
+
+        return {
+            "trading_dates": historical_trading_dates,
+            "portfolio_values": historical_portfolio_values,
+            "asset_weights": historical_asset_weights,
+        }
+
     def get_threshold_based_holdings(self):
         historical_holdings = {}
 
@@ -634,7 +727,8 @@ gg = Backtest(sample_algo_requestv2, data)
 # print(fff.asset_errors)
 
 # print(gg.get_historical_portfolio_values(zz))
-print(gg.get_time_based_historical_portfolio_data())
+# print(gg.get_time_based_historical_portfolio_data())
+# print(gg.get_threshold_based_historical_portfolio_data()["asset_weights"])
 
 # print(
 #     gg.calculate_holdings(
