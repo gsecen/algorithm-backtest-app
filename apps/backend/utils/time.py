@@ -561,7 +561,7 @@ def copy_date_data_to_new_dates(dictionary, new_dates):
 
 
 def get_dates_after_date(dates, after_date):
-    """Gets all the dates in dates which are after the after date.
+    """Gets all the dates in a list of dates after a specified date.
 
     Args:
         dates (list): List of dates.
