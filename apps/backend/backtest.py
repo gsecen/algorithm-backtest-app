@@ -249,6 +249,10 @@ class Backtest:
                     )
                     portfolio_value_tracker = portfolio_value
                     historical_portfolio_values[date] = portfolio_value
+                else:
+                    historical_portfolio_values[date] = (
+                        portfolio_value_tracker  # Adding the inital investment on first traded day
+                    )
 
                 holdings = self.calculate_holdings(
                     date,
@@ -386,6 +390,9 @@ class Backtest:
                 )
                 historical_asset_weights[date] = asset_weights
                 historical_trading_dates.append(date)
+                historical_portfolio_values[date] = (
+                    portfolio_value_tracker  # Adding the inital investment on first traded day
+                )
 
         return {
             "traded_dates": historical_trading_dates,
@@ -718,7 +725,11 @@ data = build_dataset(sample_algo_requestv2)
 gg = Backtest(sample_algo_requestv2, data)
 # gg.ttt("2020-01-02")
 
-# print(gg.get_historical_portfolio_data()["traded_dates"])
+ss = gg.get_historical_portfolio_data()
+
+# print(ss["asset_weights"].keys())
+print(ss["portfolio_values"])
+
 
 # gg.get_backtest_errors("2010-06-29")
 # print(gg.error_tracker.asset_errors)
