@@ -1,7 +1,7 @@
 """This module calculates the calmar ratio of an asset"""
 
-from maximum_drawdown import get_maximum_drawdown
-from annualized_return import get_annualized_return
+from performance_metrics.maximum_drawdown import get_maximum_drawdown
+from performance_metrics.annualized_return import get_annualized_return
 
 
 def get_calmar_ratio(asset_df, start_date, end_date, column_name="Open"):

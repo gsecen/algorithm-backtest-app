@@ -1,7 +1,7 @@
 """This module calculates the sortino ratio of an asset"""
 
-from annualized_return import get_annualized_return
-from downside_deviation import get_annualized_downside_deviation
+from performance_metrics.annualized_return import get_annualized_return
+from performance_metrics.downside_deviation import get_annualized_downside_deviation
 
 
 def get_sortino_ratio(asset_df, start_date, end_date, column_name="Open"):
