@@ -1,4 +1,4 @@
-from beta import get_beta
+from comparative_metrics.beta import get_beta
 from performance_metrics.annualized_return import get_annualized_return
 from math import sqrt
 

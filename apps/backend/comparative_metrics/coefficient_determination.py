@@ -1,6 +1,6 @@
 """This module calculates the coefficient of determination"""
 
-from pearson_correlation import get_pearson_correlation
+from comparative_metrics.pearson_correlation import get_pearson_correlation
 
 
 def get_coefficient_determination(
