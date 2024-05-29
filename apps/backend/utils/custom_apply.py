@@ -10,7 +10,7 @@ def calculate_return(values):
     Returns:
         float: Return as a percentage of the two values.
     """
-    return ((values[1] / values[0]) * 100) - 100
+    return ((values[1] - values[0]) / values[0]) * 100
 
 
 def calculate_negative_return(values):
@@ -22,7 +22,7 @@ def calculate_negative_return(values):
     Returns:
         float: Return as a percentage of the two values. Will only return negative values or nan.
     """
-    return_percentage = ((values[1] / values[0]) * 100) - 100
+    return_percentage = ((values[1] - values[0]) / values[0]) * 100
 
     # If it is a positive return
     if return_percentage >= 0:
