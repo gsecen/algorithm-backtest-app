@@ -33,4 +33,4 @@ def get_total_cumulative_return(asset_df, start_date, end_date, column_name="Ope
         # Calculating total cumulative return as a percentage
         start_price = get_value_by_date(asset_df, valid_start_date, column_name)
         end_price = get_value_by_date(asset_df, valid_end_date, column_name)
-        return (((end_price - start_price) / end_price)) * 100
+        return ((end_price - start_price) / start_price) * 100
