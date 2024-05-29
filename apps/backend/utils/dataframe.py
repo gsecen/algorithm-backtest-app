@@ -147,3 +147,25 @@ def get_shared_rows(dataframe1, dataframe2, column_name):
     df2_shared_rows.reset_index(inplace=True)
 
     return df1_shared_rows, df2_shared_rows
+
+
+def build_dataframe_from_tuples(*values_column_names):
+    """Builds a pandas dataframe with specified values and column names in tuple(s).
+    The iterables in tuple will be the values for column name in tuple.
+
+    Args:
+        values_column_names (tuple): Tuple(s). (iterable, "column name")
+
+    Returns:
+        df: Pandas dataframe with specified values(iterables) and column names from tuple(s).
+    """
+
+    # Creating an empty dataframe
+    dataframe = pd.DataFrame()
+
+    for value, column_name in values_column_names:
+
+        # Adding the values with the column name to dataframe
+        dataframe[column_name] = value
+
+    return dataframe
