@@ -1,5 +1,7 @@
 """This module helps with all pandas df related functions"""
 
+import pandas as pd
+
 
 def get_value_by_date(dataframe, date, column_name):
     """Gets value from the specified column corresponding to the given date.
