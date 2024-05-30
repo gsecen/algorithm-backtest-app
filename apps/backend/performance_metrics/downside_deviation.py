@@ -28,9 +28,9 @@ def get_downside_deviation(asset_df, start_date, end_date, column_name="Open"):
         return
     else:
 
-        # Getting the returns of the values
+        # Getting the returns of the values within date range
         negative_returns = (
-            asset_df[column_name]
+            rows[column_name]
             .rolling(2)
             .apply(lambda x: calculate_negative_return(x), raw=True)
         )

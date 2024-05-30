@@ -28,11 +28,9 @@ def get_standard_deviation(asset_df, start_date, end_date, column_name="Open"):
         return
     else:
 
-        # Getting the returns of the values
+        # Getting the returns of the values within date range
         returns = (
-            asset_df[column_name]
-            .rolling(2)
-            .apply(lambda x: calculate_return(x), raw=True)
+            rows[column_name].rolling(2).apply(lambda x: calculate_return(x), raw=True)
         )
 
         # Getting standard deviation

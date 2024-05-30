@@ -33,7 +33,7 @@ def get_historical_cumulative_returns(
 
         # Getting the historical cumulative returns of the values
         cumulative_returns = (
-            asset_df[column_name]
+            rows[column_name]
             .rolling(1)
             .apply(lambda x: calculate_cumulative_return(x, starting_value), raw=True)
         )
