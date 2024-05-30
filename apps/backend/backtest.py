@@ -6,8 +6,6 @@ from utils.algorithm import (
 from utils.time import (
     get_trading_days,
     get_time_based_trading_dates,
-    copy_date_data_to_new_dates,
-    get_dates_after_date,
 )
 from utils.algorithm import (
     calculate_task_weight,
@@ -21,7 +19,6 @@ from utils.dataframe import (
 
 from algorithm.dataset_builder import build_dataset
 
-import pandas as pd
 import operator
 from math import isnan
 
@@ -41,13 +38,6 @@ class Backtest:
         )
         self.trading_threshold = algorithm["trading_threshold"]
 
-        # self.trading_days = [
-        #     "1995-01-03",
-        #     "1998-01-02",
-        #     "2008-01-03",
-        #     "2018-01-02",
-        #     "2021-01-04",
-        # ]
         self.starting_weight = algorithm["algorithm"]["weight"]
 
         self.initial_investment = 100000
@@ -196,29 +186,76 @@ class Backtest:
                 date, task["false"], weight, relative_weight, holdings
             )
 
-    def get_historical_holdings(self):
-        """Runs the algorithm through backtesting trading dates and keeps track of the holdings
-        for each backtesting day.
+    def calculate_portfolio_asset_quantities(self, date, holdings, portfolio_value):
+        """Calculates the portfolio asset quantities on specified date based off balance and what the
+        holdings (asset weights) are.
+
+        Args:
+            date (str): Date to calculate portfolio assets quantities for.
+            holdings (dict): Holdings (asset weights).
 
         Returns:
-            dict: Dictionary with dates as keys and holdings for that date as values.
+            dict: Dictionary with assets as keys and asset quantities as values.
         """
-        historical_holdings = {}
+        quantities = {}
+        for asset, weight in holdings.items():
 
-        for date in self.backtest_trading_dates:
+            # Calculating shares based on balance and weight
+            asset_price = get_value_by_date(self.dataset[asset], date, "Open")
+            shares = (portfolio_value * weight) / asset_price
 
-            # First relative weight will always be 1 because it is not nested in anything else
-            holdings = self.calculate_holdings(
-                date, self.algorithm["algorithm"]["tasks"], self.starting_weight, 1, {}
-            )
-
-            # If holdings is none there was an error in the algorithm
-            if holdings is None:
-                historical_holdings.clear()
+            if asset in quantities:
+                quantities[asset] += shares
             else:
-                historical_holdings[date] = holdings
+                quantities[asset] = shares
 
-        return historical_holdings
+        return quantities
+
+    def calculate_portfolio_value(self, date, asset_quantities):
+        """Calculates the portfolio value on specified date based off of asset quantities.
+
+        Args:
+            date (str): Date to calculate portfolio for.
+            asset_quantities (dict): Assets and their quantities.
+
+        Returns:
+            float/int: Portfolio value.
+        """
+        portfolio_value = 0
+        for asset, quantity in asset_quantities.items():
+
+            # Calculating the total asset value and adding it to portfolio value
+            asset_price = get_value_by_date(self.dataset[asset], date, "Open")
+            total_asset_value = quantity * asset_price
+            portfolio_value += total_asset_value
+
+        return portfolio_value
+
+    def calculate_portfolio_weights(self, date, asset_quantities, portfolio_value):
+        """Calculates the portfolio asset weights on a specified date based off of
+        asset quantities and portfolio value.
+
+        Args:
+            date (str): Date to calculate asset weights for.
+            asset_quantities (dict): Asset quantities.
+            portfolio_value (float): Portfolio value.
+
+        Returns:
+            dict: Dictionary with dates as keys and asset weights as values.
+        """
+        asset_weights = {}
+
+        for asset, quantity in asset_quantities.items():
+
+            # Calculating asset weight based on asset value and portfolio value
+            asset_price = get_value_by_date(self.dataset[asset], date, "Open")
+            total_asset_value = quantity * asset_price
+            asset_weight = total_asset_value / portfolio_value
+
+            # Adding asset weight as a decimal
+            asset_weights[asset] = asset_weight
+
+        return asset_weights
 
     def get_time_based_historical_portfolio_data(self):
         """Gets the historical traded dates, portfolio values, and asset weights for every trading day in
@@ -415,353 +452,19 @@ class Backtest:
 
         return self.get_threshold_based_historical_portfolio_data()
 
-    def get_threshold_based_holdings(self):
-        historical_holdings = {}
-
-        # Must keep track of latest asset quantities and portfolio value
-        lastest_quantities = {}
-        portfolio_value_tracker = self.initial_investment
-
-        for date in self.trading_days:
-
-            # If there are holdings
-            if historical_holdings:
-
-                # Updating the portfolios current value
-                portfolio_value = self.calculate_portfolio_value(
-                    date, lastest_quantities
-                )
-                portfolio_value_tracker = portfolio_value
-
-                # Get portfolio weights
-                portfolio_weights = self.calculate_portfolio_weights(
-                    date, lastest_quantities, portfolio_value_tracker
-                )
-
-                # If the current weights compared to latest holdings exceed the threshold
-                if is_holdings_above_threshold(
-                    historical_holdings[list(historical_holdings)[-1]],
-                    portfolio_weights,
-                    self.threshold,
-                ):
-
-                    # First relative weight will always be 1 because it is not nested in anything else
-                    holdings = self.calculate_holdings(
-                        date,
-                        self.algorithm["algorithm"]["tasks"],
-                        self.starting_weight,
-                        1,
-                        {},
-                    )
-
-                    # If holdings is none there was an error in the algorithm
-                    if holdings is None:
-                        historical_holdings.clear()
-                        lastest_quantities.clear()
-                        portfolio_value_tracker = self.initial_investment
-                    else:
-                        historical_holdings[date] = holdings
-                        asset_quantities = self.calculate_portfolio_asset_quantities(
-                            date, holdings, portfolio_value_tracker
-                        )
-                        lastest_quantities = asset_quantities
-
-            else:
-
-                # First relative weight will always be 1 because it is not nested in anything else
-                holdings = self.calculate_holdings(
-                    date,
-                    self.algorithm["algorithm"]["tasks"],
-                    self.starting_weight,
-                    1,
-                    {},
-                )
-
-                # If holdings is none there was an error in the algorithm
-                if holdings is None:
-                    historical_holdings.clear()
-                    lastest_quantities.clear()
-                    portfolio_value_tracker = self.initial_investment
-                else:
-                    historical_holdings[date] = holdings
-                    asset_quantities = self.calculate_portfolio_asset_quantities(
-                        date, holdings, portfolio_value_tracker
-                    )
-                    lastest_quantities = asset_quantities
-
-        return historical_holdings
-
-    def calculate_portfolio_asset_quantities(self, date, holdings, portfolio_value):
-        """Calculates the portfolio asset quantities on specified date based off balance and what the
-        holdings (asset weights) are.
-
-        Args:
-            date (str): Date to calculate portfolio assets quantities for.
-            holdings (dict): Holdings (asset weights).
-
-        Returns:
-            dict: Dictionary with assets as keys and asset quantities as values.
-        """
-        quantities = {}
-        for asset, weight in holdings.items():
-
-            # Calculating shares based on balance and weight
-            asset_price = get_value_by_date(self.dataset[asset], date, "Open")
-            shares = (portfolio_value * weight) / asset_price
-
-            if asset in quantities:
-                quantities[asset] += shares
-            else:
-                quantities[asset] = shares
-
-        return quantities
-
-    def calculate_portfolio_value(self, date, asset_quantities):
-        """Calculates the portfolio value on specified date based off of asset quantities.
-
-        Args:
-            date (str): Date to calculate portfolio for.
-            asset_quantities (dict): Assets and their quantities.
-
-        Returns:
-            float/int: Portfolio value.
-        """
-        portfolio_value = 0
-        for asset, quantity in asset_quantities.items():
-
-            # Calculating the total asset value and adding it to portfolio value
-            asset_price = get_value_by_date(self.dataset[asset], date, "Open")
-            total_asset_value = quantity * asset_price
-            portfolio_value += total_asset_value
-
-        return portfolio_value
-
-    def calculate_portfolio_weights(self, date, asset_quantities, portfolio_value):
-        """Calculates the portfolio asset weights on a specified date based off of
-        asset quantities and portfolio value.
-
-        Args:
-            date (str): Date to calculate asset weights for.
-            asset_quantities (dict): Asset quantities.
-            portfolio_value (float): Portfolio value.
-
-        Returns:
-            dict: Dictionary with dates as keys and asset weights as values.
-        """
-        asset_weights = {}
-
-        for asset, quantity in asset_quantities.items():
-
-            # Calculating asset weight based on asset value and portfolio value
-            asset_price = get_value_by_date(self.dataset[asset], date, "Open")
-            total_asset_value = quantity * asset_price
-            asset_weight = total_asset_value / portfolio_value
-
-            # Adding asset weight as a decimal
-            asset_weights[asset] = asset_weight
-
-        return asset_weights
-
-    def get_historical_portfolio_asset_quantities(self, historical_holdings):
-        """Gets the historical asset quantities for each backtesting trading day.
-        (same days as historical holdings)
-
-        Args:
-            historical_holdings (dict): Historical holdings.
-
-        Returns:
-            dict: Dicionary with dates as keys and asset quantities for that date as values.
-        """
-        asset_quantities = {}
-
-        portfolio_value = self.initial_investment
-        for index, date in enumerate(historical_holdings):
-            holdings = historical_holdings[date]
-
-            # If very first trading day
-            if index == 0:
-                asset_quantities[date] = self.calculate_portfolio_asset_quantities(
-                    date, holdings, portfolio_value
-                )
-            else:
-
-                # Getting date of previous asset quantities
-                stock_quantities_list = list(asset_quantities)
-                last_date = stock_quantities_list[index - 1]
-
-                # Getting the previous asset quantities
-                previous_quantities = asset_quantities[last_date]
-
-                # Calculating and updating the new portfolio value
-                new_portfolio_value = self.calculate_portfolio_value(
-                    date, previous_quantities
-                )
-                previous_quantities = new_portfolio_value
-
-                asset_quantities[date] = self.calculate_portfolio_asset_quantities(
-                    date, holdings, new_portfolio_value
-                )
-
-        return asset_quantities
-
-    def get_historical_portfolio_values(self, historical_asset_quantities):
-        """Gets the historical portfolio values for each trading day no matter the timeframe.
-
-        Args:
-            historical_asset_quantities (dict): Historical asset quantities.
-
-        Returns:
-            dict: Dictionary with dates as keys and portfolio value on that date as values.
-        """
-
-        # Getting all trading days which there are holdings for no matter timeframe
-        first_traded_date = list(historical_asset_quantities)[0]
-        days_with_holdings = get_dates_after_date(self.trading_days, first_traded_date)
-
-        # Get asset quantities for every trading day no matter timeframe
-        # Example: Timeframe is quarterly, only 4 days traded of year, get what the asset quantities are
-        # for every single trading day
-        historical_asset_quantities = copy_date_data_to_new_dates(
-            historical_asset_quantities, days_with_holdings
-        )
-
-        historical_portforlio_values = {}
-
-        for date, quantities in historical_asset_quantities.items():
-
-            # Calculating and adding the portfolio value for date
-            portfolio_value = self.calculate_portfolio_value(date, quantities)
-            historical_portforlio_values[date] = portfolio_value
-
-        return historical_portforlio_values
-
-    def get_historical_portfolio_weights(
-        self, historical_asset_quantities, historical_portfolio_values
-    ):
-        """Gets the historical portfolio weights for each trading day no matter the timeframe.
-
-        Args:
-            historical_asset_quantities (dict): Historical asset quantities.
-            historical_portfolio_values (dict): Historical portfolio values.
-
-        Returns:
-            dict: Dictionary with dates as keys and portfolio weights on that date as values.
-        """
-        # Getting all trading days which there are holdings for no matter timeframe
-        first_traded_date = list(historical_asset_quantities)[0]
-        days_with_holdings = get_dates_after_date(self.trading_days, first_traded_date)
-
-        # Get asset quantities for every trading day no matter timeframe
-        # Example: Timeframe is quarterly, only 4 days traded of year, get what the asset quantities are
-        # for every single trading day
-        historical_asset_quantities = copy_date_data_to_new_dates(
-            historical_asset_quantities, days_with_holdings
-        )
-
-        historical_portforlio_weights = {}
-
-        for date, quantities in historical_asset_quantities.items():
-
-            # Calculating and adding the portfolio asset weights for date
-            portfolio_value = historical_portfolio_values[date]
-            asset_weights = self.calculate_portfolio_weights(
-                date, quantities, portfolio_value
-            )
-            historical_portforlio_weights[date] = asset_weights
-
-        return historical_portforlio_weights
-
-    def get_hisorical_portfolio_values_weights(self, historical_asset_quantities):
-        """Gets the historical portfolio values and weights for each trading day no matter the timeframe.
-
-        Args:
-            historical_asset_quantities (dict): Historical asset quantities.
-
-        Returns:
-            tuple: Dictionary with dates as keys and portfolio value on that date as values, dictionary with
-            dates as keys and portfolio weights on that date as values.
-        """
-        # Getting all trading days which there are holdings for no matter timeframe
-        first_traded_date = list(historical_asset_quantities)[0]
-        days_with_holdings = get_dates_after_date(self.trading_days, first_traded_date)
-
-        # Get asset quantities for every trading day no matter timeframe
-        # Example: Timeframe is quarterly, only 4 days traded of year, get what the asset quantities are
-        # for every single trading day
-        historical_asset_quantities = copy_date_data_to_new_dates(
-            historical_asset_quantities, days_with_holdings
-        )
-
-        historical_portforlio_values = {}
-        historical_portfolio_weights = {}
-
-        for date, quantities in historical_asset_quantities.items():
-
-            # Calculating the portfolio value for date
-            portfolio_value = self.calculate_portfolio_value(date, quantities)
-
-            # Calculating the portfolio weights for date
-            portfolio_weights = self.calculate_portfolio_weights(
-                date, quantities, portfolio_value
-            )
-
-            historical_portforlio_values[date] = portfolio_value
-            historical_portfolio_weights[date] = portfolio_weights
-
-        return historical_portforlio_values, historical_portfolio_weights
-
-    def update_portfolio_value(self, new_value):
-        """Update class portfolio value.
-
-        Args:
-            new_value (int/float): Value you want class portfolio value to be
-        """
-        self.initial_investment = new_value
-
 
 # osio
 data = build_dataset(sample_algo_requestv2)
 
 gg = Backtest(sample_algo_requestv2, data)
-# gg.ttt("2020-01-02")
 
 ss = gg.get_historical_portfolio_data()
 
-# print(ss["asset_weights"].keys())
-print(ss["portfolio_values"])
 
+from backtest_metrics import BacktestMetrics
 
-# gg.get_backtest_errors("2010-06-29")
-# print(gg.error_tracker.asset_errors)
-# print(gg.error_tracker.indicator_errors)
+bm = BacktestMetrics(sample_algo_requestv2, ss, data)
 
-# gg.get_backtest_errors()
-# print(gg.error_tracker.asset_errors)
-# print(gg.error_tracker.indicator_errors)
+dg = bm.get_all_metrics()
 
-# ss = gg.get_historical_holdings()
-# zz = gg.get_historical_portfolio_asset_quantities(ss)
-
-# print(gg.get_threshold_based_holdings())
-
-# print(zz)
-# from backtest_error_tracker import BacktestErrorTracker
-
-# fff = BacktestErrorTracker(sample_algo_request, data, gg.backtest_trading_dates[0])
-# fff.get_backtest_errors()
-# print(fff.indicator_errors)
-# print(fff.asset_errors)
-
-# print(gg.get_historical_portfolio_values(zz))
-# print(gg.get_time_based_historical_portfolio_data())
-# print(gg.get_threshold_based_historical_portfolio_data()["asset_weights"])
-
-# print(
-#     gg.calculate_holdings(
-#         "2005-01-03",
-#         gg.algorithm["algorithm"]["tasks"],
-#         gg.algorithm["algorithm"]["weight"],
-#         1,
-#         {},
-#     )
-# )
+print(dg)
