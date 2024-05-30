@@ -12,6 +12,7 @@ sample_algo_request = {
     "end_date": "2021-01-01",
     "name": "test algo",
     "benchmarks": ["NVDA", "SPY"],
+    "trading_threshold": 0,  # If threshold is 0 that means algorithm uses time based trading, if not 0 it uses threshold based trading
     "trading_frequency": "annually",  # Can be daily, weekly, monthly, quarterly, annually.
     "algorithm": {
         "type": "instructions",
@@ -95,10 +96,11 @@ sample_algo_request = {
 # of the task may not be 0.5. This is because weights can be nested inside each other.
 # The actual value/weight of the task is its relative weight.
 sample_algo_requestv2 = {
-    "start_date": "2010-01-01",
-    "end_date": "2021-01-01",
+    "start_date": "2016-01-04",
+    "end_date": "2020-05-13",
     "name": "test algo",
-    "benchmarks": ["NVDA", "SPY"],
+    "benchmarks": ["NVDA", "SPY", "AAPL"],
+    "trading_threshold": 0.2,
     "trading_frequency": "annually",  # Can be daily, weekly, monthly, quarterly, annually.
     "algorithm": {
         "type": "instructions",
@@ -244,10 +246,7 @@ def compare_holdings(old_holdings, new_holdings):
         if key in new_holdings.keys():
 
             # If the same asset is in old and new holdings calcualte difference in weights
-            difference = new_holdings[key] - old_holdings[key]
-            # If difference in weights in 0 the asset has the same weight in old and new holdings
-            if difference != 0:
-                differences[key] = new_holdings[key] - old_holdings[key]
+            differences[key] = new_holdings[key] - old_holdings[key]
 
         else:
 
