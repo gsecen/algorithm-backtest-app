@@ -75,20 +75,6 @@ def get_date_of_first_non_nan_value(dataframe, column_name):
         return value.iloc[0]
 
 
-import pandas as pd
-
-dates = ["1", "2", "3"]
-values = [1, 2, 3]
-
-dictionary = {"Date": dates, "value": values}
-
-# Converting dictionary of lists to df
-df = pd.DataFrame(dictionary)
-
-# if "1" in df["Date"].values:
-#     print("sdfio")
-
-
 def does_value_exist(dataframe, value, column_name="Date"):
     """Checks if value exists in dataframe column.
 
