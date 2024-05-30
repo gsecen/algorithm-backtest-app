@@ -96,18 +96,17 @@ sample_algo_request = {
 # of the task may not be 0.5. This is because weights can be nested inside each other.
 # The actual value/weight of the task is its relative weight.
 sample_algo_requestv2 = {
-    "start_date": "2016-01-04",
+    "start_date": "2016-12-31",
     "end_date": "2020-05-13",
     "name": "test algo",
     "benchmarks": ["NVDA", "SPY", "AAPL"],
-    "trading_threshold": 0.2,
+    "trading_threshold": 0,
     "trading_frequency": "annually",  # Can be daily, weekly, monthly, quarterly, annually.
     "algorithm": {
         "type": "instructions",
         "weight": 1,
         "tasks": [
             {"type": "buy", "asset": "AAPL"},
-            {"type": "buy", "asset": "MSFT"},
         ],
     },
 }
@@ -189,48 +188,6 @@ def get_benchmark_data(algorithm):
     return data
 
 
-# Rough function which will iterate through all tasks in algorithm and keep track of weights
-def iterate_tasks(tasks, weight, relative_weight):
-
-    for index, task in enumerate(tasks):
-        # Getting the relative weight for task
-        task_relative_weight = calculate_task_weight(
-            len(tasks), index, weight, relative_weight
-        )
-
-        if task["type"] == "buy":
-            print(task)
-            print(task_relative_weight)
-
-        if task["type"] == "expression":
-            iterate_tasks(task["true"], weight, task_relative_weight)
-            iterate_tasks(task["false"], weight, task_relative_weight)
-
-        if task["type"] == "instructions":
-            iterate_tasks(task["tasks"], task["weight"], task_relative_weight)
-
-
-def test():
-    starting_weight = sample_algo_request["algorithm"]["weight"]
-    # Relative weight argument will always be 1 at the start
-    iterate_tasks(sample_algo_request["algorithm"], starting_weight, 1)
-
-
-# test()
-
-
-current_holdings = {"AAPL": 0.3, "MSFT": 0.25, "TSLA": 0.1, "NVDA": 0.2}
-
-new_holdings2 = {
-    "AAPL": 0.5,
-    "AMZN": 0.10,
-    "TSLA": 0.10,
-    "NVDA": 0.10,
-    "FORD": 0.2,
-    "ff": 0.5,
-}
-
-
 def compare_holdings(old_holdings, new_holdings):
     """Gets the difference of asset weights and new assets between old and new holdings.
 
@@ -284,19 +241,6 @@ def is_holdings_above_threshold(old_holdings, new_holdings, threshold):
     return False
 
 
-old_holdings = {"AAPL": 500, "NVDA": 1000, "AMZN": 200, "TSLA": 25.34, "FORD": 300}
-new_holdings = {
-    "AAPL": 250,
-    "NVDA": 1500,
-    "AMZN": 200,
-    "TSLA": 20.348,
-    "1": 923,
-    "2": 2384,
-    "2343": 1,
-    "1212": 120.129,
-}
-
-
 def calculate_buy_sell_quantities(old_holdings, new_holdings):
     """Compares old and new stock holdings. Calculates how much quantity of each asset was bought or sold.
 
@@ -330,26 +274,6 @@ def calculate_buy_sell_quantities(old_holdings, new_holdings):
             quantities[asset] = quantity
 
     return quantities
-
-
-# print(calculate_buy_sell_quantities(old_holdings, new_holdings))
-
-
-example_condtions = {
-    "conditions": {
-        "operator": "<",
-        "condition1": {
-            "function": "sma",
-            "period": 8,
-            "asset": "AAPL",
-        },
-        "condition2": {
-            "function": "sma",
-            "asset": "MSFT",
-            "period": 2,
-        },
-    },
-}
 
 
 def get_indicator_names(conditions):
