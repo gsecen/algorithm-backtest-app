@@ -1,29 +1,35 @@
+"""This module gets all the backtesting metrics"""
+
+from functools import partial
 import performance_metrics as pm
 import comparative_metrics as cm
 from utils.dataframe import build_dataframe_from_tuples
-from functools import partial
 
 
 class BacktestMetrics:
+    """This class gets the algorithms metric data. Performance metrics of algorithm and benchmarks.
+    Comparative metrics of algorithm compared to benchmarks.
+    """
 
     def __init__(self, algorithm, portfolio_data, dataset):
+        self.dataset = dataset
+
         self.benchmarks = algorithm["benchmarks"]
         self.algorithm_name = algorithm["name"]
         self.portfolio_value_data = portfolio_data["portfolio_values"]
-        self.dataset = dataset
-
-        self.traded_dates = list(self.portfolio_value_data.keys())
-        self.first_traded_date = self.traded_dates[0]
-        self.last_traded_date = self.traded_dates[-1]
 
         self.portfolio_dataframe = self.build_portfolio_dataframe()
+
+        traded_dates = list(self.portfolio_value_data.keys())
+        self.first_traded_date = traded_dates[0]
+        self.last_traded_date = traded_dates[-1]
 
         self.performance_metrics = {
             "annualized_return": pm.get_annualized_return,
             "calmar_ratio": pm.get_calmar_ratio,
             "downside_deviation": pm.get_downside_deviation,
             "annualized_downside_deviation": pm.get_annualized_downside_deviation,
-            # "historical_cumulative_returns": pm.get_historical_cumulative_returns,
+            "historical_cumulative_returns": pm.get_historical_cumulative_returns,
             "maximum_drawdown": pm.get_maximum_drawdown,
             "sharp_ratio": pm.get_sharp_ratio,
             "sortino_ratio": pm.get_sortino_ratio,
