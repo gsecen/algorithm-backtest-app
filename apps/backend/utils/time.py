@@ -69,28 +69,6 @@ def is_date_later_or_equal(date1, date2, date_format="%Y-%m-%d"):
         return False
 
 
-# dates = [
-#     "2020-01-01",
-#     "2020-01-02",
-#     "2020-01-05",
-#     "2020-01-06",
-#     "2020-01-09",
-#     "2020-01-12",
-# ]
-
-start = "2020-01-04"
-end = "2020-01-11"
-
-
-# test = []
-# for i in dates:
-#     if i == start or is_date_earlier(start, i):
-#         test.append(i)
-
-
-# print(test)
-
-
 def get_trading_days(start_date, end_date):
     """Gets all the trading days between two dates.
 
@@ -120,9 +98,6 @@ def get_trading_days(start_date, end_date):
     return trading_days
 
 
-# print(get_trading_days("1919-01-01", "1930-01-01"))
-
-
 def is_date_between(check_date, start_date, end_date, date_format="%Y-%m-%d"):
     """Checks if check date is in between start date and end date.
 
@@ -144,31 +119,6 @@ def is_date_between(check_date, start_date, end_date, date_format="%Y-%m-%d"):
             return True
 
     return False
-
-
-# dates = [
-#     "2019-12-31",
-#     "2020-01-02",
-#     "2020-03-05",
-#     "2020-04-06",
-#     "2020-05-09",
-#     "2020-05-09",
-#     "2020-05-10",
-#     "2020-05-15",
-#     "2020-05-17",
-#     "2020-05-18",
-#     "2020-05-19",
-#     "2020-05-20",
-#     "2020-06-12",
-# ]
-
-# dates = get_trading_days("2019-12-01", "2022-07-13")
-
-# gg = "1999-01-01"
-
-# date = datetime.strptime(gg, "%Y-%m-%d")
-
-# print(date.weekday())
 
 
 def get_weekly_trading_dates(dates):
@@ -196,11 +146,6 @@ def get_weekly_trading_dates(dates):
             trading_days.append(datetime.strftime(current_date, "%Y-%m-%d"))
 
     return trading_days
-
-
-# print(is_date_earlier("01-05", "01-02", "%m-%d"))
-
-# print(date.strftime("%m-%d"))
 
 
 def get_annual_quarterly_or_monthly_trading_dates(dates, frequency):
@@ -458,63 +403,6 @@ def get_next_available_date(dates, target_date):
             next_available_date = datetime.strftime(date, "%Y-%m-%d")
 
             return next_available_date
-
-
-dates = [
-    "2019-12-31",
-    "2020-01-02",
-    "2020-02-01",
-    "2020-02-02",
-    "2020-02-03",
-    "2020-02-05",
-    "2020-02-10",
-    "2020-02-15",
-    "2020-03-05",
-    "2020-03-07",
-    "2020-03-09",
-    "2020-04-06",
-    "2020-05-09",
-    "2020-05-09",
-    "2020-05-10",
-    "2020-05-15",
-    "2020-05-17",
-    "2020-05-18",
-    "2020-05-19",
-    "2020-05-20",
-    "2020-06-12",
-]
-
-dictv2 = {
-    "2019-12-31": {"est": 3},
-    "2020-01-02": {"est": 4},
-    "2020-02-01": {"est": 36},
-    "2020-02-02": {"est": 357},
-    "2020-02-03": {"est": 334},
-    "2020-02-05": {"est": 323},
-    "2020-02-10": {"est": 234},
-    "2020-02-15": {"est": 53253},
-    "2020-03-05": {"est": 46343},
-    "2020-03-07": {"est": 546573},
-    "2020-03-09": {"est": 3353},
-    "2020-04-06": {"est": 3333},
-    "2020-05-09": {"est": 324},
-    "2020-05-10": {"est": 2343},
-    "2020-05-15": {"est": 243},
-    "2020-05-17": {"est": 2343},
-    "2020-05-19": {"est": 323},
-    "2020-05-20": {"est": 42343},
-    "2020-06-12": {"est": 233},
-}
-
-dates_tset = {
-    "2020-02-01": {"tset": 3},
-    "2020-03-01": {"tset": 5},
-    "2020-04-01": {"tset": 7},
-    "2020-05-01": {"tset": 10},
-}
-
-
-dates2 = ["2020-02-01", "2020-03-01", "2020-04-01", "2020-05-01", "2020-06-01"]
 
 
 def copy_date_data_to_new_dates(dictionary, new_dates):
