@@ -86,7 +86,12 @@ class BacktestErrorTracker:
         self.indicator_errors.append(error)
 
     def get_backtest_errors(self):
-        """Runs the algorithm and checks for issues"""
+        """Runs through the algorithm on start date and checks for issues.
+
+        Returns:
+            dict: Dictionary of list of asset errors, list of series errors, and list of indicator
+            errors.
+        """
         buy_and_condition_data = get_buy_and_condition_data(self.algorithm)
 
         for data in buy_and_condition_data:
@@ -119,6 +124,12 @@ class BacktestErrorTracker:
                     self.handle_indicator_errors(
                         series, indicator, self.starting_date, "series"
                     )
+
+        return {
+            "asset_errors": self.asset_errors,
+            "series_errors": self.series_errors,
+            "indicator_errors": self.indicator_errors,
+        }
 
     def handle_buy_errors(self, asset, date):
         """Handle the errors for type buy objects.
