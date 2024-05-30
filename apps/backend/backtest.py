@@ -24,21 +24,21 @@ from math import isnan
 
 
 class Backtest:
+    """This class backtests the algorithm and gets the historical data. Data such as
+    portfolio historical values and weights.
+    """
 
     def __init__(self, algorithm, dataset):
-        self.algorithm = algorithm
         self.dataset = dataset
 
         self.trading_frequency = algorithm["trading_frequency"]
+        self.trading_threshold = algorithm["trading_threshold"]
+        self.starting_task = algorithm["algorithm"]["tasks"]
+        self.starting_weight = algorithm["algorithm"]["weight"]
+
         self.trading_days = get_trading_days(
             algorithm["start_date"], algorithm["end_date"]
         )
-        self.backtest_trading_dates = get_time_based_trading_dates(
-            self.trading_days, self.trading_frequency
-        )
-        self.trading_threshold = algorithm["trading_threshold"]
-
-        self.starting_weight = algorithm["algorithm"]["weight"]
 
         self.initial_investment = 100000
 
@@ -274,10 +274,15 @@ class Backtest:
         lastest_asset_quantities = {}
         latest_holdings = {}
 
+        # Getting the backtesting trading days
+        time_based_trading_dates = get_time_based_trading_dates(
+            self.trading_days, self.trading_frequency
+        )
+
         for date in self.trading_days:
 
             # If it is a date to trade
-            if date in self.backtest_trading_dates:
+            if date in time_based_trading_dates:
 
                 # If there are currently holdings calculate the portfolio value
                 if latest_holdings:
@@ -293,7 +298,7 @@ class Backtest:
 
                 holdings = self.calculate_holdings(
                     date,
-                    self.algorithm["algorithm"]["tasks"],
+                    self.starting_task,
                     self.starting_weight,
                     1,
                     {},
@@ -363,7 +368,7 @@ class Backtest:
             # For threshold based trading will have to calculate holdings for every trading day
             holdings = self.calculate_holdings(
                 date,
-                self.algorithm["algorithm"]["tasks"],
+                self.starting_task,
                 self.starting_weight,
                 1,
                 {},
