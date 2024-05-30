@@ -1,3 +1,6 @@
+"""This module gets all issues with algorithm"""
+
+from math import isnan
 from utils.algorithm import get_buy_and_condition_data
 from utils.dataframe import (
     does_value_exist,
@@ -5,16 +8,21 @@ from utils.dataframe import (
     get_value_by_date,
     get_date_of_first_non_nan_value,
 )
-from math import isnan
 
 
 class BacktestErrorTracker:
+    """This class gets the algorithms issues. Issues such as if any indicators or asset/series dont
+    exist, or any indicators or asset/series do not exist on the date which algorithm is set to be
+    run on.
+    """
 
-    def __init__(self, algorithm, dataset, first_backtest_trading_date):
+    def __init__(self, algorithm, dataset, starting_date):
 
         self.algorithm = algorithm
         self.dataset = dataset
-        self.first_backtest_trading_date = first_backtest_trading_date
+
+        # Date which the algorithm will try to run on first
+        self.starting_date = starting_date
 
         # Indicator data errors
         self.indicator_errors = []
@@ -81,9 +89,6 @@ class BacktestErrorTracker:
         """Runs the algorithm and checks for issues"""
         buy_and_condition_data = get_buy_and_condition_data(self.algorithm)
 
-        # Date which the algorithm will try to run on first
-        starting_date = self.first_backtest_trading_date
-
         for data in buy_and_condition_data:
 
             # Type buys
@@ -91,7 +96,7 @@ class BacktestErrorTracker:
                 if data["type"] == "buy":
                     asset = data["asset"]
 
-                    self.handle_buy_errors(asset, starting_date)
+                    self.handle_buy_errors(asset, self.starting_date)
 
             # Indicators for assets and series
             if "function" in data:
@@ -102,7 +107,7 @@ class BacktestErrorTracker:
                     indicator = f"{data['function']} {data['period']}"
 
                     self.handle_indicator_errors(
-                        asset, indicator, starting_date, "asset"
+                        asset, indicator, self.starting_date, "asset"
                     )
 
                 if "series" in data:
@@ -112,7 +117,7 @@ class BacktestErrorTracker:
                     indicator = f"{data['function']} {data['period']}"
 
                     self.handle_indicator_errors(
-                        series, indicator, starting_date, "series"
+                        series, indicator, self.starting_date, "series"
                     )
 
     def handle_buy_errors(self, asset, date):
