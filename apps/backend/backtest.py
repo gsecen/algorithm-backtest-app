@@ -1,3 +1,7 @@
+"""This module backtests the algorithm"""
+
+import operator
+from math import isnan
 from utils.algorithm import (
     sample_algo_request,
     sample_algo_requestv2,
@@ -18,9 +22,6 @@ from utils.dataframe import (
 )
 
 from algorithm.dataset_builder import build_dataset
-
-import operator
-from math import isnan
 
 
 class Backtest:
