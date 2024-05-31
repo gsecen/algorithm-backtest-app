@@ -7,6 +7,8 @@
 # Type buy is the purchase of an asset
 # Type expression is an if else statement
 # Type instructions is anytime you want a new weight or want to branch off (will make more sense soon)
+
+# Type group which will be added in future is just type instructions but with a name
 sample_algo_request = {
     "start_date": "2010-01-01",
     "end_date": "2021-01-01",
@@ -96,7 +98,7 @@ sample_algo_request = {
 # of the task may not be 0.5. This is because weights can be nested inside each other.
 # The actual value/weight of the task is its relative weight.
 sample_algo_requestv2 = {
-    "start_date": "2016-12-31",
+    "start_date": "2016-11-30",
     "end_date": "2020-05-13",
     "name": "test algo",
     "benchmarks": ["NVDA", "SPY", "AAPL"],
@@ -106,6 +108,7 @@ sample_algo_requestv2 = {
         "type": "instructions",
         "weight": 1,
         "tasks": [
+            # {"type": "buy", "asset": "UHfiuhisd"},
             {"type": "buy", "asset": "AAPL"},
         ],
     },
