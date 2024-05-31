@@ -1,7 +1,7 @@
 """This module builds the dataset required to run algorithm"""
 
 from utils.algorithm import get_buy_and_condition_data, get_benchmark_data
-from historical_data import *
+from fetch_data import get_ohlcv_data, get_series_data
 from indicators.sma import sma
 
 
