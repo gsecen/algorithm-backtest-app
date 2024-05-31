@@ -1,15 +1,16 @@
 # algorithm-backtest-app
 
 Things to potentially do in backend in the future in no apparent order:
-[ ] add options for slippage, setting fees etc
-[ ] add more indicators
-[ ] add the option to chose partial or whole shares
-[ ] add the option to save algorithm using mongo db
-[ ] if performance sucks change dataframes to dictionaries to make searches faster
+
+- [ ] add options for slippage, setting fees etc
+- [ ] add more indicators
+- [ ] add the option to chose partial or whole shares
+- [ ] add the option to save algorithm using mongo db
+- [ ] if performance sucks change dataframes to dictionaries to make searches faster
 
 App will consist of a python backend, and a reactjs frontend.
 
-Very very early in development.
+Very very ealy in development.
 
 PERSONAL NOTE:
 Anything to do with years passed or anywhere in code where there is 365 or 365.25...
