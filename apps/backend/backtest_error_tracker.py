@@ -141,6 +141,7 @@ class BacktestErrorTracker:
         # If assets data does not exist
         if self.dataset[asset] is None:
             self.add_asset_error(asset)
+            return
 
         # If assets data exists on current date
         if does_value_exist(self.dataset[asset], date):
