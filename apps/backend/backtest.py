@@ -466,17 +466,28 @@ class Backtest:
         Returns:
             dict: Dictionary of metrics and dictionary of issues.
         """
-        algorithm_values_weights = self.get_historical_portfolio_data()
+
+        # Getting algorithm traded dates, values, weights, and errors
+        algorithm_dates_values_weights = self.get_historical_portfolio_data()
         errors = BacktestErrorTracker(
             self.algorithm,
             self.dataset,
             self.trading_days[0],  # first day algorithm trys to run on
         )
-        metrics = BacktestMetrics(
-            self.algorithm, algorithm_values_weights, self.dataset
-        )
 
-        return {
-            "metrics": metrics.get_all_metrics(),
-            "issues": errors.get_backtest_errors(),
-        }
+        # If there is any portfolio data (algorithm ran successfully at least once)
+        if algorithm_dates_values_weights["traded_dates"]:
+
+            # Get the metrics
+            metrics = BacktestMetrics(
+                self.algorithm, algorithm_dates_values_weights, self.dataset
+            )
+
+            return {
+                "metrics": metrics.get_all_metrics(),
+                "issues": errors.get_backtest_errors(),
+            }
+        else:
+
+            # Cannot get metrics if there is no algorithm portfolio data
+            return {"metrics": None, "issues": errors.get_backtest_errors()}
