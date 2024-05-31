@@ -21,6 +21,9 @@ from utils.dataframe import (
     does_value_exist,
 )
 
+from backtest_error_tracker import BacktestErrorTracker
+from backtest_metrics import BacktestMetrics
+
 from algorithm.dataset_builder import build_dataset
 
 
@@ -31,6 +34,7 @@ class Backtest:
 
     def __init__(self, algorithm, dataset):
         self.dataset = dataset
+        self.algorithm = algorithm
 
         self.trading_frequency = algorithm["trading_frequency"]
         self.trading_threshold = algorithm["trading_threshold"]
@@ -458,19 +462,24 @@ class Backtest:
 
         return self.get_threshold_based_historical_portfolio_data()
 
+    def backtest_algorithm(self):
+        """Backtests the algorithm and gets all the historical performance metrics, comparative metrics,
+        and algorithm issues.
 
-# osio
-data = build_dataset(sample_algo_requestv2)
+        Returns:
+            dict: Dictionary of metrics and dictionary of issues.
+        """
+        algorithm_values_weights = self.get_historical_portfolio_data()
+        errors = BacktestErrorTracker(
+            self.algorithm,
+            self.dataset,
+            self.trading_days[0],  # first day algorithm trys to run on
+        )
+        metrics = BacktestMetrics(
+            self.algorithm, algorithm_values_weights, self.dataset
+        )
 
-gg = Backtest(sample_algo_requestv2, data)
-
-ss = gg.get_historical_portfolio_data()
-
-
-from backtest_metrics import BacktestMetrics
-
-bm = BacktestMetrics(sample_algo_requestv2, ss, data)
-
-dg = bm.get_all_metrics()
-
-print(dg)
+        return {
+            "metrics": metrics.get_all_metrics(),
+            "issues": errors.get_backtest_errors(),
+        }
