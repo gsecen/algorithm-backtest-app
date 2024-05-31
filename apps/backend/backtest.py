@@ -119,13 +119,13 @@ class Backtest:
         """
         asset = task["asset"]
 
-        # If asset data is not available at date
-        if not does_value_exist(self.dataset[asset], date):
+        # If there is no asset data
+        if self.dataset[asset] is None:
             holdings.clear()
             return True
 
-        # If there is no asset data
-        if self.dataset[asset] is None:
+        # If asset data is not available at date
+        if not does_value_exist(self.dataset[asset], date):
             holdings.clear()
             return True
 
