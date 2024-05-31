@@ -131,6 +131,14 @@ class BacktestMetrics:
             self.algorithm_name
         ] = algorithm_performance_metrics
 
+        # Adding initial investment and final value to algorithm performance metrics
+        intial_investment = self.portfolio_value_data[self.first_traded_date]
+        final_value = self.portfolio_value_data[self.last_traded_date]
+        metrics["performance_metrics"][self.algorithm_name][
+            "initial_investment"
+        ] = intial_investment
+        metrics["performance_metrics"][self.algorithm_name]["final_value"] = final_value
+
         # Getting all the benchmark metrics
         for asset in self.benchmarks:
             asset_df = self.dataset[asset]
