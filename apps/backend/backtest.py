@@ -2,9 +2,8 @@
 
 import operator
 from math import isnan
+
 from utils.algorithm import (
-    sample_algo_request,
-    sample_algo_requestv2,
     is_holdings_above_threshold,
 )
 from utils.time import (
@@ -23,8 +22,6 @@ from utils.dataframe import (
 
 from backtest_error_tracker import BacktestErrorTracker
 from backtest_metrics import BacktestMetrics
-
-from algorithm.dataset_builder import build_dataset
 
 
 class Backtest:
