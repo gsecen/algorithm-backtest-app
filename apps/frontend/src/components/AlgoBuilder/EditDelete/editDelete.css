@@ -1,0 +1,49 @@
+.edit-delete-container{
+    display: inline-flex;
+    margin-top: 50px;
+    margin-left: 20px;
+
+    background-color: var(--algo-type-background);
+    border: var(--algo-type-border);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+/* Edit button */
+.edit-button{
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px;
+}
+.edit-button:hover{
+    background-color: rgb(235, 235, 235);
+}
+/* Changing svg color https://codepen.io/sosuke/pen/Pjoqqp */
+.edit-button:hover > .edit-icon{
+    filter: brightness(0) saturate(100%) invert(0%) sepia(83%) saturate(7434%) hue-rotate(205deg) brightness(115%) contrast(113%);
+}
+.edit-icon{
+    width: 1.1rem;
+}
+
+
+/* Delete butotn */
+.delete-button{
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px;
+}
+.delete-button:hover{
+    background-color: rgb(235, 235, 235);
+}
+/* Changing svg color https://codepen.io/sosuke/pen/Pjoqqp */
+.delete-button:hover > .edit-icon{
+    filter: brightness(0) saturate(100%) invert(0%) sepia(83%) saturate(7434%) hue-rotate(205deg) brightness(115%) contrast(113%);
+}
+.delete-icon{
+    width: 1.5rem;
+}
