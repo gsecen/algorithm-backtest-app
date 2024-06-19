@@ -25,7 +25,7 @@
     filter: brightness(0) saturate(100%) invert(0%) sepia(83%) saturate(7434%) hue-rotate(205deg) brightness(115%) contrast(113%);
 }
 .edit-icon{
-    width: 1.1rem;
+    width: 1.1em;
 }
 
 
@@ -45,5 +45,5 @@
     filter: brightness(0) saturate(100%) invert(0%) sepia(83%) saturate(7434%) hue-rotate(205deg) brightness(115%) contrast(113%);
 }
 .delete-icon{
-    width: 1.5rem;
+    width: 1.5em;
 }
