@@ -29,4 +29,6 @@
     border-radius: 3px;
     color: white;
     font-family: "Abel";
+    position: absolute;
+    transform: translateX(30px);
 }
