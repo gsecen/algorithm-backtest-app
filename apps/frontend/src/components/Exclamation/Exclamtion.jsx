@@ -13,7 +13,7 @@ const Exclamtion = (props) => {
   }
 
   return (
-    <div className="red-exclamation-container">
+    <div style={props.editStyles} className="red-exclamation-container">
       <div
         onMouseEnter={toggleText}
         onMouseLeave={toggleText}
