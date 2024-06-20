@@ -3,9 +3,10 @@
     align-items: center;
 }
 
+/* Red circle containg exclamtion */
 .red-exclamation{
-    width: 1.2rem;
-    height: 1.2rem;
+    width: 1.2em;
+    height: 1.2em;
 
     display: flex;
     justify-content: center;
@@ -17,12 +18,18 @@
     background-color: rgb(239 68 68);
     border-radius:50%;
     border: 1px solid black;
-    color: white;
-    font-family: "Abel";
-    font-size: 1.2rem;
     cursor: default;
 }
 
+/* Actual exclamtion */
+.exclamtion{
+    color: white;
+    font-size: 1.4em;
+    font-family: "Abel";
+}
+
+
+/* Error message */
 .red-exclamation-text{
     background-color: black;
     padding: 0px 5px 0px 5px;
@@ -30,5 +37,5 @@
     color: white;
     font-family: "Abel";
     position: absolute;
-    transform: translateX(30px);
+    transform: translateX(1.8em);
 }

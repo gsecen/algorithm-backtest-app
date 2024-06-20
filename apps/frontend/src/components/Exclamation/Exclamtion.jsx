@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import "./exclamation.css";
 
-const Exclamtion = () => {
+const Exclamtion = (props) => {
   const [showText, setShowText] = useState(false);
 
   const ErrorText = (
-    <div className="red-exclamation-text">You must enter a ticker symbol</div>
+    <div className="red-exclamation-text">{props.errorMessage}</div>
   );
 
   function toggleText() {
@@ -19,7 +19,7 @@ const Exclamtion = () => {
         onMouseLeave={toggleText}
         className="red-exclamation"
       >
-        !
+        <p className="exclamtion">!</p>
       </div>
 
       {showText ? ErrorText : null}
