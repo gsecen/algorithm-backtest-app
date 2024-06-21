@@ -1,6 +1,9 @@
 .red-exclamation-container{
     display: flex;
     align-items: center;
+
+    /* for opacity */
+    transition: 0.15s;
 }
 
 /* Red circle containg exclamtion */

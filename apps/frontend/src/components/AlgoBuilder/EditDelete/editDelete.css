@@ -5,6 +5,11 @@
     border: var(--algo-type-border);
     border-radius: 20px;
     overflow: hidden;
+
+    box-shadow: var(--algo-type-box-shadow);
+
+    /* for opacity */
+    transition: 0.15s;
 }
 
 /* Edit button */
