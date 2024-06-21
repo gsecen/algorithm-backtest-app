@@ -1,3 +1,81 @@
-.buy-item{
-    background-color: blanchedalmond;
+.buy-item-container{
+    background-color: var(--algo-type-background);
+    border: var(--algo-type-border);
+
+    border-radius: 20px;
+    box-shadow: var(--algo-type-box-shadow);
+
+    padding: 5px;
+    
+    display: inline-flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* Dollar sign symbol */
+.buy-symbol{
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    
+    background-color: #19AE01;
+
+    width: 2em;
+    height: 2em;
+    border-radius: 100%;
+}
+.dollar-sign{
+    font-family: "Abel";
+    color: white;
+    font-size: 1.4em;
+}
+
+
+/* Ticker symbol input */
+.ticker-symbol-input{
+    width: 3em;
+    margin: 0px;
+    padding: 0px;
+
+    text-transform: uppercase;
+    text-align: center;
+
+    border: none;
+    font-family: "Abel";
+    font-size: 1.5em;
+}
+.ticker-symbol-input:focus{
+    outline: none;
+}
+
+
+/* Ticker symbol text in p tag for when it is non editable */
+.ticker-symbol-text{
+    text-transform: uppercase;
+    text-align: center;
+
+    margin: 0px;
+    padding: 0px;
+    font-size: 1.5em;
+    font-family: "Abel";
+
+    cursor: default;
+
+    width: 3em;
+    overflow: hidden;
+    max-width: 3em;
+}
+
+
+/* Edit delete item */
+.edit-delete-item{
+    display: none;
+    visibility: hidden;
+}
+.buy-item:hover > .edit-delete-item{
+    visibility: visible;
 }
