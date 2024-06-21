@@ -34,11 +34,12 @@
 
 /* Error message */
 .red-exclamation-text{
+    font-size: 1.2em;
     background-color: black;
     padding: 0px 5px 0px 5px;
     border-radius: 3px;
     color: white;
     font-family: "Abel";
     position: absolute;
-    transform: translateX(1.8em);
+    transform: translateX(1.6em);
 }
