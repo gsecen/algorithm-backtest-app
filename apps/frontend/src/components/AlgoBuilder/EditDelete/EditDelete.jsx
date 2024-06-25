@@ -5,7 +5,7 @@ import deleteIcon from "../../../assets/images/trash-can-icon.svg";
 
 const EditDelete = (props) => {
   function deleteComponent() {
-    props.deleteMe();
+    props.deleteMe(props.id);
   }
 
   function editComponent() {
