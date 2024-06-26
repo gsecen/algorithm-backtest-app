@@ -1,0 +1,69 @@
+.specified-weight-container{
+    display: inline-flex;
+    
+    justify-content: center;
+    align-items: center;
+
+    gap: 4px;
+
+}
+
+
+/* Container holding the input and text when non editable */
+.specified-weight-input-text-container{
+    background-color: #0149AE;
+    border-radius: 20px;
+    border: 2px solid white;
+    box-shadow: var(--algo-type-box-shadow);
+    padding: 2px;
+}
+
+
+/* Specified weight input */
+.specified-weight-input{
+    text-align: center;
+    color: white;
+    background-color: transparent;
+    width: 5em;
+    font-size: 1em;
+
+    margin: 0px;
+    padding: 0px;
+
+    border: none;
+    font-family: "Abel";
+
+
+
+
+}
+.specified-weight-input:focus{
+    outline: none;
+}
+/* Removing the number arrows for the input */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number]{
+    -moz-appearance: textfield;
+}
+
+
+/* Specified weight text in p tag for when it is non editable */
+.specified-weight-text{
+    text-align: center;
+    color: white;
+    width: 5em;
+    font-size: 1em;
+
+    margin: 0px;
+    padding: 0px;
+    font-family: "Abel";
+
+    cursor: default;
+
+    
+}
