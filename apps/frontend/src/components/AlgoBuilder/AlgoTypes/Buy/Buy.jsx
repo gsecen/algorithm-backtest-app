@@ -100,7 +100,6 @@ const Buy = (props) => {
         id={myId}
         deleteMe={deleteMeFunction}
         editMe={toggleEditable}
-        className="edit-delete-item"
       ></EditDelete>
 
       <Exclamtion

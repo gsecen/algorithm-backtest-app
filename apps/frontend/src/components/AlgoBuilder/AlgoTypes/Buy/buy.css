@@ -71,11 +71,3 @@
 }
 
 
-/* Edit delete item */
-.edit-delete-item{
-    display: none;
-    visibility: hidden;
-}
-.buy-item:hover > .edit-delete-item{
-    visibility: visible;
-}
