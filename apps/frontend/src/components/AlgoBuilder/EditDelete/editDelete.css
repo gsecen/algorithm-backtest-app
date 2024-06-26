@@ -1,5 +1,6 @@
 .edit-delete-container{
     display: inline-flex;
+    height: fit-content;
 
     background-color: var(--algo-type-background);
     border: var(--algo-type-border);
