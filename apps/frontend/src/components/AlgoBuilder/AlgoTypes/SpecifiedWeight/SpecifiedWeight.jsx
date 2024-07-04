@@ -1,54 +1,33 @@
-import React, { useState } from "react";
+import { useRef, useState } from "react";
 import "./specifiedWeight.css";
 
 import EditDelete from "../../EditDelete/EditDelete";
+import ActionsBar from "../../ActionsBar/ActionsBar";
 
 const SpecifiedWeight = (props) => {
-  const [weight, setWeight] = useState("Set Weight");
+  // const [weight, setWeight] = useState("Set Weight");
+  const [weight, setWeight] = useState(props.specifiedWeight);
   const [editableInput, setEditableInput] = useState(false);
-  const [editDeleteMenu, setEditDeleteMenu] = useState("hidden");
-  const [hovering, setHovering] = useState(false);
-
-  // Edit delete menu is shown when specified weight item is hovered or input is being edited
-  let editDeleteMenuOpacity = 1;
-  if (editDeleteMenu === "hidden") {
-    editDeleteMenuOpacity = 0;
-  }
 
   function toggleEditable() {
     setEditableInput(!editableInput);
   }
 
-  function currentlyHovering() {
-    setHovering(true);
-    setEditDeleteMenu("visible");
-  }
+  const actionsBarRef = useRef();
 
-  function notCurrentlyHovering() {
-    setHovering(false);
-    if (!editableInput) {
-      setEditDeleteMenu("hidden");
-    }
-  }
-
-  // When the input is done being edited checks to see if still hovering over buy item
-  function maybeHideEditDeleteMenu() {
-    if (!hovering) {
-      setEditDeleteMenu("hidden");
-    }
-  }
+  // Variables which will be passed down to the edit delete menu
+  const myId = props.id;
+  const deleteMeFunction = props.deleteMe;
 
   // Puts the weight into proper format with 2 decimals and percentage sign
   function properFormatWeight(string) {
-    // If string cannot be turned into a number
-    if (!Number(string)) {
-      return string;
+    // If string cannot be turned into a number or its blank
+    if (!Number(string) || string === "") {
+      return "Set Weight";
     }
 
     return `${Number(string).toFixed(2)}%`;
   }
-
-  properFormatWeight(weight);
 
   // Used when the user wants to edit weight percentage
   const Input = (
@@ -59,8 +38,8 @@ const SpecifiedWeight = (props) => {
       // When input loses focus (clicked outside of input)
       onBlur={() => {
         toggleEditable();
-        maybeHideEditDeleteMenu();
-        // props.updateSpecifiedWeight(props.id, tickerSymbol);
+        actionsBarRef.current.checkHoverOnEditComplete();
+        props.updateSpecifiedWeight(props.id, weight);
       }}
       className="specified-weight-input"
       autoFocus={true}
@@ -76,21 +55,25 @@ const SpecifiedWeight = (props) => {
 
   return (
     <div
-      onMouseEnter={currentlyHovering}
-      onMouseLeave={notCurrentlyHovering}
+      onMouseEnter={() => {
+        actionsBarRef.current.currentlyHovering();
+      }}
+      onMouseLeave={() => {
+        actionsBarRef.current.notCurrentlyHovering();
+      }}
       className="specified-weight-container"
     >
       <div className="specified-weight-input-text-container">
         {editableInput ? Input : P}
       </div>
 
-      <EditDelete
-        editStyles={{
-          visibility: editDeleteMenu,
-          opacity: editDeleteMenuOpacity,
-        }}
+      <ActionsBar
+        ref={actionsBarRef}
+        id={myId}
+        editing={editableInput}
         editMe={toggleEditable}
-      ></EditDelete>
+        deleteMe={deleteMeFunction}
+      ></ActionsBar>
     </div>
   );
 };
