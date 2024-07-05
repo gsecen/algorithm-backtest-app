@@ -23,11 +23,10 @@ const Buy = ({ id, deleteMe, updateTickerSymbol, ticker }) => {
   const deleteMeFunction = deleteMe;
 
   // Exclamation is shown if ticker symbol is "TICKER" which means it still needs to be edited
-  let exclamationVisibility = "hidden";
-  let exclamationOpacity = 0;
+  // Error variable will be passed down to exclamation component to let component know if it should be visible
+  let error = false;
   if (tickerSymbol === "TICKER") {
-    exclamationVisibility = "visible";
-    exclamationOpacity = 1;
+    error = true;
   }
 
   // Toggles whether the ticker symbol input is in focus
@@ -81,10 +80,7 @@ const Buy = ({ id, deleteMe, updateTickerSymbol, ticker }) => {
       ></ActionsBar>
 
       <Exclamtion
-        editStyles={{
-          visibility: exclamationVisibility,
-          opacity: exclamationOpacity,
-        }}
+        isError={error}
         errorMessage={"You must enter a ticker symbol"}
       ></Exclamtion>
     </div>

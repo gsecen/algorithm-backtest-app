@@ -1,19 +1,29 @@
 import React, { useState } from "react";
 import "./exclamation.css";
 
-const Exclamtion = (props) => {
+const Exclamtion = ({ errorMessage, isError }) => {
   const [showText, setShowText] = useState(false);
 
-  const ErrorText = (
-    <div className="red-exclamation-text">{props.errorMessage}</div>
-  );
+  let exclamationVisibility = "hidden";
+  let exclamationOpacity = 0;
+
+  // Exclamation is shown if there is an error
+  if (isError) {
+    exclamationVisibility = "visible";
+    exclamationOpacity = 1;
+  }
+
+  const ErrorText = <div className="red-exclamation-text">{errorMessage}</div>;
 
   function toggleText() {
     setShowText(!showText);
   }
 
   return (
-    <div style={props.editStyles} className="red-exclamation-container">
+    <div
+      style={{ visibility: exclamationVisibility, opacity: exclamationOpacity }}
+      className="red-exclamation-container"
+    >
       <div
         onMouseEnter={toggleText}
         onMouseLeave={toggleText}
