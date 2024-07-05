@@ -6,7 +6,7 @@ import Exclamtion from "../../../Exclamation/Exclamtion";
 
 /**
  *
- * @property {function} deleteMe The function from parent which will element.
+ * @property {function} deleteMe The function from parent which will delete element.
  * @property {function} updateTickerSymbol The function from parent which will update elements ticker symbol.
  * @property {int} id The elements unqiue id.
  * @property {string} ticker The ticker symbol which will be displayed to the user.
