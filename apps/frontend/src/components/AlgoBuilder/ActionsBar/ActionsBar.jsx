@@ -16,7 +16,7 @@ import deleteIcon from "../../../assets/images/trash-can-icon.svg";
  *
  * @property {function} deleteMe The function from parent which will delete element.
  * @property {function} editMe The function from parent which will edit element.
- * @property {boolean} focused The boolean from parent which will let actions bar know if parents input is in focus.
+ * @property {boolean} focused The boolean from parent which will let ActionsBar know if parents input is in focus.
  * @property {int} id The elements unqiue id.
  * @returns {ReactNode} Actions bar react element.
  */

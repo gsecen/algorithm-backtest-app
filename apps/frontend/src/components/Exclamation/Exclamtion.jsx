@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./exclamation.css";
 
+/**
+ * @property {string} errorMessage The message from parent to show if there is an error.
+ * @property {boolean} isError The boolean from parent which will let Exclamtion know if parent has error.
+ * @returns {ReactNode} Exclamation react element.
+ */
 const Exclamtion = ({ errorMessage, isError }) => {
   const [showText, setShowText] = useState(false);
 
