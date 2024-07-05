@@ -1,4 +1,5 @@
 import { useState, forwardRef, useImperativeHandle } from "react";
+import "./actionsBar.css";
 import editIcon from "../../../assets/images/pencil-icon.svg";
 import deleteIcon from "../../../assets/images/trash-can-icon.svg";
 
@@ -11,8 +12,16 @@ import deleteIcon from "../../../assets/images/trash-can-icon.svg";
 // is it variables or functions, they are exposed to the parent and can be accessed and called by a parent
 // component.
 
-const ActionsBar = forwardRef(({ id, editMe, deleteMe }, ref) => {
-  const [editableInput, setEditableInput] = useState(false);
+/**
+ *
+ * @property {function} deleteMe The function from parent which will delete element.
+ * @property {function} editMe The function from parent which will edit element.
+ * @property {boolean} focused The boolean from parent which will let actions bar know if parents input is in focus.
+ * @property {int} id The elements unqiue id.
+ * @returns {ReactNode} Actions bar react element.
+ */
+const ActionsBar = forwardRef(({ id, editMe, deleteMe, focused }, ref) => {
+  const isItemFocused = focused;
   const [editDeleteMenu, setEditDeleteMenu] = useState("hidden");
   const [hovering, setHovering] = useState(false);
 
@@ -25,7 +34,6 @@ const ActionsBar = forwardRef(({ id, editMe, deleteMe }, ref) => {
   }
 
   useImperativeHandle(ref, () => ({
-    toggleEditable,
     currentlyHovering,
     notCurrentlyHovering,
     checkHoverOnEditComplete,
@@ -37,10 +45,6 @@ const ActionsBar = forwardRef(({ id, editMe, deleteMe }, ref) => {
     editDeleteMenuOpacity = 0;
   }
 
-  function toggleEditable() {
-    setEditableInput(!editableInput);
-  }
-
   // When an item is being hovered
   function currentlyHovering() {
     setHovering(true);
@@ -50,7 +54,9 @@ const ActionsBar = forwardRef(({ id, editMe, deleteMe }, ref) => {
   // When an item is no longer being hovered
   function notCurrentlyHovering() {
     setHovering(false);
-    if (!editableInput) {
+
+    // Check if item is being edited
+    if (!isItemFocused) {
       setEditDeleteMenu("hidden");
     }
   }
@@ -68,7 +74,7 @@ const ActionsBar = forwardRef(({ id, editMe, deleteMe }, ref) => {
         visibility: editDeleteMenu,
         opacity: editDeleteMenuOpacity,
       }}
-      className="edit-delete-container"
+      className="actions-bar-container"
     >
       <div onClick={editComponent} className="edit-button">
         <img src={editIcon} alt="" className="edit-icon" />
