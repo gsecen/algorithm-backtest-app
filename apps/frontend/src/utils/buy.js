@@ -48,3 +48,41 @@ export const cloneBuyComponent = (
 
   return Component;
 };
+
+/**
+ * Changes buy component with specified id's ticker symbol to specified ticker symbol.
+ * @param {int} id The prop id of the buy component whos ticker symbol will be changed.
+ * @param {string} tickerSymbol The ticker symbol to update buy component ticker symbol to.
+ * @param {Array.<ReactElement>} items The list of react elements from which the buy component is in.
+ * @param {function} deleteMeFunction Function used so that buy component can delete itself.
+ * @param {function} updateTickerFunction Function used to that buy component can update ticker symbol.
+ * @returns {Array.<ReactElement>} List of react elements with updated buy component.
+ */
+export const updateBuyComponentTicker = (
+  id,
+  tickerSymbol,
+  items,
+  deleteMeFunction,
+  updateTickerFunction
+) => {
+  // Search for item with specified id
+  items.forEach((item, index) => {
+    if (item.props.id === id) {
+      const id = item.props.id;
+
+      // Clone component with specified ticker symbol
+      const Component = React.cloneElement(<Buy></Buy>, {
+        key: id,
+        id: id,
+        ticker: tickerSymbol,
+        deleteMe: deleteMeFunction,
+        updateTickerSymbol: updateTickerFunction,
+      });
+
+      // Replacing old component with clone
+      items[index] = Component;
+    }
+  });
+
+  return items;
+};
