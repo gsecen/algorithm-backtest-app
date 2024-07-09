@@ -23,3 +23,28 @@ export const createSpecifiedWeightComponent = (
 
   return Component;
 };
+
+/**
+ * Will create a specified weight component for each task when weighting type changes to specified.
+ * @param {Array.<ReactElement>} items The list of react elements you need to create specified weights for.
+ * @param {function} deleteMeFunction Function used so that buy component can delete itself.
+ * @param {function} updateTickerFunction Function used to that specified weight component can update weight.
+ * @returns {Array.<ReactElement>} List of specified weight components.
+ */
+export const buildSpecifiedWeights = (
+  items,
+  deleteMeFunction,
+  updateWeightFunction
+) => {
+  let specifiedWeights = [];
+  // For each task we must add a specified weight to it
+  items.forEach((item) => {
+    const Component = createSpecifiedWeightComponent(
+      deleteMeFunction,
+      updateWeightFunction
+    );
+    specifiedWeights.push(Component);
+  });
+
+  return specifiedWeights;
+};
