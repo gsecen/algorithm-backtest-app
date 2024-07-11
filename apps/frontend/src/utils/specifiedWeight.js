@@ -116,3 +116,44 @@ export const updateSpecifiedWeightComponentWeight = (
 
   return items;
 };
+
+export const deleteSpecifiedWeightAndChildById = (
+  id,
+  tasks,
+  specifiedWeights
+) => {
+  // Removing the specified weight from specified weights and its corresponding task from tasks
+  specifiedWeights.forEach((item, index) => {
+    if (item.props.id === id) {
+      // Remove specified weight from specified weights
+      specifiedWeights.splice(index, 1);
+      // Removing the weights corresponding task from tasks
+      tasks.splice(index, 1);
+    }
+  });
+
+  return [specifiedWeights, tasks];
+};
+
+export const doSpecifiedWeightsAddTo100 = (specifiedWeights) => {
+  // Keep track of total weight of all specified weight components
+  let totalWeight = 0;
+
+  // Removing the specified weight from specified weights and its corresponding task from tasks
+  specifiedWeights.forEach((item, index) => {
+    const weight = item.props.specifiedWeight;
+
+    // If weight cannot be turned into a number or its blank
+    if (!Number(weight) || weight === "") {
+      totalWeight = -1000000;
+    } else {
+      totalWeight += Number(weight);
+    }
+  });
+
+  if (totalWeight === 100) {
+    return true;
+  }
+
+  return false;
+};
