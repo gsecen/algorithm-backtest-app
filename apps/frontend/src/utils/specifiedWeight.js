@@ -117,24 +117,11 @@ export const updateSpecifiedWeightComponentWeight = (
   return items;
 };
 
-export const deleteSpecifiedWeightAndChildById = (
-  id,
-  tasks,
-  specifiedWeights
-) => {
-  // Removing the specified weight from specified weights and its corresponding task from tasks
-  specifiedWeights.forEach((item, index) => {
-    if (item.props.id === id) {
-      // Remove specified weight from specified weights
-      specifiedWeights.splice(index, 1);
-      // Removing the weights corresponding task from tasks
-      tasks.splice(index, 1);
-    }
-  });
-
-  return [specifiedWeights, tasks];
-};
-
+/**
+ * Goes through all the specified weights and returns true if the sum is exactly 100.
+ * @param {Array.<ReactElement>} specifiedWeights The list of specifiedWeight components.
+ * @returns {boolean} True if sum of all specified weights adds up to 100, false if not.
+ */
 export const doSpecifiedWeightsAddTo100 = (specifiedWeights) => {
   // Keep track of total weight of all specified weight components
   let totalWeight = 0;
