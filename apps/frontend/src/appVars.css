@@ -1,0 +1,33 @@
+body{
+    margin: 0;
+    background-color: #F9F2E6;
+}
+
+.app{
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+/* Fonts */
+@font-face {
+    font-family: Abel;
+    src: url(assets/fonts/Abel-Regular.ttf) format("truetype");
+};
+
+
+.test{
+    font-family:"Abel";
+}
+
+:root{
+    /* AlgoBuilder */
+    /* variables for algo type items */
+    --algo-type-width:300px;
+    --algo-type-height:45px;
+    --algo-type-background:white;
+    --algo-type-border: 1px solid rgb(135, 138, 141);
+    --algo-type-border-radius: 10px;
+    --algo-type-box-shadow: 0 2px 4px 0 #0000001f;
+
+}
+

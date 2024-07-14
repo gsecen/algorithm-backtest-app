@@ -6,7 +6,7 @@
  * @param {Array.<ReactElement>} items The list of react elements from which you want to remove item from.
  * @returns {Array.<ReactElement>} List of react elements without react element with specified id prop.
  */
-export const deleteItemById = (id, items) => {
+export const spliceListById = (id, items) => {
   // Search for item with specified id
   items.forEach((item, index) => {
     if (item.props.id === id) {

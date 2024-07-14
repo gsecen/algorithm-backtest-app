@@ -25,7 +25,7 @@ export const createBuyComponent = (deleteMeFunction, updateTickerFunction) => {
 
 /**
  * Clones a algo type buy react component with updated data such as functions.
- * @param {*} BuyComponent Algo type buy component.
+ * @param {<ReactElement>} BuyComponent Algo type buy component.
  * @param {function} deleteMeFunction Function used so that buy component can delete itself.
  * @param {function} updateTickerFunction Function used to that buy component can update ticker symbol.
  * @returns {<ReactElement>} Algo type buy component.
@@ -50,7 +50,7 @@ export const cloneBuyComponent = (
 };
 
 /**
- * Changes buy component with specified id's ticker symbol to specified ticker symbol.
+ * Changes ticker symbol of buy component with id.
  * @param {int} id The prop id of the buy component whos ticker symbol will be changed.
  * @param {string} tickerSymbol The ticker symbol to update buy component ticker symbol to.
  * @param {Array.<ReactElement>} items The list of react elements from which the buy component is in.

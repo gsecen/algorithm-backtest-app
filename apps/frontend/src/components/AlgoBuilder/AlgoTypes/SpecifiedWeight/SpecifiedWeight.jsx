@@ -7,17 +7,18 @@ import ActionsBar from "../../ActionsBar/ActionsBar";
 const SpecifiedWeight = (props) => {
   // const [weight, setWeight] = useState("Set Weight");
   const [weight, setWeight] = useState(props.specifiedWeight);
-  const [editableInput, setEditableInput] = useState(false);
-
-  function toggleEditable() {
-    setEditableInput(!editableInput);
-  }
+  const [isFocused, setIsFocused] = useState(false);
 
   const actionsBarRef = useRef();
 
   // Variables which will be passed down to the edit delete menu
   const myId = props.id;
   const deleteMeFunction = props.deleteMe;
+
+  // Toggles whether the set weight input is in focus
+  function toggleFocus() {
+    setIsFocused(!isFocused);
+  }
 
   // Puts the weight into proper format with 2 decimals and percentage sign
   function properFormatWeight(string) {
@@ -37,7 +38,7 @@ const SpecifiedWeight = (props) => {
       }}
       // When input loses focus (clicked outside of input)
       onBlur={() => {
-        toggleEditable();
+        toggleFocus();
         actionsBarRef.current.checkHoverOnEditComplete();
         props.updateSpecifiedWeight(props.id, weight);
       }}
@@ -64,14 +65,14 @@ const SpecifiedWeight = (props) => {
       className="specified-weight-container"
     >
       <div className="specified-weight-input-text-container">
-        {editableInput ? Input : P}
+        {isFocused ? Input : P}
       </div>
 
       <ActionsBar
         ref={actionsBarRef}
         id={myId}
-        editing={editableInput}
-        editMe={toggleEditable}
+        focused={isFocused}
+        editMe={toggleFocus}
         deleteMe={deleteMeFunction}
       ></ActionsBar>
     </div>
