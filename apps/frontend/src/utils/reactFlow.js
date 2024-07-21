@@ -38,3 +38,28 @@ function getAllNodeChildren(id, nodes, edges, children = []) {
 
   return children;
 }
+
+/**
+ * Deletes node and all of its children.
+ * @param {string} id Id of the node you want to delete and delete all of its children.
+ * @param {Array.<ReactFlowNode>} nodes List of all react flow nodes.
+ * @param {Array.<ReactFlowEdge>} edges List of all react flow edges.
+ * @param {function} deleteElementsFunction deleteElements method from useReactFlow hook.
+ */
+export const deleteNodeAndAllNodeChildren = (
+  id,
+  nodes,
+  edges,
+  deleteElementsFunction
+) => {
+  // Get all children of node
+  const children = getAllNodeChildren(id, nodes, edges);
+
+  // Add node to children array to be deleted
+  children.push({ id: id });
+
+  // Delete elements from the react flow
+  // Will be the deleteElements method from useReactFlow hook to delete nodes from the react flow state
+  // https://reactflow.dev/api-reference/types/react-flow-instance#deleteelements
+  deleteElementsFunction({ nodes: children });
+};
