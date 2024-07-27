@@ -1,0 +1,30 @@
+
+/* Node selector block */
+.node-selector-block{
+    cursor: pointer;
+}
+.node-selector-block:hover{
+    background-color: grey;
+}
+
+
+
+
+
+/* Node selector dropdown list */
+.node-selector-list{
+    padding: 0px;
+    list-style-type: none;
+
+    /* for opacity */
+    transition: 0.20s;
+}
+.node-selector-list-item{
+    margin: 10px;
+    
+}
+.node-selector-list-item:hover{
+    background-color: greenyellow;
+    cursor: pointer;
+}
+
