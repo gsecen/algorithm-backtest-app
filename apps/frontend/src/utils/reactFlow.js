@@ -94,3 +94,35 @@ export const setHiddenAllNodeChildren = (
   // Updating the nodes in the react flow state
   setNodesFunction(newNodes);
 };
+
+export const createNode = (id, type, x, y, data = {}) => {
+  return {
+    id: id,
+    type: type,
+    position: { x: x, y: y },
+    data: data,
+  };
+};
+
+export const replaceNode = (
+  id,
+  type,
+  nodes,
+  getNodeFunction,
+  setNodesFunction
+) => {
+  // Get old nodes details
+  const oldNode = getNodeFunction(id);
+
+  // New node should have same position and id as old node so edges stay connected and be in same position
+  const newNode = createNode(id, type, oldNode.position.x, oldNode.position.y);
+
+  const newNodes = applyNodeChanges(
+    // https://reactflow.dev/api-reference/types/node-change#nodereplacechange
+    [{ id: id, item: newNode, type: "replace" }],
+    nodes
+  );
+
+  // Updating the nodes in the react flow state
+  setNodesFunction(newNodes);
+};
