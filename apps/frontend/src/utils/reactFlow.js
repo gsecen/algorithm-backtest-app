@@ -3,6 +3,7 @@ import { ReactFlow, useReactFlow } from "@xyflow/react";
 import {
   getOutgoers,
   applyNodeChanges,
+  applyEdgeChanges,
   getConnectedEdges,
 } from "@xyflow/react";
 
@@ -151,4 +152,45 @@ export const getImmediateNodeEdges = (id, edges) => {
   });
 
   return nodeEdges;
+};
+
+function createEdge(id, type, source, target, data = {}) {
+  return {
+    id: id,
+    type: type,
+    source: source,
+    target: target,
+    data: data,
+  };
+}
+
+export const changeAllEdgeTypes = (
+  type,
+  edges,
+  edgesToChange,
+  setEdgesFunction
+) => {
+  let changes = [];
+
+  // For the edges that need to change we must remove it from edges and add a new edge with same
+  // properties but different type
+  edgesToChange.forEach((edge) => {
+    let newEdge = createEdge(
+      edge.id,
+      type,
+      edge.source,
+      edge.target,
+      edge.data
+    );
+    changes.push({ type: "remove", id: edge.id });
+    changes.push({ type: "add", item: newEdge });
+  });
+
+  const newEdges = applyEdgeChanges(
+    // https://reactflow.dev/api-reference/types/node-change#nodereplacechange
+    changes,
+    edges
+  );
+
+  setEdgesFunction(newEdges);
 };
