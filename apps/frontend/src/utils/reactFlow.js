@@ -1,6 +1,10 @@
 // This file contains functions which help with the react flow nodes
-
-import { getOutgoers, applyNodeChanges } from "@xyflow/react";
+import { ReactFlow, useReactFlow } from "@xyflow/react";
+import {
+  getOutgoers,
+  applyNodeChanges,
+  getConnectedEdges,
+} from "@xyflow/react";
 
 /**
  * Gets all the immediate children of a node.
@@ -101,6 +105,9 @@ export const createNode = (id, type, x, y, data = {}) => {
     type: type,
     position: { x: x, y: y },
     data: data,
+    origin: [0.5, 0], // https://reactflow.dev/api-reference/types/node-origin
+    // Origin is at the center top so when replacing nodes and positioning nodes it does it based off
+    // of the handle at the top so there is no funny movement when replacing and modifying positions.
   };
 };
 
@@ -125,4 +132,23 @@ export const replaceNode = (
 
   // Updating the nodes in the react flow state
   setNodesFunction(newNodes);
+};
+
+/**
+ * Gets all the immediate edges of a node whos source is the node. (Gets immediate children edges)
+ * @param {string} id Id of the node you want to get edges for.
+ * @param {Array.<ReactFlowEdge>} edges List of all react flow edges.
+ * @returns {Array.<ReactFlowEdge>} List of all immediate edges from node whos source is the node.
+ */
+export const getImmediateNodeEdges = (id, edges) => {
+  let nodeEdges = [];
+
+  // Find all edges whos source is the target id
+  edges.forEach((edge) => {
+    if (edge.source === id) {
+      nodeEdges.push(edge);
+    }
+  });
+
+  return nodeEdges;
 };
