@@ -34,7 +34,7 @@ const SpecifiedWeight = ({
       .specifiedWeights;
 
     // Add my id and defualt weight to hashmap
-    specifiedWeightsHashmap[id] = "Set Weight";
+    specifiedWeightsHashmap[id] = weight;
 
     // Update parent weight nodes specifiedWeights hashmap
     updateNodeData(mySourceId.current, {
@@ -59,6 +59,20 @@ const SpecifiedWeight = ({
     }
 
     return `${Number(string).toFixed(2)}%`;
+  }
+
+  function updateParentWeightNodesData() {
+    // Get parent weight nodes current specified weights hashmap
+    let specifiedWeightsHashmap = getNode(mySourceId.current).data
+      .specifiedWeights;
+
+    // Update my weight in the hashmap
+    specifiedWeightsHashmap[id] = weight;
+
+    // Update parent weight nodes specifiedWeights hashmap
+    updateNodeData(mySourceId.current, {
+      specifiedWeights: specifiedWeightsHashmap,
+    });
   }
 
   return (
@@ -97,6 +111,7 @@ const SpecifiedWeight = ({
             onBlur={(event) => {
               event.target.type = "text";
               event.target.value = formatWeight(weight);
+              updateParentWeightNodesData();
             }}
             onChange={(event) => {
               setWeight(event.target.value);
