@@ -22,26 +22,26 @@ const Expression = () => {
     const trueNode = createNode(
       trueNodeId,
       "nodeSelector",
-      myDetails.position.x + 50,
-      myDetails.position.y + 50
+      myDetails.position.x + 100,
+      myDetails.position.y + 100
     );
     const falseNode = createNode(
       falseNodeId,
       "nodeSelector",
-      myDetails.position.x - 50,
-      myDetails.position.y + 50
+      myDetails.position.x - 100,
+      myDetails.position.y + 100
     );
     const trueEdge = {
       id: `${Math.floor(Math.random() * 9999999)}`,
       source: myId.current,
       target: trueNodeId,
-      label: "True",
+      type: "true",
     };
     const falseEdge = {
       id: `${Math.floor(Math.random() * 9999999)}`,
       source: myId.current,
       target: falseNodeId,
-      label: "False",
+      type: "false",
       animated: true,
     };
 
