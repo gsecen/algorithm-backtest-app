@@ -112,7 +112,15 @@ export const createNode = (id, type, x, y, data = {}) => {
   };
 };
 
-export const replaceNode = (
+/**
+ * Changes the node type to the type specified.
+ * @param {string} id Id of the node you want to change type for.
+ * @param {string} type The type you want to change the node too.
+ * @param {Array.<ReactFlowNode>} nodes List of all react flow nodes.
+ * @param {function} getNodeFunction getNode method from useReactFlow hook.
+ * @param {function} setNodesFunction setNodes method from useNodesState hook.
+ */
+export const changeNodeType = (
   id,
   type,
   nodes,
@@ -164,6 +172,13 @@ function createEdge(id, type, source, target, data = {}) {
   };
 }
 
+/**
+ * Changes all the edges types to the type specified.
+ * @param {string} type The type you want to change the edges too.
+ * @param {Array.<ReactFlowEdge>} edges List of all react flow edges.
+ * @param {Array.<ReactFlowEdge>} edgesToChange List edges that will be changed.
+ * @param {function} setEdgesFunction setEdges method from useEdgesState hook.
+ */
 export const changeAllEdgeTypes = (
   type,
   edges,
@@ -172,8 +187,6 @@ export const changeAllEdgeTypes = (
 ) => {
   let changes = [];
 
-  // For the edges that need to change we must remove it from edges and add a new edge with same
-  // properties but different type
   edgesToChange.forEach((edge) => {
     let newEdge = createEdge(
       edge.id,
@@ -182,8 +195,7 @@ export const changeAllEdgeTypes = (
       edge.target,
       edge.data
     );
-    changes.push({ type: "remove", id: edge.id });
-    changes.push({ type: "add", item: newEdge });
+    changes.push({ id: edge.id, item: newEdge, type: "replace" });
   });
 
   const newEdges = applyEdgeChanges(
