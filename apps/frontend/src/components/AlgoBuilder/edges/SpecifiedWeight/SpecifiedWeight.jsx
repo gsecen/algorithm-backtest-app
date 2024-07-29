@@ -23,11 +23,12 @@ const SpecifiedWeight = ({
 }) => {
   const [weight, setWeight] = useState("Set Weight");
 
-  const { getEdge, updateNodeData, getNode } = useReactFlow();
+  const { getEdge, updateEdgeData, updateNodeData, getNode } = useReactFlow();
   const mySourceId = useRef(getEdge(id).source);
   const myTargetId = useRef(getEdge(id).target);
 
-  // Let parent weight node know that a new specified weight edge has been added to it
+  // Let parent weight node know that a new specified weight edge has been added to it and
+  // add default specified weight data
   useEffect(() => {
     // Get parent weight nodes current specified weights hashmap
     let specifiedWeightsHashmap = getNode(mySourceId.current).data
@@ -39,6 +40,11 @@ const SpecifiedWeight = ({
     // Update parent weight nodes specifiedWeights hashmap
     updateNodeData(mySourceId.current, {
       specifiedWeights: specifiedWeightsHashmap,
+    });
+
+    // Update my own weight data
+    updateEdgeData(id, {
+      specifiedWeight: weight,
     });
   }, []);
 
@@ -59,6 +65,13 @@ const SpecifiedWeight = ({
     }
 
     return `${Number(string).toFixed(2)}%`;
+  }
+
+  function updateMyData() {
+    // Update my specified weight data
+    updateEdgeData(id, {
+      specifiedWeight: weight,
+    });
   }
 
   function updateParentWeightNodesData() {
@@ -97,6 +110,7 @@ const SpecifiedWeight = ({
             onClick={() => {
               console.log(myTargetId);
               console.log(mySourceId);
+              console.log(data);
             }}
           >
             get my target node id and my source id
@@ -112,6 +126,7 @@ const SpecifiedWeight = ({
               event.target.type = "text";
               event.target.value = formatWeight(weight);
               updateParentWeightNodesData();
+              updateMyData();
             }}
             onChange={(event) => {
               setWeight(event.target.value);
