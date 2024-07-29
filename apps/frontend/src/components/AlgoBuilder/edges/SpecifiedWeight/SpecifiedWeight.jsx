@@ -1,10 +1,12 @@
-import { FC, useState } from "react";
+import { FC, useState, useRef, useEffect } from "react";
 import {
   EdgeProps,
   getBezierPath,
   EdgeLabelRenderer,
   BaseEdge,
   Edge,
+  useReactFlow,
+  useNodesData,
 } from "@xyflow/react";
 
 import "./specifiedWeight.css";
@@ -20,7 +22,25 @@ const SpecifiedWeight = ({
   data,
 }) => {
   const [weight, setWeight] = useState("Set Weight");
-  console.log(weight);
+
+  const { getEdge, updateNodeData, getNode } = useReactFlow();
+  const mySourceId = useRef(getEdge(id).source);
+  const myTargetId = useRef(getEdge(id).target);
+
+  // Let parent weight node know that a new specified weight edge has been added to it
+  useEffect(() => {
+    // Get parent weight nodes current specified weights hashmap
+    let specifiedWeightsHashmap = getNode(mySourceId.current).data
+      .specifiedWeights;
+
+    // Add my id and defualt weight to hashmap
+    specifiedWeightsHashmap[id] = "Set Weight";
+
+    // Update parent weight nodes specifiedWeights hashmap
+    updateNodeData(mySourceId.current, {
+      specifiedWeights: specifiedWeightsHashmap,
+    });
+  }, []);
 
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
@@ -59,6 +79,14 @@ const SpecifiedWeight = ({
           }}
           className="nodrag nopan"
         >
+          <button
+            onClick={() => {
+              console.log(myTargetId);
+              console.log(mySourceId);
+            }}
+          >
+            get my target node id and my source id
+          </button>
           <p>Specified Weight</p>
           <input
             onFocus={(event) => {

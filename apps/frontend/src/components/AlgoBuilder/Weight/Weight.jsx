@@ -19,8 +19,12 @@ const Weight = ({ data }) => {
     useReactFlow();
 
   // Set nodes weighting type in data to equal on mount
+  // Set nodes specified weights hashmap to an empty hashmap on mount
   useEffect(() => {
-    updateNodeData(myId.current, { weightingType: "Equal" });
+    updateNodeData(myId.current, {
+      weightingType: "Equal",
+      specifiedWeights: {},
+    });
   }, []);
 
   function changeWeightingType(type) {
@@ -36,6 +40,16 @@ const Weight = ({ data }) => {
     changeAllEdgeTypes(type, getEdges(), immediateEdges, setEdges);
 
     setWeightingType(type);
+
+    // if we are setting the weighting type to equal, remove all specified weights
+    if (type === "default") {
+      updateNodeData(myId.current, {
+        weightingType: type,
+        specifiedWeights: {},
+      });
+    } else {
+      updateNodeData(myId.current, { weightingType: type });
+    }
   }
 
   return (
@@ -47,14 +61,27 @@ const Weight = ({ data }) => {
       />
       <Handle type="source" position={Position.Bottom} />
       <p>Weight type: {weightingType}</p>
+      <button
+        onClick={() => {
+          console.log(getNode(myId.current));
+        }}
+      >
+        console log my data
+      </button>
       <ul>
         <li>
-          <button>set weight to equal</button>
+          <button
+            onClick={() => {
+              changeWeightingType("default");
+            }}
+          >
+            set weight to equal
+          </button>
         </li>
         <li>
           <button
             onClick={() => {
-              changeWeightingType("step");
+              changeWeightingType("specifiedWeight");
             }}
           >
             set weight to specified
