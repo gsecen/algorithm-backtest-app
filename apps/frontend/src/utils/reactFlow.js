@@ -249,7 +249,83 @@ export const changeAllEdgeTypes = (
   setEdgesFunction(newEdges);
 };
 
-export const copyNode = (id, nodes, edges) => {
+/**
+ * Copies node, all children nodes, all children edges, and replaces all ids accordingly so everything is still connected.
+ * @param {string} id Id of the node you want to copy everything for.
+ * @param {Array.<ReactFlowNode>} nodes List of all react flow nodes.
+ * @param {Array.<ReactFlowEdge>} edges List of all react flow edges.
+ * @param {function} getNodeFunction getNode method from useReactFlow hook.
+ * @param {Array} newNodes Empty array which will store new nodes.
+ * @param {Array} newEdges Empty array which will store new edges.
+ * @param {Object} newIds Empty object which will store old and new node ids.
+ * @returns {[Array.<ReactFlowNode>, Array.<ReactFlowEdge>]} Array of new nodes, array of new edges.
+ */
+export const copyNode = (
+  id,
+  nodes,
+  edges,
+  getNodeFunction,
+  newNodes = [],
+  newEdges = [],
+  newIds = {}
+) => {
+  // Create new id which will be replacing nodes ids
+  const newNodeId = `${Math.floor(Math.random() * 9999999)}`;
+
+  // Get all node and edge details
   const immediateNodeChildren = getImmediateNodeChildren(id, nodes, edges);
-  const immediateEdges = getImmediateNodeSourceEdges(id, edges);
+  const immediateTargetEdges = getImmediateNodeTargetEdges(id, edges);
+
+  // Get current nodes details
+  const node = getNodeFunction(id);
+
+  // Map old nodes id to what the new node is
+  newIds[node.id] = newNodeId;
+
+  // New node should have same position and data as old node with new id
+  const newNode = createNode(
+    newNodeId,
+    node.type,
+    node.position.x,
+    node.position.y,
+    node.data
+  );
+
+  newNodes.push(newNode);
+
+  // For all the edges connected to the node change its target id to the new nodes id
+  immediateTargetEdges.forEach((edge) => {
+    const newEdgeId = `${Math.floor(Math.random() * 9999999)}`;
+
+    let source = edge.source;
+
+    // If the source of the edge is a node whos id has been changed already, make edges source id the new nodes id
+    if (edge.source in newIds) {
+      source = newIds[edge.source];
+    }
+
+    const newEdge = createEdge(
+      newEdgeId,
+      edge.type,
+      source,
+      newNodeId,
+      edge.data
+    );
+    newEdges.push(newEdge);
+  });
+
+  // For all of the children of node change its target edges accordingly
+  immediateNodeChildren.forEach((node) => {
+    copyNode(
+      node.id,
+      nodes,
+      edges,
+      getNodeFunction,
+      newNodes,
+      newEdges,
+      newIds
+    );
+  });
+
+  return [newNodes, newEdges];
 };
