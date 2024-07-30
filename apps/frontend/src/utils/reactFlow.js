@@ -171,7 +171,7 @@ export const changeNodeType = (
  * @param {Array.<ReactFlowEdge>} edges List of all react flow edges.
  * @returns {Array.<ReactFlowEdge>} List of all immediate edges from node whos source is the node.
  */
-export const getImmediateNodeEdges = (id, edges) => {
+export const getImmediateNodeSourceEdges = (id, edges) => {
   let nodeEdges = [];
 
   // Find all edges whos source is the target id
@@ -183,6 +183,25 @@ export const getImmediateNodeEdges = (id, edges) => {
 
   return nodeEdges;
 };
+
+/**
+ * Gets all the immediate edges of a node whos target is the node. (Gets immediate parent edges)
+ * @param {string} id Id of the node you want to get edges for.
+ * @param {Array.<ReactFlowEdge>} edges List of all react flow edges.
+ * @returns {Array.<ReactFlowEdge>} List of all immediate edges to node whos target is the node.
+ */
+function getImmediateNodeTargetEdges(id, edges) {
+  let nodeEdges = [];
+
+  // Find all edges whos target is the target id
+  edges.forEach((edge) => {
+    if (edge.target === id) {
+      nodeEdges.push(edge);
+    }
+  });
+
+  return nodeEdges;
+}
 
 function createEdge(id, type, source, target, data = {}) {
   return {
@@ -209,6 +228,7 @@ export const changeAllEdgeTypes = (
 ) => {
   let changes = [];
 
+  // Copy all the same edge information to new edge just change the type
   edgesToChange.forEach((edge) => {
     let newEdge = createEdge(
       edge.id,
@@ -227,4 +247,9 @@ export const changeAllEdgeTypes = (
   );
 
   setEdgesFunction(newEdges);
+};
+
+export const copyNode = (id, nodes, edges) => {
+  const immediateNodeChildren = getImmediateNodeChildren(id, nodes, edges);
+  const immediateEdges = getImmediateNodeSourceEdges(id, edges);
 };
