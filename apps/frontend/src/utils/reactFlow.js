@@ -258,7 +258,7 @@ export const changeAllEdgeTypes = (
  * @param {Array} newNodes Empty array which will store new nodes.
  * @param {Array} newEdges Empty array which will store new edges.
  * @param {Object} newIds Empty object which will store old and new node ids.
- * @returns {[Array.<ReactFlowNode>, Array.<ReactFlowEdge>]} Array of new nodes, array of new edges.
+ * @returns {[Array.<ReactFlowNode>, Array.<ReactFlowEdge>]} New id of root node, array of new nodes, array of new edges.
  */
 export const copyNode = (
   id,
@@ -297,21 +297,21 @@ export const copyNode = (
   immediateTargetEdges.forEach((edge) => {
     const newEdgeId = `${Math.floor(Math.random() * 9999999)}`;
 
-    let source = edge.source;
+    // let source = edge.source;
 
     // If the source of the edge is a node whos id has been changed already, make edges source id the new nodes id
+    // If the source of the edge has not been changed already, the edge is connected to root node so no need to add edge
     if (edge.source in newIds) {
-      source = newIds[edge.source];
+      const source = newIds[edge.source];
+      const newEdge = createEdge(
+        newEdgeId,
+        edge.type,
+        source,
+        newNodeId,
+        edge.data
+      );
+      newEdges.push(newEdge);
     }
-
-    const newEdge = createEdge(
-      newEdgeId,
-      edge.type,
-      source,
-      newNodeId,
-      edge.data
-    );
-    newEdges.push(newEdge);
   });
 
   // For all of the children of node change its target edges accordingly
@@ -327,5 +327,5 @@ export const copyNode = (
     );
   });
 
-  return [newNodes, newEdges];
+  return [newNodeId, newNodes, newEdges];
 };
