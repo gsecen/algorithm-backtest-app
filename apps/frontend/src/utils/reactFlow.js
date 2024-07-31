@@ -327,5 +327,85 @@ export const copyNode = (
     );
   });
 
-  return [newNodeId, newNodes, newEdges];
+  return [newNode.id, newNodes, newEdges];
+};
+
+export const pasteNode = (
+  id,
+  nodes,
+  edges,
+  rootNodeId,
+  copiedNodes,
+  copiedEdges,
+  getNodeFunction,
+  setNodesFunction,
+  setEdgesFunction
+) => {
+  let nodeChanges = [];
+  let edgeChanges = [];
+
+  // Get details of the node you want to replace
+  const nodeDetails = getNodeFunction(id);
+
+  // Get the rootNode
+  let rootNode = null;
+  for (let i = 0; i < copiedNodes.length; i++) {
+    if (copiedNodes[i].id === rootNodeId) {
+      rootNode = copiedNodes[i];
+      break;
+    }
+  }
+
+  // console.log(nodeDetails);
+  // console.log(rootNode);
+
+  // Calculate x and y offsets needed to position rootNode in the node to be replaced position
+  const xOffset = nodeDetails.position.x - rootNode.position.x;
+  const yOffset = nodeDetails.position.y - rootNode.position.y;
+
+  rootNode.position.x += xOffset;
+  rootNode.position.y += yOffset;
+
+  console.log("soido");
+  console.log(rootNode);
+  console.log(nodeDetails);
+  nodeChanges.push({ id: nodeDetails.id, item: rootNode, type: "replace" });
+
+  // For every copied node modify the position so the structure of the copied nodes stay the same,
+  // and so that their root node will be in the spot of the node to be replaced
+  copiedNodes.forEach((node) => {
+    // Make sure not to add root node becuase it has already been added to react flow through replace change
+    if (node.id !== rootNodeId) {
+      node.position.x += xOffset;
+      node.position.y += yOffset;
+      nodeChanges.push({ item: node, type: "add" });
+    }
+  });
+
+  // Get the edges whos target is the node to be replaced
+  const targetEdges = getImmediateNodeTargetEdges(nodeDetails.id, edges);
+
+  // Change the target id of the target edges to the new rootNodes id
+  targetEdges.forEach((edge) => {
+    const newEdge = createEdge(
+      edge.id,
+      edge.type,
+      edge.source,
+      rootNode.id,
+      edge.data
+    );
+    edgeChanges.push({ id: edge.id, item: newEdge, type: "replace" });
+  });
+
+  // Build all changes to add edges
+  copiedEdges.forEach((edge) => {
+    edgeChanges.push({ item: edge, type: "add" });
+  });
+
+  // Apply changes and update react flow state
+  const newNodes = applyNodeChanges(nodeChanges, nodes);
+  const newEdges = applyEdgeChanges(edgeChanges, edges);
+
+  setNodesFunction(newNodes);
+  setEdgesFunction(newEdges);
 };
