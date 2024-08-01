@@ -250,15 +250,14 @@ export const changeAllEdgeTypes = (
 };
 
 /**
- * Copies node, all children nodes, all children edges, and replaces all ids accordingly so everything is still connected.
+ * Copies node, all children nodes, and all children edges.
  * @param {string} id Id of the node you want to copy everything for.
  * @param {Array.<ReactFlowNode>} nodes List of all react flow nodes.
  * @param {Array.<ReactFlowEdge>} edges List of all react flow edges.
  * @param {function} getNodeFunction getNode method from useReactFlow hook.
  * @param {Array} newNodes Empty array which will store new nodes.
  * @param {Array} newEdges Empty array which will store new edges.
- * @param {Object} newIds Empty object which will store old and new node ids.
- * @returns {[Array.<ReactFlowNode>, Array.<ReactFlowEdge>]} New id of root node, array of new nodes, array of new edges.
+ * @returns {[ReactFlowNode, Array.<ReactFlowNode>, Array.<ReactFlowEdge>]} New root node, array of new nodes, array of new edges.
  */
 export const copyNode = (
   id,
@@ -266,18 +265,77 @@ export const copyNode = (
   edges,
   getNodeFunction,
   newNodes = [],
-  newEdges = [],
-  newIds = {}
+  newEdges = []
 ) => {
-  // Create new id which will be replacing nodes ids
-  const newNodeId = `${Math.floor(Math.random() * 9999999)}`;
-
   // Get all node and edge details
   const immediateNodeChildren = getImmediateNodeChildren(id, nodes, edges);
   const immediateTargetEdges = getImmediateNodeTargetEdges(id, edges);
 
   // Get current nodes details
   const node = getNodeFunction(id);
+
+  // Clone node
+  const newNode = createNode(
+    node.id,
+    node.type,
+    node.position.x,
+    node.position.y,
+    node.data
+  );
+
+  newNodes.push(newNode);
+
+  // For all the edges connected to the node clone them
+  immediateTargetEdges.forEach((edge) => {
+    const newEdge = createEdge(
+      edge.id,
+      edge.type,
+      edge.source,
+      edge.target,
+      edge.data
+    );
+    newEdges.push(newEdge);
+  });
+
+  // For all of the children of node clone its nodes and edges
+  immediateNodeChildren.forEach((node) => {
+    copyNode(node.id, nodes, edges, getNodeFunction, newNodes, newEdges);
+  });
+
+  return [newNode, newNodes, newEdges];
+};
+
+/**
+ * Changes ids for copied node, all copied children nodes, and all copied children edges.
+ * @param {ReactFlowNode} node Node you want to change ids for. (Will be the copied root node of all nodes and edges which you want ids replaced for)
+ * @param {Array.<ReactFlowNode>} copiedNodes List of all nodes which have been copied.
+ * @param {Array.<ReactFlowEdge>} copiedEdges List of all edges which have been copied.
+ * @param {Array} newNodes Empty array which will store new nodes.
+ * @param {Array} newEdges Empty array which will store new edges.
+ * @param {Object} newIds Empty object which will store old and new node ids.
+ * @returns {[ReactFlowNode, Array.<ReactFlowNode>, Array.<ReactFlowEdge>]} New root node, array of new nodes, array of new edges.
+ */
+function changeCopiedNodeAndEdgeIds(
+  node,
+  copiedNodes,
+  copiedEdges,
+  newNodes = [],
+  newEdges = [],
+  newIds = {}
+) {
+  // Create new id which will be replacing nodes ids
+  const newNodeId = `${Math.floor(Math.random() * 9999999)}`;
+
+  // Get all node and edge details
+  const immediateNodeChildren = getImmediateNodeChildren(
+    node.id,
+    copiedNodes,
+    copiedEdges
+  );
+  const immediateTargetEdges = getImmediateNodeTargetEdges(
+    node.id,
+    copiedEdges
+  );
 
   // Map old nodes id to what the new node is
   newIds[node.id] = newNodeId;
@@ -297,8 +355,6 @@ export const copyNode = (
   immediateTargetEdges.forEach((edge) => {
     const newEdgeId = `${Math.floor(Math.random() * 9999999)}`;
 
-    // let source = edge.source;
-
     // If the source of the edge is a node whos id has been changed already, make edges source id the new nodes id
     // If the source of the edge has not been changed already, the edge is connected to root node so no need to add edge
     if (edge.source in newIds) {
@@ -316,25 +372,36 @@ export const copyNode = (
 
   // For all of the children of node change its target edges accordingly
   immediateNodeChildren.forEach((node) => {
-    copyNode(
-      node.id,
-      nodes,
-      edges,
-      getNodeFunction,
+    changeCopiedNodeAndEdgeIds(
+      node,
+      copiedNodes,
+      copiedEdges,
       newNodes,
       newEdges,
       newIds
     );
   });
 
-  return [newNode.id, newNodes, newEdges];
-};
+  return [newNode, newNodes, newEdges];
+}
 
+/**
+ * Pastes the copied node tree to the react flow.
+ * @param {string} id Id of the node you want to replace for new node tree.
+ * @param {Array.<ReactFlowNode>} nodes List of all react flow nodes.
+ * @param {Array.<ReactFlowEdge>} edges List of all react flow edges.
+ * @param {ReactFlowNode} rootNode The copied root node of the tree which you want pasted.
+ * @param {Array.<ReactFlowNode>} copiedNodes List of all copied nodes which you want pasted.
+ * @param {Array.<ReactFlowEdge>} copiedEdges List of all copied edges which you want pasted
+ * @param {function} getNodeFunction getNode method from useReactFlow hook.
+ * @param {function} setNodesFunction setNodes method from useNodesState hook.
+ * @param {function} setEdgesFunction setEdges method from useEdgesState hook.
+ */
 export const pasteNode = (
   id,
   nodes,
   edges,
-  rootNodeId,
+  rootNode,
   copiedNodes,
   copiedEdges,
   getNodeFunction,
@@ -347,35 +414,34 @@ export const pasteNode = (
   // Get details of the node you want to replace
   const nodeDetails = getNodeFunction(id);
 
-  // Get the rootNode
-  let rootNode = null;
-  for (let i = 0; i < copiedNodes.length; i++) {
-    if (copiedNodes[i].id === rootNodeId) {
-      rootNode = copiedNodes[i];
-      break;
-    }
-  }
-
-  // console.log(nodeDetails);
-  // console.log(rootNode);
+  // Get all the copied nodes and edges with new ids to be added to the react flow
+  const copiedDetails = changeCopiedNodeAndEdgeIds(
+    rootNode,
+    copiedNodes,
+    copiedEdges
+  );
+  const rootNodeUniqueId = copiedDetails[0];
+  const copiedNodesUniqueIds = copiedDetails[1];
+  const copiedEdgesUniqueIds = copiedDetails[2];
 
   // Calculate x and y offsets needed to position rootNode in the node to be replaced position
-  const xOffset = nodeDetails.position.x - rootNode.position.x;
-  const yOffset = nodeDetails.position.y - rootNode.position.y;
+  const xOffset = nodeDetails.position.x - rootNodeUniqueId.position.x;
+  const yOffset = nodeDetails.position.y - rootNodeUniqueId.position.y;
 
-  rootNode.position.x += xOffset;
-  rootNode.position.y += yOffset;
+  rootNodeUniqueId.position.x += xOffset;
+  rootNodeUniqueId.position.y += yOffset;
 
-  console.log("soido");
-  console.log(rootNode);
-  console.log(nodeDetails);
-  nodeChanges.push({ id: nodeDetails.id, item: rootNode, type: "replace" });
+  nodeChanges.push({
+    id: nodeDetails.id,
+    item: rootNodeUniqueId,
+    type: "replace",
+  });
 
   // For every copied node modify the position so the structure of the copied nodes stay the same,
   // and so that their root node will be in the spot of the node to be replaced
-  copiedNodes.forEach((node) => {
+  copiedNodesUniqueIds.forEach((node) => {
     // Make sure not to add root node becuase it has already been added to react flow through replace change
-    if (node.id !== rootNodeId) {
+    if (node.id !== rootNodeUniqueId.id) {
       node.position.x += xOffset;
       node.position.y += yOffset;
       nodeChanges.push({ item: node, type: "add" });
@@ -391,14 +457,14 @@ export const pasteNode = (
       edge.id,
       edge.type,
       edge.source,
-      rootNode.id,
+      rootNodeUniqueId.id,
       edge.data
     );
     edgeChanges.push({ id: edge.id, item: newEdge, type: "replace" });
   });
 
   // Build all changes to add edges
-  copiedEdges.forEach((edge) => {
+  copiedEdgesUniqueIds.forEach((edge) => {
     edgeChanges.push({ item: edge, type: "add" });
   });
 
