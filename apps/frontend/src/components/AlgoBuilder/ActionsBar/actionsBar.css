@@ -58,6 +58,7 @@
     background-color: var(--background-color-1);
     border: var(--border-1);
     border-radius: 0.2em;
+    overflow: hidden;
 
     /* for opacity */
     transition: 0.20s;
