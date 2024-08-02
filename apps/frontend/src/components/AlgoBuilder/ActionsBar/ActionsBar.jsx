@@ -25,6 +25,7 @@ const ActionsBar = forwardRef(({ editMeFunction, focused }, ref) => {
   // Keep track of if parent node is currently being used so we know to show actions bar
   const isItemFocused = focused;
   const [showActionsBar, setShowActionsBar] = useState(false);
+  const [showSubMenu, setShowSubMenu] = useState(false);
   const [hovering, setHovering] = useState(false);
 
   const { getNodes, getEdges, deleteElements, getNode, updateNodeData } =
@@ -104,17 +105,24 @@ const ActionsBar = forwardRef(({ editMeFunction, focused }, ref) => {
         <li className="actions-bar-main-menu-item">
           <img className="actions-bar-icon" src={deleteIcon} alt="" />
         </li>
-        <li className="actions-bar-main-menu-item">
+        <li
+          onClick={() => {
+            setShowSubMenu(!showSubMenu);
+          }}
+          className="actions-bar-main-menu-item"
+        >
           <img className="actions-bar-icon" src={otherIcon} alt="" />
         </li>
       </ul>
 
-      <ul className="actions-bar-sub-menu">
+      <ul className={`actions-bar-sub-menu ${showSubMenu ? "" : "hidden"}`}>
         <li className="actions-bar-sub-menu-item">
           <img className="actions-bar-icon" src={copyIcon} alt="" />
+          <p className="actions-bar-sub-menu-text">Copy</p>
         </li>
         <li className="actions-bar-sub-menu-item">
           <img className="actions-bar-icon" src={deleteChildrenIcon} alt="" />
+          <p className="actions-bar-sub-menu-text">Remove Child Nodes</p>
         </li>
       </ul>
     </div>
