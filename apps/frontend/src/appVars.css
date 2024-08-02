@@ -1,0 +1,12 @@
+:root{
+    
+    --background-color-1: white;
+    --box-shadow-1: 0 2px 4px 0 #0000001f;
+    --border-1: 1px solid rgb(135, 138, 141);
+}
+
+/* Fonts */
+@font-face {
+    font-family: Abel;
+    src: url(assets/fonts/Abel-Regular.ttf) format("truetype");
+};
