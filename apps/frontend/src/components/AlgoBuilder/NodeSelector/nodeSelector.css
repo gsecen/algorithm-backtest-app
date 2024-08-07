@@ -1,30 +1,96 @@
 
-/* Node selector block */
-.node-selector-block{
+/* Node selector container */
+.node-selector-container{
+}
+
+
+
+
+
+/* The node selector menu which holds the add node text and actions bar */
+.node-selector-menu{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.65em;
+    padding: 0.65em;
     cursor: pointer;
+
+    box-shadow: var(--box-shadow-1);
+    background-color: var(--background-color-1);
+    border: var(--border-1);
+    border-radius: 1em;
+    background-color: rgb(236, 237, 238);
 }
-.node-selector-block:hover{
-    background-color: grey;
+/* Plus icon */
+.node-selector-menu-icon{
+    width: 1.5em;
+}
+.node-selector-menu-text{
+    font-family: abel;
+    margin: 0px;
+    font-size: 1.1em;
+}
+/* Text which will be more faint */
+.node-selector-menu-text > span{
+    color:#10151699;
 }
 
 
-
-
-
-/* Node selector dropdown list */
-.node-selector-list{
-    padding: 0px;
-    list-style-type: none;
+/* Node selector dropdown container which shows the options of all the nodes to add to the react flow */
+.node-selector-dropdown-container{
+    box-shadow: var(--box-shadow-1);
+    background-color: var(--background-color-1);
+    border: var(--border-1);
+    border-radius: 1em;
+    overflow: hidden;
+    position: absolute;
 
     /* for opacity */
     transition: 0.20s;
 }
-.node-selector-list-item{
-    margin: 10px;
-    
+.node-selector-dropdown{
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
 }
-.node-selector-list-item:hover{
-    background-color: greenyellow;
+.node-selector-dropdown-item{
+    display: flex;
+    gap: 0.5em;
+    padding: 0.7em 1em 0.7em 1em;
     cursor: pointer;
+    border-bottom: 1px solid #00000029;
+    
+    /* for hover */
+    transition: 0.2s;
 }
-
+.node-selector-dropdown-item:hover{
+    background-color: rgb(235, 235, 235);
+}
+.node-selector-dropdown-icon-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid rgb(145, 145, 145);
+    border-radius: 0.3em;
+    padding: 0.22em;
+    width: fit-content;
+    height: fit-content;
+}
+.node-selector-dropdown-title{
+    font-family: abel;
+    padding-left: 1em;
+}
+.node-selector-dropdown-icon{
+    width: 1.3em;
+}
+.node-selector-dropdown-text{
+    font-family: abel;
+    margin: 0px;
+}
+.node-selector-dropdown-text > span{
+    display: block;
+    color: #10151699;
+    text-wrap: wrap;
+    font-size: 1em;
+}
