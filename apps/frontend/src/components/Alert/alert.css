@@ -1,0 +1,48 @@
+/* The entire alert circle with exclamtion and error message text */
+.alert-container{
+    /* for opacity */
+    transition: 0.20s;
+
+    position: relative;
+}
+
+
+/* The exclamtion mark */
+.exclamation-mark{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0px;
+    font-family: abel;
+    color: white;
+    background-color: rgb(239, 68, 68);
+    border: 1px solid black;
+    
+    width: 1.2em;
+    height: 1.2em;
+    border-radius: 50%;
+    cursor: default;
+    box-shadow: var(--box-shadow-1);
+}
+
+
+/* Error message text */
+.error-message-text{
+    margin: 0px;
+    position: absolute;
+    font-size: 1.1em;
+    background-color: black;
+    padding: 0px 5px 0px 5px;
+    border-radius: 3px;
+    color: white;
+    font-family: "Abel";
+    box-shadow: var(--box-shadow-1);
+
+    /* for opacity */
+    transition: 0.20s;
+
+    left: 1.4em;
+    bottom: 0em;
+    z-index: 2;
+}
+
