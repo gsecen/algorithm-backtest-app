@@ -1,0 +1,7 @@
+/* Container holds the entire buy node component */
+.buy-container{
+    background-color: goldenrod;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
