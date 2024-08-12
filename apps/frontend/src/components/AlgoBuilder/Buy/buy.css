@@ -1,7 +1,52 @@
 /* Container holds the entire buy node component */
 .buy-container{
-    background-color: goldenrod;
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: var(--box-shadow-1);
+    background-color: var(--background-color-1);
+    border: var(--border-1);
+    border-radius: 1.5em;
+    padding: 0.2em;
+    position: relative;
+    gap: 0.1em;
+}
+
+
+/* Dollar sign icon before the input */
+.buy-dollar-sign{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0px;
+    font-family: abel;
+    color: white;
+    background-color: #19AE01;
+    border-radius: 100%;
+    width: 1.6em;
+    height: 1.6em;
+    font-size: 1.3em;
+}
+
+
+/* Ticker symbol input */
+.ticker-symbol-input{
+    /* text-align: center; */
+    border: none;
+    font-family: abel;
+    color: black;
+    font-size: 1.4em;
+    width: 3em;
+
+}
+.ticker-symbol-input:focus{
+    outline: none;
+    pointer-events: all;
+}
+.ticker-symbol-input:disabled{
+    background-color: transparent;
+    color: black;
+
+    /* So that text cannot be selected (highlighted) */
+    pointer-events: none;
 }

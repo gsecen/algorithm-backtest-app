@@ -7,6 +7,7 @@ import "./buy.css";
 const Buy = ({ data }) => {
   const myId = useRef(useNodeId());
   const [ticker, setTicker] = useState("TICKER");
+  const [isFocused, setIsFocused] = useState(false);
 
   const actionsBarRef = useRef();
   const alertRef = useRef();
@@ -23,7 +24,7 @@ const Buy = ({ data }) => {
 
   // function puts the ticker symbol input into focus and makes it editable
   function makeInputEditable() {
-    const input = document.getElementById("ticker-input");
+    const input = document.getElementById(`ticker-input-${myId.current}`);
     input.disabled = false;
     input.readOnly = false;
     input.focus();
@@ -31,7 +32,7 @@ const Buy = ({ data }) => {
 
   // function makes the ticker symbol input uneditable and unfocusable
   function makeInputUnEditable() {
-    const input = document.getElementById("ticker-input");
+    const input = document.getElementById(`ticker-input-${myId.current}`);
     input.disabled = true;
     input.readOnly = true;
   }
@@ -53,13 +54,21 @@ const Buy = ({ data }) => {
         type="target"
         position={Position.Top}
       />
+      <p className="buy-dollar-sign">$</p>
       <input
         onChange={(event) => {
           setTicker(event.target.value.toUpperCase());
         }}
-        onBlur={makeInputUnEditable}
+        onBlur={() => {
+          makeInputUnEditable();
+          actionsBarRef.current.checkHoverOnEditComplete();
+          setIsFocused(false);
+        }}
+        onFocus={() => {
+          setIsFocused(true);
+        }}
         className="ticker-symbol-input"
-        id="ticker-input"
+        id={`ticker-input-${myId.current}`}
         type="text"
         value={ticker}
         readOnly
@@ -67,6 +76,7 @@ const Buy = ({ data }) => {
       />
       <ActionsBar
         ref={actionsBarRef}
+        focused={isFocused}
         editMeFunction={makeInputEditable}
       ></ActionsBar>
       <Alert
