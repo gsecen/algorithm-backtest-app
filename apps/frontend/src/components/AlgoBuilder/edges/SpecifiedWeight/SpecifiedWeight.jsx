@@ -8,6 +8,7 @@ import {
   useReactFlow,
   useNodesData,
 } from "@xyflow/react";
+import ActionsBar from "../../ActionsBar/ActionsBar";
 
 import "./specifiedWeight.css";
 
@@ -26,6 +27,8 @@ const SpecifiedWeight = ({
   const { getEdge, updateEdgeData, updateNodeData, getNode } = useReactFlow();
   const mySourceId = useRef(getEdge(id).source);
   const myTargetId = useRef(getEdge(id).target);
+
+  const actionsBarRef = useRef();
 
   // Let parent weight node know that a new specified weight edge has been added to it and
   // add default specified weight data
@@ -93,46 +96,48 @@ const SpecifiedWeight = ({
       <BaseEdge id={id} path={edgePath} />
       <EdgeLabelRenderer>
         <div
+          onMouseEnter={() => {
+            actionsBarRef.current.currentlyHovering();
+          }}
+          onMouseLeave={() => {
+            actionsBarRef.current.notCurrentlyHovering();
+          }}
           style={{
             position: "absolute",
             transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-            background: "#6699ff",
-            padding: 10,
-            borderRadius: 5,
-            fontSize: 12,
-            fontWeight: 700,
+            // background: "#6699ff",
+            // padding: 10,
+            // borderRadius: 5,
+            // fontSize: 12,
+            // fontWeight: 700,
 
             pointerEvents: "all",
           }}
-          className="nodrag nopan"
+          className="specified-weight-container"
         >
-          <button
-            onClick={() => {
-              console.log(myTargetId);
-              console.log(mySourceId);
-              console.log(data);
-            }}
-          >
-            get my target node id and my source id
-          </button>
-          <p>Specified Weight</p>
-          <input
-            onFocus={(event) => {
-              event.target.type = "number";
-              event.target.step = "0.01";
-              event.target.value = weight;
-            }}
-            onBlur={(event) => {
-              event.target.type = "text";
-              event.target.value = formatWeight(weight);
-              updateParentWeightNodesData();
-              updateMyData();
-            }}
-            onChange={(event) => {
-              setWeight(event.target.value);
-            }}
-            placeholder="Set Weight"
-          />
+          <div className="specified-weight-input-container">
+            <button>hide</button>
+            <input
+              className="specified-weight-input"
+              onFocus={(event) => {
+                event.target.type = "number";
+                event.target.step = "0.01";
+                event.target.value = weight;
+              }}
+              onBlur={(event) => {
+                event.target.type = "text";
+                event.target.value = formatWeight(weight);
+                updateParentWeightNodesData();
+                updateMyData();
+              }}
+              onChange={(event) => {
+                setWeight(event.target.value);
+              }}
+              placeholder="Set Weight"
+            />
+          </div>
+
+          <ActionsBar ref={actionsBarRef}></ActionsBar>
         </div>
       </EdgeLabelRenderer>
     </>

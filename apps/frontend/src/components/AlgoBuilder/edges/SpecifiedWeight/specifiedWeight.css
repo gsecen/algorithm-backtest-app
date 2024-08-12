@@ -1,0 +1,63 @@
+/* Container which holds entire specified weight edge */
+.specified-weight-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.2em;
+}
+
+
+/* Container which holds the icon to hide and show specified weight children and specified weight input */
+.specified-weight-input-container{
+    box-shadow: var(--box-shadow-1);
+    background-color: #0149AE;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.2em;
+    border: 2px solid white;
+    border-radius: 2em;
+
+}
+
+/* Temporary (will be hide and show children icon) */
+.specified-weight-input-container > p{
+    padding: 0px;
+    margin: 0px;
+    color: white;
+}
+
+
+
+/* Set weight input (input to set specified weight) */
+.specified-weight-input{
+    font-family: abel;
+    color: white;
+    background-color: transparent;
+    border: none;
+}
+.specified-weight-input:focus{
+    outline: none;
+    pointer-events: all;
+}
+.specified-weight-input:disabled{
+    background-color: transparent;
+    color: white;
+
+    /* So that text cannot be selected (highlighted) */
+    pointer-events: none;
+}
+/* Make it so no arrows show on the input because by default arrows show on type number inputs */
+/* Chrome, Safari, Edge, Opera */
+.specified-weight-input::-webkit-outer-spin-button,
+.specified-weight-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+.specified-weight-input {
+  -moz-appearance: textfield;
+}
+.specified-weight-input::placeholder{
+    color: white;
+}
