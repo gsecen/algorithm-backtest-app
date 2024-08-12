@@ -7,8 +7,16 @@ import {
   Edge,
   useReactFlow,
   useNodesData,
+  applyNodeChanges,
+  useNodeId,
 } from "@xyflow/react";
+import {
+  setHiddenAllNodeChildren,
+  setHiddenAllEdgeChildren,
+} from "../../../../utils/reactFlow";
 import ActionsBar from "../../ActionsBar/ActionsBar";
+import hideIcon from "../../../../assets/images/closed-eye.svg";
+import showIcon from "../../../../assets/images/open-eye.svg";
 
 import "./specifiedWeight.css";
 
@@ -23,8 +31,19 @@ const SpecifiedWeight = ({
   data,
 }) => {
   const [weight, setWeight] = useState("Set Weight");
+  const [isFocused, setIsFocused] = useState(false);
+  const [hideChildren, setHideChildren] = useState(false);
 
-  const { getEdge, updateEdgeData, updateNodeData, getNode } = useReactFlow();
+  const {
+    getEdge,
+    updateEdgeData,
+    updateNodeData,
+    getNode,
+    updateNode,
+    getNodes,
+    getEdges,
+    setNodes,
+  } = useReactFlow();
   const mySourceId = useRef(getEdge(id).source);
   const myTargetId = useRef(getEdge(id).target);
 
@@ -91,6 +110,33 @@ const SpecifiedWeight = ({
     });
   }
 
+  // function puts the specified weight input into focus and makes it editable
+  function makeInputEditable() {
+    const input = document.getElementById(`weight-input-${id}`);
+    input.disabled = false;
+    input.readOnly = false;
+    input.focus();
+  }
+
+  // function makes the specified weight input uneditable and unfocusable
+  function makeInputUnEditable() {
+    const input = document.getElementById(`weight-input-${id}`);
+    input.disabled = true;
+    input.readOnly = true;
+  }
+
+  // Function will hide all the children of the edge also keeping edge intact so
+  // edge will not disappear
+  function hideTargetNodeChildren() {
+    setHiddenAllEdgeChildren(
+      !hideChildren,
+      myTargetId.current,
+      getNodes(),
+      getEdges(),
+      setNodes
+    );
+  }
+
   return (
     <>
       <BaseEdge id={id} path={edgePath} />
@@ -105,39 +151,59 @@ const SpecifiedWeight = ({
           style={{
             position: "absolute",
             transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-            // background: "#6699ff",
-            // padding: 10,
-            // borderRadius: 5,
-            // fontSize: 12,
-            // fontWeight: 700,
-
-            pointerEvents: "all",
+            // pointerEvents: "all",
           }}
           className="specified-weight-container"
         >
           <div className="specified-weight-input-container">
-            <button>hide</button>
+            <div
+              onClick={() => {
+                hideTargetNodeChildren();
+                setHideChildren(!hideChildren);
+              }}
+              className="hide-specified-weight-children-container"
+            >
+              <img
+                src={hideChildren ? hideIcon : showIcon}
+                alt=""
+                className="hide-specified-weight-children-icon"
+              />
+            </div>
             <input
               className="specified-weight-input"
+              id={`weight-input-${id}`}
               onFocus={(event) => {
+                event.target.placeholder = "";
                 event.target.type = "number";
                 event.target.step = "0.01";
                 event.target.value = weight;
+                setIsFocused(true);
               }}
               onBlur={(event) => {
+                makeInputUnEditable();
                 event.target.type = "text";
                 event.target.value = formatWeight(weight);
                 updateParentWeightNodesData();
                 updateMyData();
+                actionsBarRef.current.checkHoverOnEditComplete();
+                setIsFocused(false);
               }}
               onChange={(event) => {
                 setWeight(event.target.value);
               }}
               placeholder="Set Weight"
+              readOnly
+              disabled
             />
           </div>
 
-          <ActionsBar ref={actionsBarRef}></ActionsBar>
+          <div className="specified-weight-actions-bar-container">
+            <ActionsBar
+              ref={actionsBarRef}
+              focused={isFocused}
+              editMeFunction={makeInputEditable}
+            ></ActionsBar>
+          </div>
         </div>
       </EdgeLabelRenderer>
     </>
