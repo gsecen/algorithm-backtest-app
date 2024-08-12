@@ -475,3 +475,25 @@ export const pasteNode = (
   setNodesFunction(newNodes);
   setEdgesFunction(newEdges);
 };
+
+/**
+ * Hides the edge target node and all of its children.
+ * @param {boolean} hidden What you want the hidden attribute to be set to.
+ * @param {string} childNodeId Id of the edge target node you want to hide and set hidden attribute in all of its children.
+ * @param {Array.<ReactFlowNode>} nodes List of all react flow nodes.
+ * @param {Array.<ReactFlowEdge>} edges List of all react flow edges.
+ * @param {function} setNodesFunction setNodes method from useNodesState hook.
+ */
+export const setHiddenAllEdgeChildren = (
+  hidden,
+  childNodeId,
+  nodes,
+  edges,
+  setNodesFunction
+) => {
+  // Get the actual react flow node from dom and display none or block accordingly
+  const targetNode = document.querySelector(`[data-id='${childNodeId}']`);
+  targetNode.style.display = `${hidden ? "none" : "block"}`;
+
+  setHiddenAllNodeChildren(hidden, childNodeId, nodes, edges, setNodesFunction);
+};
