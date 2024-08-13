@@ -1,0 +1,102 @@
+/* Container holds everything including handles, actions bar, alert, dropdown etc*/
+.weight-container{
+    /* position: relative; */
+}
+
+
+/* Container holds weight selector dropdown and hide show children icon, and actions bar and alert*/
+.weight-selector-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--box-shadow-1);
+    background-color: rgb(49, 128, 90);
+    border-radius: 2em;
+    position: relative;
+    padding: 0.3em 0.6em 0.2em 0.2em;
+}
+
+/* Container holds icon to hide weight children */
+.hide-weight-children-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Actual hide and show icon */
+.hide-weight-children-icon{
+    width: 1.2em;
+    cursor: pointer;
+}
+
+/* Text which shows WEIGHT Equal */
+.weight-selector-text{
+    padding: 0px;
+    margin: 0px;
+    font-family: abel;
+    color: white;
+}
+
+/* Select weight drop down to select weighting type */
+.weight-selector-dropdown-container{
+    position: absolute;
+    font-family: abel;
+    color: black;
+    box-shadow: var(--box-shadow-1);
+    background-color: var(--background-color-1);
+    border: var(--border-1);
+    border-radius: 1em;
+    text-wrap: nowrap;
+    top: 2em;
+    width: 20em;
+    overflow: hidden;
+    left: 0em;
+
+    /* for opacity */
+    transition: 0.20s;
+}
+
+.weight-selector-dropdown-title{
+    margin: 0px;
+    padding-left: 0.5em;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+}
+.weight-selector-dropdown-item{
+    border-bottom: 1px solid #00000029;
+    margin: 0px;
+    padding: 0.3em;
+    cursor: pointer;
+    border-bottom: 1px solid #00000029;
+    /* padding-top: 0.7em; */
+    padding-left: 0.5em;
+    padding-bottom: 0.7em;
+    
+    /* for hover */
+    transition: 0.2s;
+}
+.weight-selector-dropdown-item:hover{
+    background-color: rgb(235, 235, 235);
+}
+
+/* subtext explainig what each of the weights are */
+.weight-selector-dropdown-item > span{
+    display: block;
+    font-size: 1em;
+    text-wrap: wrap;
+    color: #10151699;
+}
+
+/* Container which holds actions bar and alert */
+.weight-actions-alert-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Position absolute so that the node appears to be in center of the edge its on.
+    If the actions bar and alert are included the node appears to be off to the side */
+    position: absolute;
+    top: 0.1em;
+    right: -6.1em;
+}
+
+

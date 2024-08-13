@@ -7,14 +7,26 @@ import {
   getOutgoers,
 } from "@xyflow/react";
 import {
-  getImmediateNodeEdges,
+  getImmediateNodeSourceEdges,
   changeAllEdgeTypes,
+  setHiddenAllNodeChildren,
 } from "../../../utils/reactFlow";
+import ActionsBar from "../ActionsBar/ActionsBar";
+import Alert from "../../Alert/Alert";
+import hideIcon from "../../../assets/images/closed-eye.svg";
+import showIcon from "../../../assets/images/open-eye.svg";
 import "./weight.css";
 
 const Weight = ({ data }) => {
   const [weightingType, setWeightingType] = useState("Equal");
+  const [displayWeight, setDisplayWeight] = useState("Equal");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [hideNodeChildren, setHideNodeChildren] = useState(false);
   const myId = useRef(useNodeId());
+
+  const actionsBarRef = useRef();
+  const alertRef = useRef();
+
   const { getNode, getNodes, setNodes, getEdges, setEdges, updateNodeData } =
     useReactFlow();
 
@@ -34,7 +46,10 @@ const Weight = ({ data }) => {
     }
 
     // Get immediate edges
-    const immediateEdges = getImmediateNodeEdges(myId.current, getEdges());
+    const immediateEdges = getImmediateNodeSourceEdges(
+      myId.current,
+      getEdges()
+    );
 
     // Change edges to desired type
     changeAllEdgeTypes(type, getEdges(), immediateEdges, setEdges);
@@ -50,17 +65,115 @@ const Weight = ({ data }) => {
     } else {
       updateNodeData(myId.current, { weightingType: type });
     }
+
+    // Based on type change make sure ui shows what weighting type is
+    if (type === "default") {
+      setDisplayWeight("Equal");
+    }
+    if (type === "specifedWeight") {
+      setDisplayWeight("Specified");
+    }
+  }
+
+  function hideChildren() {
+    setHiddenAllNodeChildren(
+      !hideNodeChildren,
+      myId.current,
+      getNodes(),
+      getEdges(),
+      setNodes
+    );
+  }
+
+  function showWeightingTypeDropdown() {
+    setShowDropdown(!showDropdown);
   }
 
   return (
-    <div>
+    <div
+      className="weight-container"
+      onMouseEnter={() => {
+        actionsBarRef.current.currentlyHovering();
+      }}
+      onMouseLeave={() => {
+        actionsBarRef.current.notCurrentlyHovering();
+      }}
+    >
       <Handle
         type="target"
         position={Position.Top}
         isConnectableStart={false}
       />
       <Handle type="source" position={Position.Bottom} />
-      <p>Weight type: {weightingType}</p>
+
+      <div className="weight-selector-container">
+        <div
+          onClick={() => {
+            hideChildren();
+            setHideNodeChildren(!hideNodeChildren);
+          }}
+          className="hide-weight-children-container"
+        >
+          <img
+            src={hideNodeChildren ? hideIcon : showIcon}
+            alt=""
+            className="hide-weight-children-icon"
+          />
+        </div>
+        <p className="weight-selector-text">
+          WEIGHT <span>{displayWeight}</span>
+        </p>
+
+        <div
+          className={`weight-selector-dropdown-container ${
+            showDropdown ? "" : "hidden"
+          }`}
+        >
+          <p className="weight-selector-dropdown-title">Set Weighting Type</p>
+          <p
+            className="weight-selector-dropdown-item"
+            onClick={() => {
+              changeWeightingType("default");
+            }}
+          >
+            Equal
+            <span>
+              All of the child nodes receive an equal proportion of the weight
+            </span>
+          </p>
+          <p
+            className="weight-selector-dropdown-item"
+            onClick={() => {
+              changeWeightingType("specifiedWeight");
+            }}
+          >
+            Specified
+            <span>Weights of child nodes are specified with a percentage</span>
+          </p>
+        </div>
+
+        <div className="weight-actions-alert-container">
+          <ActionsBar
+            ref={actionsBarRef}
+            editMeFunction={showWeightingTypeDropdown}
+            focused={showDropdown}
+          ></ActionsBar>
+          <Alert
+            ref={alertRef}
+            errorMessage={"Specified weights must add up to 100%"}
+          ></Alert>
+        </div>
+      </div>
+
+      {/* <div className="weight-actions-alert-container">
+        <ActionsBar ref={actionsBarRef}></ActionsBar>
+        <Alert
+          ref={alertRef}
+          errorMessage={"Specified weights must add up to 100%"}
+        ></Alert>
+      </div> */}
+
+      {/* <p>Weight type: {weightingType}</p>
       <button
         onClick={() => {
           console.log(getNode(myId.current));
@@ -87,7 +200,7 @@ const Weight = ({ data }) => {
             set weight to specified
           </button>
         </li>
-      </ul>
+      </ul> */}
     </div>
   );
 };
