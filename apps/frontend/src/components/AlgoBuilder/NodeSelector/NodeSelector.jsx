@@ -107,7 +107,7 @@ const NodeSelector = ({ data }) => {
         <p className="node-selector-menu-text">
           Add a Node <span>Assets, Weights, FRED...</span>
         </p>
-        <ActionsBar ref={actionsBarRef}></ActionsBar>
+        <ActionsBar ref={actionsBarRef} focused={showDropdown}></ActionsBar>
       </div>
 
       <div
@@ -124,6 +124,7 @@ const NodeSelector = ({ data }) => {
               "Add any asset who's data is provided by Yahoo Finance"
             }
             onClickFunction={addBuyNode}
+            iconColor={"#19AE01"}
           ></NodeSelectorDropdownItem>
           <NodeSelectorDropdownItem
             icon={weightIcon}
@@ -131,6 +132,7 @@ const NodeSelector = ({ data }) => {
             title={"Weight (Allocation)"}
             information={"Decide how funds are allocated to nodes and assets"}
             onClickFunction={addWeightNode}
+            iconColor={"#31805a"}
           ></NodeSelectorDropdownItem>
           <NodeSelectorDropdownItem
             icon={ifElseIcon}
@@ -138,6 +140,7 @@ const NodeSelector = ({ data }) => {
             title={"If/Else Statements"}
             information={"Use indicators and functions to create if/else logic"}
             onClickFunction={addExpressionNode}
+            iconColor={"#f2af11"}
           ></NodeSelectorDropdownItem>
           <NodeSelectorDropdownItem
             icon={pasteIcon}
