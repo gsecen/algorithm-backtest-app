@@ -1,0 +1,9 @@
+.true-edge-container{
+    box-shadow: var(--box-shadow-1);
+    background-color: #e0ad36;
+    padding: 0.3em 0.6em 0.3em 0.6em;
+    border: 2px solid white;
+    border-radius: 2em;
+    font-family: abel;
+    color: white;
+}

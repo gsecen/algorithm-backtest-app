@@ -35,13 +35,8 @@ const False = ({
           style={{
             position: "absolute",
             transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-            background: "#6699ff",
-            padding: 10,
-            borderRadius: 5,
-            fontSize: 12,
-            fontWeight: 700,
           }}
-          className="nodrag nopan"
+          className="false-edge-container"
         >
           False
         </div>
