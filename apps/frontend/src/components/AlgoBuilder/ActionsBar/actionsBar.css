@@ -66,6 +66,8 @@
     /* for opacity */
     transition: 0.20s;
     left: 5.1em;
+
+    z-index: 2;
 }
 .actions-bar-sub-menu-item{
     display: flex;

@@ -21,12 +21,14 @@ import "./actionsBar.css";
 // is it variables or functions, they are exposed to the parent and can be accessed and called by a parent
 // component.
 
-const ActionsBar = forwardRef(({ editMeFunction, focused }, ref) => {
+const ActionsBar = forwardRef(({ editMeFunction, focused, nodeType }, ref) => {
   // Keep track of if parent node is currently being used so we know to show actions bar
   const isItemFocused = focused;
   const [showActionsBar, setShowActionsBar] = useState(false);
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [hovering, setHovering] = useState(false);
+
+  // For different nodes show different menu variations
 
   const { getNodes, getEdges, deleteElements, getNode, updateNodeData } =
     useReactFlow();
@@ -99,7 +101,7 @@ const ActionsBar = forwardRef(({ editMeFunction, focused }, ref) => {
         </li>
       </ul> */}
       <ul className="actions-bar-main-menu">
-        <li className="actions-bar-main-menu-item">
+        <li onClick={editMeFunction} className="actions-bar-main-menu-item">
           <img className="actions-bar-icon" src={editIcon} alt="" />
         </li>
         <li className="actions-bar-main-menu-item">
