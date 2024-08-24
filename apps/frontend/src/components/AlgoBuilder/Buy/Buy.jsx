@@ -6,7 +6,7 @@ import "./buy.css";
 
 const Buy = ({ data }) => {
   const myId = useRef(useNodeId());
-  const [ticker, setTicker] = useState("TICKER");
+  const [ticker, setTicker] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 
   const actionsBarRef = useRef();
@@ -14,8 +14,8 @@ const Buy = ({ data }) => {
 
   // every time ticker changes do the following
   useEffect(() => {
-    // If ticker symbol is "TICKER" or blank buy node still needs to be edited so show alert
-    if (ticker === "TICKER" || ticker.trim() === "") {
+    // If ticker symbol is blank buy node still needs to be edited so show alert
+    if (ticker.trim() === "") {
       alertRef.current.showAlertExclamtion();
     } else {
       alertRef.current.hideAlertExclamtion();
@@ -58,6 +58,7 @@ const Buy = ({ data }) => {
       <input
         onChange={(event) => {
           setTicker(event.target.value.toUpperCase());
+          event.target.value = event.target.value.toUpperCase();
         }}
         onBlur={() => {
           makeInputUnEditable();
@@ -70,7 +71,7 @@ const Buy = ({ data }) => {
         className="ticker-symbol-input"
         id={`ticker-input-${myId.current}`}
         type="text"
-        value={ticker}
+        placeholder="TICKER"
         readOnly
         disabled
       />
