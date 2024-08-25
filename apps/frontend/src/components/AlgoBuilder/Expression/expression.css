@@ -31,6 +31,11 @@ also holds the dropdowns to edit the expression details*/
     cursor: pointer;
 }
 
+/* Container which holds drop down and text that shows what function has been selected */
+.expression-function-container{
+    display: inline-block;
+    position: relative;
+}
 /* Container which holds expression dropdown to edit the expression function and input to enter trading days */
 .expression-function-dropdown-container{
     position: absolute;
@@ -39,6 +44,9 @@ also holds the dropdowns to edit the expression details*/
     border: var(--border-1);
     border-radius: 0.6em;
     padding: 1em;
+    top: 1.7em;
+    left: 0.2em;
+
 
     /* for opacity */
     transition: 0.2s;
@@ -96,8 +104,68 @@ also holds the dropdowns to edit the expression details*/
 
 /* Input to enter the size of the trading window for function */
 .expression-function-trading-days-input{
-    pointer-events:painted;
+    color: #101516;
+    border: var(--border-1);
     cursor: pointer;
+    border-radius: 0.2em;
+    outline: none;
+    font-family: abel;
+    font-size: 1em;
+    padding-left: 0.4em;
+}
+
+/* Make it so no arrows show on the input because by default arrows show on type number inputs */
+/* Chrome, Safari, Edge, Opera */
+.expression-function-trading-days-input::-webkit-outer-spin-button,
+.expression-function-trading-days-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+.expression-function-trading-days-input {
+  -moz-appearance: textfield;
+}
+
+
+
+
+/* Container which holds drop down and text that shows what comparator has been selected */
+.expression-comparator-container{
+    display: inline-block;
+    position: relative;
+}
+/* Container which holds the selections for the expression comparators (less than, greater than, equal to) */
+.expression-comparator-dropdown-container{
+    position: absolute;
+    box-shadow: var(--box-shadow-1);
+    background-color: var(--background-color-1);
+    border: var(--border-1);
+    border-radius: 0.6em;
+    overflow: hidden;
+    top: 1.7em;
+    left: 0.2em;
+
+
+    /* for opacity */
+    transition: 0.2s;
+}
+/* ul which holds all of the comparators */
+.expression-comparator-dropdown{
+    list-style-type: none;
+    margin: 0em;
+    padding: 0em;
+}
+.expression-comparator-dropdown-item{
+    font-family: abel;
+    color: #101516;
+    cursor: pointer;
+    padding: 0.1em 0.1em 0.1em 0.3em;
+
+    /* for hover */
+    transition: 0.2s;
+}
+.expression-comparator-dropdown-item:hover{
+    background-color: rgb(235, 235, 235);
 }
 
 /* Container which holds actions bar and alert */
@@ -110,4 +178,15 @@ also holds the dropdowns to edit the expression details*/
     position: absolute;
     top: 0.5em;
     right: -6.1em;
+}
+
+
+
+
+
+
+/* Container which holds drop down and text that shows what type (yahoo finance/fred) and what asset or data has been selected */
+.expression-asset-data-container{
+    display: inline-block;
+    position: relative;
 }

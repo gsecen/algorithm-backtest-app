@@ -20,68 +20,30 @@ const Expression = () => {
     useState("Choose Function");
   const [firstSelectedWindow, setFirstSelectedWindow] = useState(20);
 
-  const FunctionSelectorDropdown = () => {
-    return (
-      <div
-        className={`expression-function-dropdown-container ${
-          showFunctionDropdown ? "" : "hidden"
-        }`}
-      >
-        <p className="expression-function-dropdown-text">Function</p>
-        <div className="expression-function-selector-dropdown-container">
-          <div
-            className="expression-function-selected"
-            onClick={() => {
-              setShowFunctionSelectorDropdown(!showFunctionSelectorDropdown);
-            }}
-          >
-            {firstSelectedFunction}
-          </div>
-          <ul
-            className={`expression-function-selector-dropdown ${
-              showFunctionSelectorDropdown ? "" : "hidden"
-            }`}
-          >
-            <li
-              onClick={() => {
-                setFirstSelectedFunction("Moving Average Of Price");
-              }}
-              className="expression-function-selector-dropdown-item"
-            >
-              Moving Average Of Price
-            </li>
-            <li
-              onClick={() => {
-                setFirstSelectedFunction("Moving Average Of Return");
-              }}
-              className="expression-function-selector-dropdown-item"
-            >
-              Moving Average Of Return
-            </li>
-            <li
-              onClick={() => {
-                setFirstSelectedFunction("Max Drawdown");
-              }}
-              className="expression-function-selector-dropdown-item"
-            >
-              Max Drawdown
-            </li>
-          </ul>
-        </div>
-        <p className="expression-function-dropdown-text">
-          Window (# of trading days)
-        </p>
-        <input
-          type="number"
-          className="expression-function-trading-days-input"
-          onChange={(event) => {
-            setFirstSelectedWindow(event.target.value);
-          }}
-          value={firstSelectedWindow}
-        />
-      </div>
-    );
-  };
+  // For the comparator selector dropdown
+  const [showComparatorDropdown, setShowComparatorDropdown] = useState(false);
+  const [selectedComparator, setSelectedComparator] =
+    useState("Set Comparator");
+
+  // For asset/fred selector dropdown
+  const [showDataAssetDropdown, setShowDataAssetDropdown] = useState(true);
+  const [firstSelectedDataAssetType, setFirstSelectedDataAssetType] =
+    useState("Type");
+  const [firstSelectedDataAsset, setFirstSelectedDataAsset] =
+    useState("Asset/Data");
+
+  // Function gets what to put in the placeholder for asset or series id input
+  function getFirstSelectedDataAssetPlaceholder() {
+    if (firstSelectedDataAssetType === "Type") {
+      return "Ticker / Series Id";
+    }
+    if (firstSelectedDataAssetType === "Yahoo Finance") {
+      return "TICKER";
+    }
+    if (firstSelectedDataAssetType === "FRED") {
+      return "SERIES ID";
+    }
+  }
 
   // Add the true and false nodes to this expression on mount
   useEffect(() => {
@@ -138,82 +100,194 @@ const Expression = () => {
       >
         <div className="expression-text-container">
           If the
-          <span
-            className="expression-text-edit-container"
-            onClick={() => {
-              setShowFunctionDropdown(!showFunctionDropdown);
-            }}
-          >
-            {firstSelectedWindow}d {firstSelectedFunction}
-          </span>
-          {/* Function dropdown */}
-          {/* <FunctionSelectorDropdown></FunctionSelectorDropdown> */}
-          <div
-            className={`expression-function-dropdown-container ${
-              showFunctionDropdown ? "" : "hidden"
-            }`}
-          >
-            <p className="expression-function-dropdown-text">Function</p>
-            <div className="expression-function-selector-dropdown-container">
-              <div
-                className="expression-function-selected"
-                onClick={() => {
-                  setShowFunctionSelectorDropdown(
-                    !showFunctionSelectorDropdown
-                  );
-                }}
-              >
-                {firstSelectedFunction}
+          <div className="expression-function-container">
+            <span
+              className="expression-text-edit-container"
+              onClick={() => {
+                setShowFunctionDropdown(!showFunctionDropdown);
+              }}
+            >
+              {firstSelectedWindow}d {firstSelectedFunction}
+            </span>
+            <div
+              className={`expression-function-dropdown-container ${
+                showFunctionDropdown ? "" : "hidden"
+              }`}
+            >
+              <p className="expression-function-dropdown-text">Function</p>
+              <div className="expression-function-selector-dropdown-container">
+                <div
+                  className="expression-function-selected"
+                  onClick={() => {
+                    setShowFunctionSelectorDropdown(
+                      !showFunctionSelectorDropdown
+                    );
+                  }}
+                >
+                  {firstSelectedFunction}
+                </div>
+                <ul
+                  className={`expression-function-selector-dropdown ${
+                    showFunctionSelectorDropdown ? "" : "hidden"
+                  }`}
+                >
+                  <li
+                    onClick={() => {
+                      setFirstSelectedFunction("Moving Average Of Price");
+                      setShowFunctionSelectorDropdown(false);
+                    }}
+                    className="expression-function-selector-dropdown-item"
+                  >
+                    Moving Average Of Price
+                  </li>
+                  <li
+                    onClick={() => {
+                      setFirstSelectedFunction("Moving Average Of Return");
+                      setShowFunctionSelectorDropdown(false);
+                    }}
+                    className="expression-function-selector-dropdown-item"
+                  >
+                    Moving Average Of Return
+                  </li>
+                  <li
+                    onClick={() => {
+                      setFirstSelectedFunction("Max Drawdown");
+                      setShowFunctionSelectorDropdown(false);
+                    }}
+                    className="expression-function-selector-dropdown-item"
+                  >
+                    Max Drawdown
+                  </li>
+                </ul>
               </div>
-              <ul
-                className={`expression-function-selector-dropdown ${
-                  showFunctionSelectorDropdown ? "" : "hidden"
-                }`}
-              >
+              <p className="expression-function-dropdown-text">
+                Window (# of trading days)
+              </p>
+              <input
+                type="number"
+                className="expression-function-trading-days-input"
+                onChange={(event) => {
+                  if (event.target.value === "") {
+                    setFirstSelectedWindow("");
+                  }
+                  // Make sure value is not a float
+                  else {
+                    setFirstSelectedWindow(Math.ceil(event.target.value));
+                  }
+                }}
+                onBlur={(event) => {
+                  // Make sure value is not empty
+                  if (event.target.value === "") {
+                    setFirstSelectedWindow(20);
+                  }
+                }}
+                value={firstSelectedWindow}
+              />
+            </div>
+          </div>
+          of
+          <div className="expression-asset-data-container">
+            <span className="expression-text-edit-container">
+              {firstSelectedDataAssetType} {firstSelectedDataAsset}
+            </span>
+            <div
+              className={`expression-function-dropdown-container ${
+                showFunctionDropdown ? "" : "hidden"
+              }`}
+            >
+              <p className="expression-function-dropdown-text">Type</p>
+              <div className="expression-function-selector-dropdown-container">
+                <div
+                  className="expression-function-selected"
+                  onClick={() => {
+                    setShowFunctionSelectorDropdown(
+                      !showFunctionSelectorDropdown
+                    );
+                  }}
+                >
+                  {firstSelectedDataAssetType}
+                </div>
+                <ul
+                  className={`expression-function-selector-dropdown ${
+                    showFunctionSelectorDropdown ? "" : "hidden"
+                  }`}
+                >
+                  <li
+                    onClick={() => {
+                      setFirstSelectedDataAssetType("Yahoo Finance");
+                      setShowFunctionSelectorDropdown(false);
+                    }}
+                    className="expression-function-selector-dropdown-item"
+                  >
+                    Yahoo Finance
+                  </li>
+                  <li
+                    onClick={() => {
+                      setFirstSelectedDataAssetType("FRED");
+                      setShowFunctionSelectorDropdown(false);
+                    }}
+                    className="expression-function-selector-dropdown-item"
+                  >
+                    FRED (St. Louis FED)
+                  </li>
+                </ul>
+              </div>
+              <p className="expression-function-dropdown-text">
+                {getFirstSelectedDataAssetPlaceholder()}
+              </p>
+              <input
+                type="text"
+                className="expression-function-trading-days-input"
+                onChange={(event) => {
+                  setFirstSelectedDataAsset(event.target.value);
+                }}
+                placeholder={getFirstSelectedDataAssetPlaceholder()}
+              />
+            </div>
+          </div>
+          is
+          <div className="expression-comparator-container">
+            <span
+              onClick={() => {
+                setShowComparatorDropdown(!showComparatorDropdown);
+              }}
+              className="expression-text-edit-container"
+            >
+              {selectedComparator}
+            </span>
+            <div
+              className={`expression-comparator-dropdown-container ${
+                showComparatorDropdown ? "" : "hidden"
+              }`}
+            >
+              <ul className="expression-comparator-dropdown">
                 <li
                   onClick={() => {
-                    setFirstSelectedFunction("Moving Average Of Price");
+                    setSelectedComparator("less than");
                   }}
-                  className="expression-function-selector-dropdown-item"
+                  className="expression-comparator-dropdown-item"
                 >
-                  Moving Average Of Price
+                  less than
                 </li>
                 <li
                   onClick={() => {
-                    setFirstSelectedFunction("Moving Average Of Return");
+                    setSelectedComparator("greater than");
                   }}
-                  className="expression-function-selector-dropdown-item"
+                  className="expression-comparator-dropdown-item"
                 >
-                  Moving Average Of Return
+                  greater than
                 </li>
                 <li
                   onClick={() => {
-                    setFirstSelectedFunction("Max Drawdown");
+                    setSelectedComparator("equal to");
                   }}
-                  className="expression-function-selector-dropdown-item"
+                  className="expression-comparator-dropdown-item"
                 >
-                  Max Drawdown
+                  equal to
                 </li>
               </ul>
             </div>
-            <p className="expression-function-dropdown-text">
-              Window (# of trading days)
-            </p>
-            <input
-              type="number"
-              className="expression-function-trading-days-input"
-              onChange={(event) => {
-                setFirstSelectedWindow(event.target.value);
-              }}
-              value={firstSelectedWindow}
-            />
           </div>
-          of
-          <span className="expression-text-edit-container">
-            Yahoo Finance TSLA
-          </span>
-          is
-          <span className="expression-text-edit-container">greater than</span>
           <span className="expression-text-edit-container">5%</span>
           of
           <span className="expression-text-edit-container">FRED FEDFUNDS</span>
